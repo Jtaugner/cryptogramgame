@@ -1,3 +1,43 @@
+# Cryptogram Game
+
+Игра-головоломка, в которой нужно разгадать зашифрованный текст, где каждой букве соответствует определенное число.
+
+## Технологии
+
+- React + TypeScript
+- Vite
+- TailwindCSS
+
+## Особенности
+
+- Современный минималистичный дизайн
+- Плавные анимации
+- Адаптивная раскладка клавиатуры
+- Система подсчета ошибок и жизней
+- Визуальная обратная связь при вводе букв
+
+## Установка
+
+```bash
+# Клонировать репозиторий
+git clone https://github.com/Jtaugner/cryptogramgame.git
+
+# Перейти в директорию проекта
+cd cryptogramgame
+
+# Установить зависимости
+npm install
+
+# Запустить в режиме разработки
+npm run dev
+```
+
+## Сборка
+
+```bash
+npm run build
+```
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
