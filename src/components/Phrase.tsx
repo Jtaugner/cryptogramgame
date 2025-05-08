@@ -110,78 +110,104 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(({ data, onError, onLetterF
   }))
 
   return (
-    <div className="flex flex-wrap justify-center gap-x-0 gap-y-4 mb-8">
-      {letters.map((letter, index) => {
-        const isHidden = data.hiddenIndexes.includes(index)
-        const number = data.numbers[index]
-        const isLetter = /[А-ЯЁ]/.test(letter)
-        const isSelected = selectedIndex === index
-        const isCorrect = correctLetters[index]
-        const wrongLetter = wrongLetters[index]
-        const filledLetter = data.filledLetters[index]
-        const shouldShowNumber = isLetter && number > 0 && !hidingNumbers.has(number)
-        const isCompletingNumber = number > 0 && completingNumbers.has(number)
-        
-        if (letter === ' ') {
-          return <div key={index} className="w-4" />
+    <div className="flex flex-row flex-wrap justify-center gap-x-[2px] gap-y-[15px] w-full mb-8 p-0 m-0 py-[10px] px-0">
+      {data.text.split(/(\s+)/).map((word, wordIdx, arr) => {
+        if (word.trim() === '') {
+          return null
         }
-
-        if (letter === '-') {
-          return <div key={index} className="w-4 flex items-center">-</div>
-        }
-
+        const startIdx = data.text.split(/(\s+)/).slice(0, wordIdx).join('').length;
+        const isLastWord = (() => {
+          // ищем следующий не-пробельный элемент
+          for (let i = wordIdx + 1; i < arr.length; i++) {
+            if (arr[i].trim() !== '') return false
+          }
+          return true
+        })();
+        const isFirstWord = (() => {
+          for (let i = 0; i < wordIdx; i++) {
+            if (arr[i].trim() !== '') return false
+          }
+          return true
+        })();
         return (
-          <div 
-            key={index} 
-            className={`
-              flex flex-col items-center w-fit
-              ${isHidden ? 'cursor-pointer' : ''}
-              ${isSelected ? 'outline outline-2 outline-green-500 outline-offset-1 rounded bg-green-100' : ''}
-            `}
-            onClick={() => handleLetterClick(index)}
-          >
-            <div 
-              className={`
-                w-fit min-w-[1.5rem] h-8 flex items-center justify-center text-xl
-                bg-transparent
-                ${letter !== '.' ? 'text-[#4a2b2b]' : 'text-gray-600'}
-                font-medium
-                relative
-                mb-0.5
-                uppercase
-              `}
-            >
-              {!isHidden && (
-                <span className={isCompletingNumber ? 'number-complete' : ''}>
-                  {letter}
-                </span>
-              )}
-              {isHidden && filledLetter && (
-                <span className={`
-                  ${isCorrect || (isCompletingNumber && correctLetters[index]) ? 'correct-letter' : ''} 
-                  ${isCompletingNumber ? 'number-complete' : ''}
-                `}>
-                  {filledLetter.toUpperCase()}
-                </span>
-              )}
-              {isHidden && wrongLetter && (
-                <span className="absolute inset-0 flex items-center justify-center text-red-600 shake">
-                  {wrongLetter.toUpperCase()}
-                </span>
-              )}
-              {isLetter && (
-                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[45%] border-b border-gray-400" />
-              )}
-            </div>
-            {isLetter && number > 0 && (
-              <div className={`
-                text-xs text-gray-500
-                ${!shouldShowNumber ? 'opacity-0' : ''}
-                transition-opacity duration-200
-              `}>
-                {number}
-              </div>
-            )}
+          <div key={wordIdx} className={`inline-flex flex-row gap-x-[2px] mx-[12px]`}>
+            {word.split('').map((letter, i) => {
+              const index = startIdx + i;
+              const isHidden = data.hiddenIndexes.includes(index)
+              const number = data.numbers[index]
+              const isLetter = /[А-ЯЁ]/.test(letter)
+              const isSelected = selectedIndex === index
+              const isCorrect = correctLetters[index]
+              const wrongLetter = wrongLetters[index]
+              const filledLetter = data.filledLetters[index]
+              const shouldShowNumber = isLetter && number > 0 && !hidingNumbers.has(number)
+              const isCompletingNumber = number > 0 && completingNumbers.has(number)
+              if (!isLetter) {
+                return (
+                  <span key={index} className="text-[1.8225rem] text-white font-medium uppercase ml-[2px]">
+                    {letter}
+                  </span>
+                )
+              }
+              return (
+                <div 
+                  key={index} 
+                  className={`
+                    flex flex-col items-center w-fit rounded-[2px]
+                    ${shouldShowNumber && !(isHidden && !filledLetter) ? 'border border-[#7277ec] border-[1px] shadow-[0_0_0.5px_0.5px_rgba(0,0,0,0.1)]' : ''}
+                    ${isHidden ? 'cursor-pointer' : ''}
+                    ${isSelected ? 'shadow-[inset_0_0_0_1px_#53e027]' : ''}
+                    ${isLetter && number > 0 && !shouldShowNumber ? 'bg-transparent' : ''}
+                    ${isLetter && number > 0 && shouldShowNumber ? 'bg-[#6C72F0] rounded-t-[2px]' : ''}
+                    ${isHidden && !filledLetter ? 'bg-[rgba(255,255,255,0.9)]' : ''}
+                  `}
+                  onClick={() => handleLetterClick(index)}
+                >
+                  <div 
+                    className={`
+                      w-fit min-w-[1.8225rem] h-[2.43rem] flex items-center justify-center text-[1.8225rem] rounded-[2px]
+                      ${isLetter && number > 0 && !shouldShowNumber ? 'bg-[#6C72F0] border border-[#7277ec] border-[1px] shadow-[0_0_0.5px_0.5px_rgba(0,0,0,0.1)]' : ''}
+                      ${isLetter && number > 0 ? 'text-white' : !isLetter ? 'text-white' : letter !== '.' ? 'text-[#4a2b2b]' : 'text-gray-600'}
+                      font-medium
+                      relative
+                      mb-0.5
+                      uppercase
+                    `}
+                  >
+                    {!isHidden && (
+                      <span className={isCompletingNumber ? 'number-complete' : ''}>
+                        {letter}
+                      </span>
+                    )}
+                    {isHidden && filledLetter && (
+                      <span className={`
+                        ${isCorrect || (isCompletingNumber && correctLetters[index]) ? 'correct-letter' : ''} 
+                        ${isCompletingNumber ? 'number-complete' : ''}
+                      `}>
+                        {filledLetter.toUpperCase()}
+                      </span>
+                    )}
+                    {isHidden && wrongLetter && (
+                      <span className="absolute inset-0 flex items-center justify-center text-red-600 shake">
+                        {wrongLetter.toUpperCase()}
+                      </span>
+                    )}
+                    {isLetter && shouldShowNumber && (
+                      <div className={`absolute bottom-0 left-0 w-full border-b ${isSelected ? 'border-[#3db710]' : isHidden && !filledLetter ? 'border-[#6C72F0]' : 'border-white'}`} />
+                    )}
+                  </div>
+                  {isLetter && number > 0 && (
+                    <div className={`
+                      text-[1.0125rem] ${isSelected ? 'text-[#53e027]' : isHidden && !filledLetter ? 'text-[#6C72F0]' : 'text-white'}
+                      ${!shouldShowNumber ? 'opacity-0' : ''}
+                      transition-opacity duration-200
+                    `}>
+                      {number}
+                    </div>
+                  )}
+                </div>
+              )
+            })}
           </div>
         )
       })}

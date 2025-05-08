@@ -1,10 +1,13 @@
 import { useState, useEffect, useRef } from 'react'
 import Keyboard from './Keyboard'
 import Phrase from './Phrase'
+import bgSpring from '../assets/bgSpring-big.png'
 
 interface LevelData {
   text: string
   hiddenIndexes: number[]
+  name: string
+  desc: string
 }
 
 const Game = () => {
@@ -23,9 +26,11 @@ const Game = () => {
 
   // Тестовые данные для первого уровня
   const levelData: LevelData = {
-    text: 'БЫТЬ ИЛИ НЕ БЫТЬ - ВОТ В ЧЕМ ВОПРОС.',
-    hiddenIndexes: [2, 14, 20]
-  }
+    text: 'Я ОБО ВСЕМ ПОДУМАЮ ПОТОМ, КОГДА НАЙДУ В СЕБЕ СИЛЫ ЭТО ВЫДЕРЖАТЬ.',
+    hiddenIndexes: [2, 6, 13, 20, 26, 33, 38, 45, 50, 56],
+    name: 'Неизвестный автор',
+    desc: 'Сильные слова о внутренней борьбе'
+  };
 
   const handleCompleteNumber = (letter: string) => {
     setInactiveKeys(prev => new Set([...prev, letter.toLowerCase()]))
@@ -167,32 +172,34 @@ const Game = () => {
   if (!phraseData) return null
 
   return (
-    <div className="min-h-screen bg-[#f8e8e8] flex flex-col">
+    <div className="h-screen flex flex-col bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url(${bgSpring})` }}>
       {/* Header */}
-      <div className="flex justify-between items-start p-4">
-        <div className="flex items-center">
-          <div className="relative">
-            <div className="bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center">
-              {lives}
-            </div>
-            <div className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-              +
+      <div className="sticky top-0 z-10 w-full bg-transparent">
+        <div className="flex justify-between items-start p-4">
+          <div className="flex items-center">
+            <div className="relative">
+              <div className="bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center">
+                {lives}
+              </div>
+              <div className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                +
+              </div>
             </div>
           </div>
-        </div>
-        <div className="text-center">
-          <div className="text-gray-400 text-sm">Ошибки</div>
-          <div className="flex gap-1 mt-1">
-            {[...Array(3)].map((_, i) => (
-              <div 
-                key={i} 
-                className={`w-2 h-2 rounded-full ${i < errors ? 'bg-red-500' : 'bg-gray-300'}`} 
-              />
-            ))}
+          <div className="text-center">
+            <div className="text-gray-400 text-sm">Ошибки</div>
+            <div className="flex gap-1 mt-1">
+              {[...Array(3)].map((_, i) => (
+                <div 
+                  key={i} 
+                  className={`w-2 h-2 rounded-full ${i < errors ? 'bg-red-500' : 'bg-gray-300'}`} 
+                />
+              ))}
+            </div>
           </div>
-        </div>
-        <div className="text-gray-500 text-sm">
-          Уровень {level}
+          <div className="text-gray-500 text-sm">
+            Уровень {level}
+          </div>
         </div>
       </div>
 
@@ -210,8 +217,8 @@ const Game = () => {
         </svg>
       </button>
 
-      {/* Main content */}
-      <div className="flex-grow flex flex-col items-center justify-center px-4">
+      {/* Main content (Phrase + Hint) */}
+      <div className="flex-1 w-full flex flex-col items-center overflow-y-auto">
         <Phrase 
           ref={phraseRef}
           data={phraseData}
@@ -219,19 +226,18 @@ const Game = () => {
           onLetterFill={handleLetterFill}
           onCompleteNumber={handleCompleteNumber}
         />
-      </div>
-
-      {/* Hint button */}
-      <div className="absolute bottom-24 right-4">
-        <button className="bg-blue-500 text-white rounded-lg p-2">
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-          </svg>
-        </button>
+        {/* Hint button */}
+        <div className="absolute bottom-24 right-4">
+          <button className="bg-blue-500 text-white rounded-lg p-2">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+            </svg>
+          </button>
+        </div>
       </div>
 
       {/* Keyboard */}
-      <div className="w-full max-w-2xl mx-auto mb-8">
+      <div className="w-full max-w-2xl mx-auto bg-[#313477] sticky bottom-0 left-0 p-[10px_6px]">
         <Keyboard 
           onKeyPress={(key) => phraseRef.current?.handleKeyPress(key)} 
           inactiveKeys={inactiveKeys}
