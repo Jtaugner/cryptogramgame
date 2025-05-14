@@ -1,0 +1,289 @@
+
+/* Стили для Phrase */
+
+.phrase-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 2rem;
+  padding: 30px 0;
+}
+
+.phrase-word {
+  display: inline-flex;
+  flex-direction: row;
+  gap: 1.5px;
+  margin: 0 10px 22px 10px;
+}
+
+.phrase-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: fit-content;
+  border-radius: 2px;
+  transition: border-color 0.2s;
+}
+.phrase-cell, .phrase-cell_done .phrase-cell-inner{
+     border: var(--cellBorderSize) solid rgb(114, 119, 236);
+     box-shadow: 0px 1px 0px 0px rgba(10, 10, 10, 0.22);
+}
+.phrase-cell_done{
+     border: none;
+     box-shadow: none;
+}
+.phrase-cell_done .phrase-cell-inner{
+     box-sizing: content-box;
+     border-bottom: none;
+     margin-bottom: 3px;
+}
+
+.phrase-cell_notFilled{
+     background-color: var(--notFilledColor);
+     border: var(--cellBorderSize) solid transparent;
+     z-index: 2;
+}
+
+
+.phrase-cell-inner {
+  width: fit-content;
+  min-width: 1.8225rem;
+  height: 2.43rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8225rem;
+  border-radius: 2px;
+
+  position: relative;
+  margin-bottom: 2px;
+  text-transform: uppercase;
+  text-shadow: 0px 1px 0px rgba(10, 10, 10, 0.35);
+}
+
+.phrase-cell-number {
+  font-size: 1.3rem;
+  line-height: 1.7rem;
+  transition: color 0.2s;
+  color: #dddce1;
+  font-weight: 300;
+  max-height: 100px;
+}
+.phrase-cell_notFilled .phrase-cell-number{
+     color: #6C72F0;
+}
+
+@keyframes pulsate-green {
+     /* 0%{
+          box-shadow: inset 0 0 0 1px var(--rightLetterColor), inset 0 0 0 1px #dae9e3;
+     }
+     40% {
+          box-shadow: inset 0 0 0 1px var(--rightLetterColor), inset 100px 0 0 1px #dae9e3;
+     }
+     41% {
+          box-shadow: inset 0 0 0 1px var(--rightLetterColor), inset -100px 0 0 1px #dae9e3;
+     }
+     80%{
+          box-shadow: inset 0 0 0 1px var(--rightLetterColor), inset 0 0 0 1px #dae9e3;
+     }    */
+           /* старт и конец — тень полностью за границей слева/справа, прозрачная */
+    /* старт и конец – тень за левой границей, прозрачная */
+    0%, 100% {
+     box-shadow: inset 0 0 0 1px var(--rightLetterColor), inset 0 0 2px rgba(217, 233, 226, 0);
+   }
+   /* вспышка у левого края */
+   10% {
+     box-shadow: inset 0 0 0 1px var(--rightLetterColor), inset 0 -2px 2px rgba(217, 233, 226, 0.9);
+   }
+   /* пик яркости в центре */
+   40% {
+     box-shadow: inset 0 0 0 1px var(--rightLetterColor), inset 0 0 2px rgba(217, 233, 226, 1);
+   }
+   /* затухание у правого края */
+   65%, 70% {
+     box-shadow: inset 0 0 0 1px var(--rightLetterColor), inset 0 -70px 2px rgba(217, 233, 226, 0.9);
+   }
+   /* после – тень уходит за правый край, остаётся прозрачной */
+   80% {
+     box-shadow: inset 0 0 0 1px var(--rightLetterColor), inset 0 -70px 2px rgba(217, 233, 226, 0);
+   }
+}
+@keyframes pulsate-red {
+     0%, 100% {
+          box-shadow: inset 0 0 0 var(--wrongLetterColor);
+        }
+        50% {
+          box-shadow: inset 0 0 6px var(--wrongLetterColor);
+        }
+}
+.selected-glow {
+     animation: pulsate-green 5s ease-in-out infinite;
+     border: var(--cellBorderSize) solid var(--rightLetterColor);
+     box-shadow: inset 0 0 0 1px var(--rightLetterColor);
+} 
+.selected-glow .phrase-cell-number{
+     color: #53e028;
+}
+.border-white{
+     border-color: #dddce1;
+}
+.phrase-cell_notFilled .border-white{
+     border-color: var(--mainColor);
+}
+.selected-glow .border-white{
+     border-color: #43d109;
+}
+/* Анимации ввода букв */   
+@keyframes shake {
+     0%, 100% { transform: rotate(0deg); }
+     10%, 50%, 90% { transform: rotate(-7.5deg); }
+     30%, 70%{ transform: rotate(7.5deg); }
+   }
+.shake {
+     animation: shake 1.5s ease-in-out;
+     transform-origin: center center;
+     color: var(--wrongLetterColor);
+}
+.wrong-letter{
+     animation: pulsate-red 1.7s ease-in-out infinite;
+     border: var(--cellBorderSize) solid var(--wrongLetterColor);
+}
+.wrong-letter .phrase-cell-number{
+     color: var(--wrongLetterColor);
+}
+.wrong-letter .border-white{
+     border-color: var(--wrongLetterColor);
+}
+   
+@keyframes correctLetter {
+     0%{
+          background-color: var(--notFilledColor);
+          color: var(--rightLetterColor);
+     }
+     100% {
+          background-color: var(--mainColor);
+          color: #fff;
+      }
+   }
+@keyframes correctLetterColor {
+     0%{
+          color: var(--rightLetterColor);
+     }
+     100% {
+          color: #fff;
+      }
+   }
+@keyframes correctLetterNumberColor {
+     0%{
+          color: var(--rightLetterColor);
+     }
+     100% {
+          color: #dddce1;
+      }
+   }
+.correct-letter {
+     animation: correctLetter 1s ease-in-out forwards;
+}
+.correct-letter .phrase-cell-inner{
+     animation: correctLetterColor 0.5s ease-in-out forwards;
+}
+.correct-letter.phrase-cell-number{
+     animation: correctLetterNumberColor 0.5s ease-in-out forwards;
+}
+@keyframes completeNumber {
+     0%{
+          transform: scale(1) translateY(0);
+          box-shadow: none;
+     }
+     50%{
+          transform: scale(1.05) translateY(-20%);
+          box-shadow: 0 0 2px 2px rgba(255, 255, 255, 0.9);
+     }
+     100%{
+          transform: scale(1) translateY(0);
+     }
+}
+.complete-number{
+     animation: completeNumber 2s ease-in-out;
+     
+     z-index: 2;
+}
+.phrase-cell_done .phrase-cell-number{
+     opacity: 0;
+     transition: opacity 0.2s ease-in-out;
+}
+@keyframes fadeout {
+     0%{
+          opacity: 1;
+     }
+     50%{
+          opacity: 1;
+     }
+     100%{
+          opacity: 0;
+     }
+}
+.numberCompleted .phrase-cell-number{
+     width: 100%;
+     height: 100%;
+     color: transparent;
+     background: url(../assets/doneLetter.png) no-repeat center center;
+     background-size: 100%;
+     animation: fadeout 3s ease-in-out forwards; 
+}
+@keyframes levelCompletedAnimation{
+     100%{     
+          transform: scale(1.4);
+     }
+}
+@keyframes levelCompletedAnimationInner{
+     100%{     
+          background-color: transparent;
+          box-shadow: none;
+          border-color: transparent;
+     }
+}
+@keyframes levelCompletedAnimation2{
+     0%{
+
+     }
+     100%{
+          margin: 0 10px 5px 10px;
+          /* gap: 0; */
+     }
+}
+@keyframes levelCompletedAnimationNumber{
+     0%{
+          max-height: 100px;
+     }
+     100%{
+          max-height: 0;
+     }
+}
+@keyframes mainBlockAnim{
+     0%{
+          transform: scale(1);
+     }
+     100%{
+          transform: scale(0.8);
+          padding: 0;
+     }
+}
+.levelCompleted{
+     animation: mainBlockAnim 1.5s ease-in-out forwards;
+}
+
+
+.levelCompleted .phrase-cell{
+     animation: levelCompletedAnimation 1.5s ease-in-out forwards;
+}
+.levelCompleted .phrase-cell_done .phrase-cell-inner{
+     animation: levelCompletedAnimationInner 0.6s ease-in-out forwards;
+}
+.levelCompleted .phrase-word{
+     animation: levelCompletedAnimation2 1.5s ease-in-out forwards;
+}
+.levelCompleted .phrase-cell-number{
+     animation: levelCompletedAnimationNumber 1.5s ease-in-out forwards;
+}

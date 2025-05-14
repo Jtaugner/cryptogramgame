@@ -2,6 +2,7 @@ interface KeyboardProps {
   onKeyPress: (key: string) => void
   inactiveKeys?: Set<string>
 }
+import './Keyboard.css'
 
 const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress, inactiveKeys = new Set() }) => {
   const rows = [
@@ -11,20 +12,13 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress, inactiveKeys = new Set(
   ]
 
   return (
-    <div className="flex flex-col gap-y-[10px]">
+    <div className="keyboard-container">
       {rows.map((row, i) => (
-        <div key={i} className="flex justify-center gap-x-[6px]">
+        <div key={i} className="keyboard-row">
           {row.map(key => (
             <button
               key={key}
-              className={`
-                w-[1.7rem] h-[2.5rem] rounded
-                flex items-center justify-center
-                text-[1.325rem] font-medium uppercase
-                ${inactiveKeys.has(key) 
-                  ? 'bg-gray-200 text-gray-400 cursor-default' 
-                  : 'bg-[rgba(255,255,255,0.9)] text-gray-700 active:bg-gray-100'}
-              `}
+              className={`keyboard-key`}
               onClick={() => !inactiveKeys.has(key) && onKeyPress(key)}
               disabled={inactiveKeys.has(key)}
             >

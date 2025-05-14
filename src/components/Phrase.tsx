@@ -1,4 +1,5 @@
-import React, { forwardRef, useImperativeHandle } from 'react'
+import React, { forwardRef, useEffect, useImperativeHandle } from 'react'
+import './Phrase.css'
 
 interface PhraseProps {
   data: {
@@ -11,13 +12,17 @@ interface PhraseProps {
   onError: () => void
   onLetterFill: (filledLetters: Record<number, string>) => void
   onCompleteNumber: (letter: string) => void
+  blockedTime: number
+  isTipSelecting: boolean
+  useTip: () => void
+  isLevelCompleted: boolean
 }
 
 interface PhraseHandle {
   handleKeyPress: (key: string) => void
 }
 
-const Phrase = forwardRef<PhraseHandle, PhraseProps>(({ data, onError, onLetterFill, onCompleteNumber }, ref) => {
+const Phrase = forwardRef<PhraseHandle, PhraseProps>(({ data, onError, onLetterFill, onCompleteNumber, blockedTime, isTipSelecting, useTip, isLevelCompleted }, ref) => {
   const letters = data.text.split('')
   const [selectedIndex, setSelectedIndex] = React.useState<number | null>(() => {
     return data.hiddenIndexes[0] ?? null
@@ -26,14 +31,36 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(({ data, onError, onLetterF
   const [wrongLetters, setWrongLetters] = React.useState<Record<number, string>>({})
   const [completingNumbers, setCompletingNumbers] = React.useState<Set<number>>(new Set())
   const [hidingNumbers, setHidingNumbers] = React.useState<Set<number>>(() => new Set(data.completedNumbers))
+  const [numberCompleted, setNumberCompleted] = React.useState<Set<number>>(new Set())
+
+  // Буквы, разрешённые для игрового ввода
+  const allowedKeys = [
+    'Й','Ц','У','К','Е','Н','Г','Ш','Щ','З','Х',
+    'Ф','Ы','В','А','П','Р','О','Л','Д','Ж','Э',
+    'Я','Ч','С','М','И','Т','Ь','Ъ','Б','Ю'
+  ]
 
   const handleLetterClick = (index: number) => {
-    if (!data.hiddenIndexes.includes(index)) return
+    if (!data.hiddenIndexes.includes(index) || data.filledLetters[index]) return
     setSelectedIndex(index)
+    if(index === selectedIndex){
+      openLetterByTip();
+    }
   }
+  const openLetterByTip = () => {
+    if(selectedIndex !== null && isTipSelecting){
+      useTip();
+      handleKeyPress(letters[selectedIndex], true);
+    }
+  }
+  useEffect(() => {
+    openLetterByTip();
+  }, [selectedIndex])
 
-  const handleKeyPress = (letter: string) => {
-    if (selectedIndex === null) return
+  const handleKeyPress = (letter: string, doItWhatever?: boolean) => {
+    if(selectedIndex === null) return
+    if (!doItWhatever && (blockedTime > 0 || isTipSelecting)) return
+    if (Object.keys(wrongLetters).length > 0) return
     
     const isCorrect = letters[selectedIndex].toLowerCase() === letter.toLowerCase()
 
@@ -63,6 +90,19 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(({ data, onError, onLetterF
               return updated
             })
             setHidingNumbers(prev => new Set([...prev, currentNumber]))
+            // Добавляем numberCompleted на 2 секунды
+            setNumberCompleted(prev => {
+              const updated = new Set(prev)
+              updated.add(currentNumber)
+              return updated
+            })
+            setTimeout(() => {
+              setNumberCompleted(prev => {
+                const updated = new Set(prev)
+                updated.delete(currentNumber)
+                return updated
+              })
+            }, 3000)
             // Передаем завершенную букву
             onCompleteNumber(letter)
           }, 2000)
@@ -105,12 +145,25 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(({ data, onError, onLetterF
     }
   }
 
+  React.useEffect(() => {
+    const handlePhysicalKey = (e: KeyboardEvent) => {
+      if (Object.keys(wrongLetters).length > 0) return
+      let key = e.key.toUpperCase()
+      if (key === 'Ё') key = 'Е'
+      if (/[^А-ЯЁ]/.test(key)) return
+      if (!allowedKeys.includes(key)) return
+      handleKeyPress(key)
+    }
+    window.addEventListener('keydown', handlePhysicalKey)
+    return () => window.removeEventListener('keydown', handlePhysicalKey)
+  }, [wrongLetters, handleKeyPress])
+
   useImperativeHandle(ref, () => ({
     handleKeyPress
   }))
 
   return (
-    <div className="flex flex-row flex-wrap justify-center gap-x-[2px] gap-y-[15px] w-full mb-8 p-0 m-0 py-[10px] px-0">
+    <div className={`phrase-row ${isLevelCompleted ? 'levelCompleted' : ''}`}>
       {data.text.split(/(\s+)/).map((word, wordIdx, arr) => {
         if (word.trim() === '') {
           return null
@@ -130,7 +183,7 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(({ data, onError, onLetterF
           return true
         })();
         return (
-          <div key={wordIdx} className={`inline-flex flex-row gap-x-[2px] mx-[12px]`}>
+          <div key={wordIdx} className="phrase-word">
             {word.split('').map((letter, i) => {
               const index = startIdx + i;
               const isHidden = data.hiddenIndexes.includes(index)
@@ -144,7 +197,7 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(({ data, onError, onLetterF
               const isCompletingNumber = number > 0 && completingNumbers.has(number)
               if (!isLetter) {
                 return (
-                  <span key={index} className="text-[1.8225rem] text-white font-medium uppercase ml-[2px]">
+                  <span key={index} className="text-[1.8225rem] text-white uppercase ml-[2px]" style={{zIndex: isLevelCompleted ? 1 : 0}}>
                     {letter}
                   </span>
                 )
@@ -152,57 +205,57 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(({ data, onError, onLetterF
               return (
                 <div 
                   key={index} 
-                  className={`
-                    flex flex-col items-center w-fit rounded-[2px]
+                  className={`phrase-cell
+                    ${isSelected && !isTipSelecting ? 'selected-glow' : ''}
                     ${shouldShowNumber && !(isHidden && !filledLetter) ? 'border border-[#7277ec] border-[1px] shadow-[0_0_0.5px_0.5px_rgba(0,0,0,0.1)]' : ''}
                     ${isHidden ? 'cursor-pointer' : ''}
-                    ${isSelected ? 'shadow-[inset_0_0_0_1px_#53e027]' : ''}
-                    ${isLetter && number > 0 && !shouldShowNumber ? 'bg-transparent' : ''}
+                    ${isLetter && number > 0 && !shouldShowNumber ? 'bg-transparent phrase-cell_done' : ''}
                     ${isLetter && number > 0 && shouldShowNumber ? 'bg-[#6C72F0] rounded-t-[2px]' : ''}
-                    ${isHidden && !filledLetter ? 'bg-[rgba(255,255,255,0.9)]' : ''}
+                    ${isHidden && !filledLetter ? 'phrase-cell_notFilled' : ''}
+                    ${numberCompleted.has(number) ? 'numberCompleted' : ''}
+                    ${isCorrect || (isCompletingNumber && correctLetters[index]) ? 'correct-letter' : ''} 
+                    ${isCompletingNumber ? 'complete-number' : ''} 
+                    ${wrongLetter ? 'wrong-letter' : ''} 
                   `}
                   onClick={() => handleLetterClick(index)}
                 >
                   <div 
-                    className={`
-                      w-fit min-w-[1.8225rem] h-[2.43rem] flex items-center justify-center text-[1.8225rem] rounded-[2px]
+                    className={`phrase-cell-inner
+                    
                       ${isLetter && number > 0 && !shouldShowNumber ? 'bg-[#6C72F0] border border-[#7277ec] border-[1px] shadow-[0_0_0.5px_0.5px_rgba(0,0,0,0.1)]' : ''}
                       ${isLetter && number > 0 ? 'text-white' : !isLetter ? 'text-white' : letter !== '.' ? 'text-[#4a2b2b]' : 'text-gray-600'}
-                      font-medium
-                      relative
-                      mb-0.5
-                      uppercase
                     `}
                   >
                     {!isHidden && (
-                      <span className={isCompletingNumber ? 'number-complete' : ''}>
+                      <span>
                         {letter}
                       </span>
                     )}
                     {isHidden && filledLetter && (
                       <span className={`
-                        ${isCorrect || (isCompletingNumber && correctLetters[index]) ? 'correct-letter' : ''} 
-                        ${isCompletingNumber ? 'number-complete' : ''}
+                        
                       `}>
                         {filledLetter.toUpperCase()}
                       </span>
                     )}
                     {isHidden && wrongLetter && (
-                      <span className="absolute inset-0 flex items-center justify-center text-red-600 shake">
+                      <span className="absolute inset-0 flex items-center justify-center shake">
                         {wrongLetter.toUpperCase()}
                       </span>
                     )}
                     {isLetter && shouldShowNumber && (
-                      <div className={`absolute bottom-0 left-0 w-full border-b ${isSelected ? 'border-[#3db710]' : isHidden && !filledLetter ? 'border-[#6C72F0]' : 'border-white'}`} />
+                      <div className={`absolute bottom-0 left-0 w-full border-b border-white`} />
                     )}
                   </div>
                   {isLetter && number > 0 && (
-                    <div className={`
-                      text-[1.0125rem] ${isSelected ? 'text-[#53e027]' : isHidden && !filledLetter ? 'text-[#6C72F0]' : 'text-white'}
-                      ${!shouldShowNumber ? 'opacity-0' : ''}
+                    <div className={`phrase-cell-number
+                      ${isSelected ? 'text-[#3db710]' : isHidden && !filledLetter ? 'text-[#6C72F0]' : 'text-white'}
                       transition-opacity duration-200
                     `}>
-                      {number}
+                      
+                      <span className={`${shouldShowNumber ? '' : 'opacity-0'}`}>
+                        {number}
+                      </span>
                     </div>
                   )}
                 </div>

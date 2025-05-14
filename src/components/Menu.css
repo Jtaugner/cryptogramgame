@@ -1,0 +1,264 @@
+/* Основные стили для меню */
+:root{
+  --textColor: #fdfdfd;
+}
+.menu-bg {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  background: url('../assets/bgSpring-big.png') center center no-repeat;
+  background-position: 10%;
+  background-size: cover;
+  font-weight: 500;
+}
+.menu__top{
+     padding: 15px;
+     display: flex;
+     justify-content: flex-start;
+}
+.menu-edit-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.2);
+  border-radius: 9999px;
+}
+.menu-modes {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 5rem;
+  margin-bottom: 1.5rem;
+}
+.menu-mode-card {
+  background: #bfc7f6cc;
+  border-radius: 1rem;
+  padding: 1rem;
+  width: 14rem;
+  box-shadow: 0 2px 8px #23244d22;
+  border: 2px solid #7e8be6;
+}
+.menu-mode-card.locked {
+  opacity: 0.6;
+  background: #bfc7f666;
+  position: relative;
+}
+.menu-mode-title {
+  color: #3b3e7e;
+  font-weight: bold;
+}
+.menu-mode-iq {
+  color: #53e027;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+.menu-mode-progress {
+  background: rgba(255,255,255,0.6);
+  border-radius: 0.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  padding: 0 0.5rem;
+  font-size: 0.875rem;
+  color: #3b3e7e;
+  margin-bottom: 0.5rem;
+}
+.menu-mode-play {
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 0.5rem 0;
+  border-radius: 0.75rem;
+  background: #6c72f0;
+  color: #fff;
+  font-weight: bold;
+  font-size: 1.125rem;
+  box-shadow: 0 2px 8px #23244d22;
+  transition: background 0.1s;
+}
+.menu-mode-play:active {
+  background: #4a4b8a;
+}
+.menu-mode-play[disabled], .menu-mode-card.locked .menu-mode-play {
+  background: #bfc7f6;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+
+
+/* Дневной результат */
+.menu-daily {
+  margin: 0 auto 1.5rem auto;
+  width: 90%;
+  max-width: 400px;
+  background: var(--notFilledColor);
+  border-radius: 20px;
+}
+.menu-daily-title-block {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 12px 12px 0 0;
+  background-color: var(--mainColor);
+  padding: 2px 10px;
+  color: var(--textColor);
+  font-size: 1.25rem;
+  margin-bottom: 8px;
+}
+.menu-daily-iq-number{
+     color: #ecea4d;
+}
+.menu-daily-iq {
+  color: var(--textColor);
+}
+.menu-daily-row-block{
+     display: flex;
+}
+.menu-daily-row {
+  display: flex;
+  align-items: center;
+  margin: 2px 10px;
+  padding-left: 5px;
+  background-color: #6669bd;
+  box-shadow: 0 1px 1px 0 rgba(10, 10, 10, 0.25);
+  border-radius: 5px;
+   
+}
+.menu-daily-value{
+     background-color: #32bc49;
+     height: 100%;
+     padding: px 0;
+     width: 25%;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     color: var(--textColor);
+     margin-left: auto;
+     border-radius: 0 5px 5px 0;
+}
+.menu-daily-value-red {
+     background-color: #f34662;
+}
+.menu-daily-row-block-left{
+     display: flex;
+     flex-direction: column;
+     gap: 0.25rem;
+     flex: 1 1 0%;
+     margin: 23px 0;
+}
+.menu-daily-bottom{
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+     background-color: #2e2f4d;
+     color: #777785;
+     border-radius: 0 0 12px 12px;
+     font-size: 0.8rem;
+     padding: 3px 10px;
+     box-shadow: 0 2px 0px 0px rgba(0, 0, 0, 0.3);
+}
+.menu-daily-bottom .menu-daily-iq{
+     color: #777785;
+}
+.menu-daily-label {
+color: var(--textColor);
+  font-size: 1rem;
+}
+.menu-daily-broccoli {
+  width: 30%;
+  background: url('../assets/Sticker_Angry.webm') center center no-repeat;
+  background-size: 100%;
+  margin-right: 4px;
+}
+.menu-daily-arrow {
+  width: 20.5px;
+  height: 10px;
+  background: url('../assets/arrow.png') center center no-repeat;
+  background-size: 100%;
+  margin: 0 0.25rem;
+}
+.menu-daily-nextiq {
+  color: #53e027;
+  font-weight: bold;
+}
+.menu-continue {
+  display: flex;
+  justify-content: center;
+  margin-top: 3rem;
+}
+.menu-continue-btn {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+    width: 90%;
+  max-width: 400px;
+  padding: 7px 0;
+  background: #35b24a;
+  color: var(--textColor);
+  font-weight: bold;
+  font-size: 1.5rem;
+  border-radius: 7px;
+
+  box-shadow: 0 1px 0px 0 rgba(10, 10, 10, 0.4),inset 0px -2px 0px 0px rgba(10,10,10,0.4);
+   
+}
+.menu-continue-btn__level {
+  font-size: 1.1rem;
+}
+.menu-continue-btn:active {
+  background: #3db710;
+}
+.menu-bottom {
+  position: relative;
+  width: 100%;
+  background: #23244d;
+  display: flex;
+  justify-content: space-around;
+  padding: 1rem 0;
+  height: 5.5rem;
+}
+.menu-bottom-wrap{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+
+  position: absolute;
+  top: -10px;
+  left: 0;
+}
+.menu-bottom-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+}
+.menu-bottom-icon {
+  width: 4rem;
+  height: 4rem;
+  background-color: #6c72f0;
+  box-shadow: 0 0px 1px 1px rgba(10, 10, 10, 0.7),inset 0px -2px 0px 0px rgba(10,10,10,0.4);
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.25rem;
+}
+.menu-bottom-label {
+  font-size: 0.9rem;
+  color: var(--textColor);
+} 
+.icon-shop {
+  background: url('../assets/shop.svg') center center no-repeat, #6c72f0;
+  background-size: 60%;
+}
+.video-bg{
+  background-color: transparent;
+}

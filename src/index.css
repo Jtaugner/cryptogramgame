@@ -1,6 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+:root{
+  --notFilledColor: rgba(255,255,255,0.9);
+  --cellBorderSize: 1px;
+  --mainColor: #6C72F0;
+  --rightLetterColor: #51e026;
+  --wrongLetterColor: #bb0000;
+}
 
 @font-face {
   font-family: 'SF Pro Display';
@@ -51,42 +58,30 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-@keyframes shake {
-  0%, 100% { transform: rotate(0deg); }
-  10%, 30%, 50%, 70%, 90% { transform: rotate(-7.5deg); }
-  20%, 40%, 60%, 80% { transform: rotate(7.5deg); }
-}
 
-.shake {
-  animation: shake 1.5s ease-in-out;
-  transform-origin: center center;
+html, body{
+  -webkit-tap-highlight-color: transparent;
+  -ms-user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  user-select: none;
+  font-family: 'SF Pro Display', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  overflow: hidden;
 }
-
-@keyframes correctLetter {
-  0%, 80% { color: #16a34a; }
-  100% { color: #4a2b2b; }
+body, #root{
+  background: url('assets/bgSpring-big.png') center center no-repeat;
+  background-position: 10%;
+  background-size: cover;
+  height: 100vh;
+  width: 100vw;
 }
-
-.correct-letter {
-  animation: correctLetter 2s ease-in-out forwards;
-}
-
-@keyframes numberComplete {
-  0% { transform: translateY(0) scale(1); }
-  40% { transform: translateY(-10px) scale(1.5); color: #16a34a; }
-  80% { transform: translateY(0) scale(1); color: #16a34a; }
-  100% { transform: translateY(0) scale(1); color: #4a2b2b; }
-}
-
-.number-complete {
-  animation: numberComplete 2s ease-in-out forwards;
-}
-
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  @apply select-none;
 }
 
 button {
@@ -97,4 +92,12 @@ button {
 
 button:disabled {
   cursor: default;
+}
+
+.menu-settings-btn {
+  width: 40px;
+  height: 40px;
+  background: url('assets/settings.png') center center no-repeat;
+  background-size: 90%;
+  cursor: pointer;
 }

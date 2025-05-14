@@ -1,0 +1,17 @@
+.progress-circle{
+     position: relative;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+}
+.progress-circle .mistakeCircle{
+     position: absolute;
+     left: 50%;
+     top: 50%;
+     transform: translate(-50%, -50%);
+     margin: 0;
+     width: 60%;
+     height: 60%;
+     animation: none;
+     background-size: 60%;
+}

@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
 import Keyboard from './Keyboard'
 import Phrase from './Phrase'
-import bgSpring from '../assets/bgSpring-big.png'
+import './Game.css'
+import ProgressCircle from '../ProgressCircle'
 
 interface LevelData {
   text: string
@@ -9,11 +10,30 @@ interface LevelData {
   name: string
   desc: string
 }
+interface GameProps {
+  onMenu: () => void
+  userData: {
+    iq: number
+    lastLevel: number
+    lastLevelData: object
+    tips: number
+  }
+  setUserData: (userData: {
+    iq: number
+    lastLevel: number
+    lastLevelData: object
+    tips: number
+  }) => void
+}
 
-const Game = () => {
+const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData }) => { 
   const [lives, setLives] = useState(3)
   const [level, setLevel] = useState(309)
-  const [errors, setErrors] = useState(0)
+  const [isLevelCompleted, setIsLevelCompleted] = useState(false)
+  const [isTipSelecting, setIsTipSelecting] = useState(false)
+  const [errors, setErrors] = useState(2)
+  const [blockedTime, setBlockedTime] = useState(0)
+  const [blockedTimeTimer, setBlockedTimeTimer] = useState(0)
   const [phraseData, setPhraseData] = useState<{ 
     text: string
     numbers: number[]
@@ -25,16 +45,51 @@ const Game = () => {
   const phraseRef = useRef<{ handleKeyPress: (key: string) => void }>(null)
 
   // Тестовые данные для первого уровня
-  const levelData: LevelData = {
-    text: 'Я ОБО ВСЕМ ПОДУМАЮ ПОТОМ, КОГДА НАЙДУ В СЕБЕ СИЛЫ ЭТО ВЫДЕРЖАТЬ.',
-    hiddenIndexes: [2, 6, 13, 20, 26, 33, 38, 45, 50, 56],
-    name: 'Неизвестный автор',
-    desc: 'Сильные слова о внутренней борьбе'
+  const levelData: LevelData =   {
+    text: 'НЕТ НИЧЕГО СИЛЬНЕЕ ЭТИХ ДВУХ ВОИНСТВУЮЩИХ СИЛ — ВРЕМЕНИ И ТЕРПЕНИЯ.',
+    hiddenIndexes: [2, 8, 15, 23, 32, 39, 48, 57],
+    name: 'Лев Толстой',
+    desc: 'Русский писатель, 1869 год'
   };
-
+  const endBlockTime = () => {
+    setBlockedTime(0)
+    setBlockedTimeTimer(0)
+    setErrors(0)
+  }
+  const addErrors = () => {
+    setErrors(prev => prev + 1)
+    if(errors >= 2){
+      console.log('blockedTime')
+      let blockedTime = 10000;
+      setBlockedTime(blockedTime)
+      setBlockedTimeTimer(blockedTime / 1000);
+    }
+  }
+  const switchTipSelecting = () => {
+    if(!isTipSelecting && userData.tips > 0){
+      setIsTipSelecting(true);
+    }else{
+      setIsTipSelecting(false);
+    }
+  }
+  const useTip = () => {
+    if(userData.tips > 0){
+      setUserData({...userData, tips: userData.tips - 1})
+      setIsTipSelecting(false);
+    }
+  }
   const handleCompleteNumber = (letter: string) => {
     setInactiveKeys(prev => new Set([...prev, letter.toLowerCase()]))
+
   }
+
+  useEffect(() => {
+    if(phraseData && Object.keys(phraseData.filledLetters).length === phraseData.hiddenIndexes.length){
+      setTimeout(()=>{
+        setIsLevelCompleted(true)
+      }, 4000);
+    }
+  }, [phraseData])
 
   const generateNumbersForLetters = (text: string) => {
     // Преобразуем текст в верхний регистр
@@ -169,79 +224,99 @@ const Game = () => {
     setPhraseData(initialPhraseData)
   }, [])
 
+    const guessedPercent = phraseData
+    ? Math.round(
+        (Object.keys(phraseData.filledLetters).length / phraseData.hiddenIndexes.length) * 100
+      )
+    : 0
+
   if (!phraseData) return null
 
   return (
-    <div className="h-screen flex flex-col bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url(${bgSpring})` }}>
+    <div className="game-bg">
+      {isTipSelecting && <div className="game-bg-blackout"></div>}
+      {isLevelCompleted && <div className="game-bg-blur"></div>}
       {/* Header */}
-      <div className="sticky top-0 z-10 w-full bg-transparent">
-        <div className="flex justify-between items-start p-4">
-          <div className="flex items-center">
-            <div className="relative">
-              <div className="bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center">
-                {lives}
+      <div className={`game-header ${isLevelCompleted ? 'game-header_hidden' : ''}`}>
+        <div className="game-header-wrap">
+          <div className="menu-settings-btn" onClick={onMenu} style={{opacity: isTipSelecting ? 0 : 1}}></div>
+          <div className='game-header_sameSize' style={{opacity: isTipSelecting ? 0 : 1}}>{guessedPercent}%</div>
+          <div className="text-center" style={{opacity: isTipSelecting ? 0 : 1}}>
+              <div>Ошибки</div>
+              <div className="flex mt-1 justify-center">
+                {[...Array(3)].map((_, i) => (
+                  <div 
+                    key={i} 
+                    className={`mistakeCircle ${i < errors ? 'mistakeCircle_got' : ''}`} 
+                  >
+                  </div>
+                ))}
               </div>
-              <div className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                +
-              </div>
-            </div>
-          </div>
-          <div className="text-center">
-            <div className="text-gray-400 text-sm">Ошибки</div>
-            <div className="flex gap-1 mt-1">
-              {[...Array(3)].map((_, i) => (
-                <div 
-                  key={i} 
-                  className={`w-2 h-2 rounded-full ${i < errors ? 'bg-red-500' : 'bg-gray-300'}`} 
-                />
-              ))}
-            </div>
-          </div>
-          <div className="text-gray-500 text-sm">
-            Уровень {level}
-          </div>
+           </div>
+           <div className='game-header_sameSize' style={{opacity: isTipSelecting ? 0 : 1}}>Ур. {level}</div>
+           <div className={`menu-tips-btn ${isTipSelecting ? 'menu-tips-btn_close' : ''}`} onClick={switchTipSelecting}>
+              <div className="menu-tips-btn__count" style={{opacity: isTipSelecting ? 0 : 1}}>{userData.tips}</div>
+           </div>
         </div>
       </div>
 
-      {/* Settings and Info buttons */}
-      <button className="absolute top-4 left-4 text-gray-500">
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-        </svg>
-      </button>
 
-      <button className="absolute top-4 right-4 text-gray-500">
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      </button>
 
       {/* Main content (Phrase + Hint) */}
-      <div className="flex-1 w-full flex flex-col items-center overflow-y-auto">
+      <div className="game-main">
         <Phrase 
           ref={phraseRef}
           data={phraseData}
-          onError={() => setErrors(prev => prev + 1)}
+          onError={addErrors}
           onLetterFill={handleLetterFill}
           onCompleteNumber={handleCompleteNumber}
+          blockedTime={blockedTime}
+          isTipSelecting={isTipSelecting}
+          useTip={useTip}
+          isLevelCompleted={isLevelCompleted}
         />
-        {/* Hint button */}
-        <div className="absolute bottom-24 right-4">
-          <button className="bg-blue-500 text-white rounded-lg p-2">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-            </svg>
-          </button>
-        </div>
+        {isLevelCompleted && (
+          <div className="game-main_author">
+            <div className="game-main_author-name">{levelData.name}</div>
+            <div className="game-main_author-desc">{levelData.desc}</div>
+          </div>
+        )}
+        {isLevelCompleted && (
+          <div className="nextLevelButton">
+            <div className="nextLevelButton-text">ДАЛЕЕ</div>
+            <div className="nextLevelButton-level">Уровень {level + 1}</div>
+          </div>
+        )}
       </div>
 
       {/* Keyboard */}
-      <div className="w-full max-w-2xl mx-auto bg-[#313477] sticky bottom-0 left-0 p-[10px_6px]">
+      <div className={`game-keyboard ${isLevelCompleted ? 'game-keyboard_hidden' : ''}`}>
         <Keyboard 
           onKeyPress={(key) => phraseRef.current?.handleKeyPress(key)} 
           inactiveKeys={inactiveKeys}
         />
+        {blockedTime > 0 && (
+          <div className="keyboard-blocked">
+            <ProgressCircle
+             duration={blockedTime}
+             size={70}
+             strokeWidth={1}
+             endBlockTime={endBlockTime}
+             blockedTimeTimer={blockedTimeTimer}
+             setBlockedTimeTimer={setBlockedTimeTimer}
+            />
+
+            <div className="keyboard-blocked-text">
+              Вы сделали 3 ошибки, поэтому клавиатура заблокирована на <span className="keyboard-blocked-text__time">{blockedTimeTimer} секунд
+              </span>
+            </div>
+          </div>
+        )}
+        {isTipSelecting && (
+          <div className="keyboard-tip-text">
+            Выберите ячейку, которую вы хотите открыть
+          </div>
+        )}
       </div>
     </div>
   )
