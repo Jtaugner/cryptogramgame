@@ -1,0 +1,65 @@
+.modal-rating .modal-icon{
+  background: url('../../assets/rating.svg') center center no-repeat;
+  background-size: 100%;
+}
+.rating-row-left{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.rating-row{
+  background-color: #e8e9ff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 6px;
+  border-radius: 5px;
+  margin: 5px;
+  color: var(--modalTextColor);
+}
+.rating-row-icon{
+  width: 44px;
+  height: 44px;
+  background-color: #6c72f0;
+  border-radius: 50%;
+  border: 1px solid #fff;
+  flex: none;
+  margin: 5px 6px 5px 0;
+}
+.rating-row-name{
+  font-size: 1.1rem;
+  width: 180px;
+  max-width: 180px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.rating-row-score-value{
+  font-size: 1.2rem;
+}
+.rating-row-score{
+  font-size: 0.9rem;
+}
+.rating-row-rank{
+  width: 35px;
+  text-align: center;
+}
+.rating-row-rank_1, .rating-row-rank_2, .rating-row-rank_3{
+  height: 45px;
+  align-self: flex-start;
+}
+.rating-row-rank_1{
+  background: url('../../assets/rating/place1.png') center 0 no-repeat;
+  background-size: 100%;
+}
+.rating-row-rank_2{
+  background: url('../../assets/rating/place2.png') center 0 no-repeat;
+  background-size: 100%;
+}
+.rating-row-rank_3{
+  background: url('../../assets/rating/place3.png') center 0 no-repeat;
+  background-size: 100%;
+}
+.rating-row-player{
+  background-color: #e7f5ee;
+}

@@ -7,6 +7,7 @@
   --mainColor: #6C72F0;
   --rightLetterColor: #51e026;
   --wrongLetterColor: #bb0000;
+  --modalTextColor: #5d5e80;
 }
 
 @font-face {
@@ -94,10 +95,23 @@ button:disabled {
   cursor: default;
 }
 
-.menu-settings-btn {
+.menu-settings-btn, .menu-home-btn{
   width: 40px;
   height: 40px;
   background: url('assets/settings.png') center center no-repeat;
   background-size: 90%;
+  cursor: pointer;
+}
+.menu-home-btn{
+  background: url('assets/house.png') center center no-repeat;
+  background-size: 90%;
+}
+.blackout{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
   cursor: pointer;
 }

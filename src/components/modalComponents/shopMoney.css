@@ -1,0 +1,31 @@
+.modal-shop-money .modal-icon{
+  background: url('../../assets/shop/pig.svg') center center no-repeat;
+  background-size: 100%;
+}
+.modal-shop-row-icon-coin{
+  height: 60px;
+  width: 90px;
+} 
+.modal-shop-row-icon-coin_0{
+  background: url('../../assets/shop/coin1.png') center center no-repeat;
+  background-size: 55%;
+}
+.modal-shop-row-icon-coin_1{
+  background: url('../../assets/shop/coin2.png') center center no-repeat;
+  background-size: 100%;
+}
+.modal-shop-row-icon-coin_2{
+  background: url('../../assets/shop/coin3.png') center center no-repeat;
+  background-size: 100%;
+}
+.modal-shop-row-icon-coin_ad{
+  background: url('../../assets/shop/adv.png') center center no-repeat;
+  background-size: contain;
+}
+.modal-shop-row-name-count{
+  font-weight: bold;
+}
+.modal-shop-money .modal-shop-row-price{
+  background-color: var(--mainColor);
+  color: #ffffff;
+}

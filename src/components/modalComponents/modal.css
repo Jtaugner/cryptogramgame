@@ -1,0 +1,76 @@
+.modal-bg {
+     position: fixed;
+     top: 0; left: 0; right: 0; bottom: 0;
+     z-index: 1000;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+   }
+   @keyframes modalFadeIn {
+    from { opacity: 0; transform: scale(0.97); }
+    to { opacity: 1; transform: scale(1); }
+  }
+.modal {
+     background: #ffffff;
+     border-radius: 18px;
+     box-shadow: 0 8px 32px rgba(30,34,60,0.18);
+     min-width: 340px;
+     max-width: 380px;
+     width: 90vw;
+     padding: 0 0 24px 0;
+     position: relative;
+     font-family: 'SF Pro Display', Arial, sans-serif;
+     animation: modalFadeIn 0.2s;
+     border-radius: 20px 20px 6px 6px;
+     font-weight: 500;
+}
+@media (max-width: 480px) {
+    .modal {
+        min-width: 0;
+        width: 96vw;
+        border-radius: 20px 20px 0 0;
+        height: 90%;
+    }
+    .modal-bg{
+        align-items: flex-end;
+    }
+   } 
+.modal-wrapper{
+     height: 100%;
+     overflow-y: auto;
+}
+.modal-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--mainColor);
+  color: #fff;
+  font-size: 1.35rem;
+  font-weight: bold;
+  border-radius: 6px 6px 0 0;
+  text-align: center;
+  padding: 4px 8px;
+  letter-spacing: 1px;
+}
+.modal-section {
+  padding: 0 8px;
+  margin-top: 18px;
+}
+.modal-section-title {
+  color: #5d5e80;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 3px;
+}
+.modal-icon{
+  cursor: pointer;
+  width: 27px;
+  height: 27px;
+}
+.modal-close {
+  background: url('../../assets/close.svg') center center no-repeat;
+  background-size: 100%;
+  cursor: pointer;
+  width: 21px;
+  height: 21px;
+}

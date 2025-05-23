@@ -1,0 +1,54 @@
+.modal-statistics .modal-icon{
+  background: url('../../assets/stats/stat.svg') center center no-repeat;
+  background-size: 100%;
+}
+
+.statistics-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #e8e9ff;
+  border-radius: 2px;
+  margin-bottom: 6px;
+  padding: 2px 14px 2px 0;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--modalTextColor);
+  min-height: 36px;
+}
+.statistics-icon {
+  width: 30px;
+  height: 30px;
+  margin: 0 10px 0 4px;
+}
+.statistics-value {
+  margin-left: auto;
+}
+.statistics-icon_iq{
+  background: url('../../assets/stats/iq.png') no-repeat center center;
+  background-size: contain;
+}
+.statistics-icon_levels{
+  background: url('../../assets/stats/levels.png') no-repeat center center;
+  background-size: contain;
+}
+.statistics-icon_letters{
+  background: url('../../assets/stats/letters.png') no-repeat center center;
+  background-size: 45%;
+}
+.statistics-icon_words{
+  background: url('../../assets/stats/words.png') no-repeat center center;
+  background-size: 90%;
+}
+.statistics-icon_noMistakes{
+  background: url('../../assets/stats/noMistakes.png') no-repeat center center;
+  background-size: 70%;
+}   
+.statistics-icon_mistakes{
+  background: url('../../assets/stats/mistakes.png') no-repeat center center;
+  background-size: 70%;
+}
+.statistics-icon_time{
+  background: url('../../assets/stats/time.png') no-repeat center center;
+  background-size: 70%;
+}

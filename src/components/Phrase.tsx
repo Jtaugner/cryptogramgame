@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useImperativeHandle } from 'react'
+import React, { forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
 import './Phrase.css'
 
 interface PhraseProps {
@@ -16,13 +16,31 @@ interface PhraseProps {
   isTipSelecting: boolean
   useTip: () => void
   isLevelCompleted: boolean
+  level: number
 }
 
 interface PhraseHandle {
   handleKeyPress: (key: string) => void
 }
 
-const Phrase = forwardRef<PhraseHandle, PhraseProps>(({ data, onError, onLetterFill, onCompleteNumber, blockedTime, isTipSelecting, useTip, isLevelCompleted }, ref) => {
+const emojis = [
+  '😀','😃','😄','😁','😆','😅','😂','🤣','😊','😇',
+  '🙂','🙃','😉','😌','😍','😘','😗','😙','😚','😋',
+  '😜','😝','😛','🤑','🤗','🤭','🤫','🤔','🤐','🤨',
+  '😐','😑','😶','😏','😒','🙄','😬','🤥','😌','😔',
+  '😪','🤤','😴','😷','🤒','🤕','🤢','🤮','🥵','🥶',
+  '😵','🤯','🤠','🥳','😎','🤓','🧐','😕','😟','🙁',
+  '☹️','😮','😯','😲','😳','🥺','😦','😧','😨','😰',
+  '🐶','🐱','🐭','🐹','🐰','🦊','🐻','🐼','🐨','🐯',
+  '🦁','🐮','🐷','🐸','🐵','🙈','🙉','🙊','🐒','🐔',
+  '🍎','🍌','🍇','🍓','🍉','🍑','🍍','🥝','🥥','🥑'
+];
+
+
+const Phrase = forwardRef<PhraseHandle, PhraseProps>(
+  ({ data, onError, onLetterFill, onCompleteNumber,
+     blockedTime, isTipSelecting, useTip, isLevelCompleted, level }, ref) => {
+      
   const letters = data.text.split('')
   const [selectedIndex, setSelectedIndex] = React.useState<number | null>(() => {
     return data.hiddenIndexes[0] ?? null
@@ -33,6 +51,22 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(({ data, onError, onLetterF
   const [hidingNumbers, setHidingNumbers] = React.useState<Set<number>>(() => new Set(data.completedNumbers))
   const [numberCompleted, setNumberCompleted] = React.useState<Set<number>>(new Set())
 
+
+
+  const updatePhrase = (data: {
+    text: string
+    numbers: number[]
+    hiddenIndexes: number[]
+    filledLetters: Record<number, string>
+    completedNumbers: Set<number>
+  }) => {
+    setSelectedIndex(data.hiddenIndexes[0] ?? null);
+    setCorrectLetters({});
+    setWrongLetters({});
+    setCompletingNumbers(new Set());
+    setHidingNumbers(new Set(data.completedNumbers));
+    setNumberCompleted(new Set());
+  }
   // Буквы, разрешённые для игрового ввода
   const allowedKeys = [
     'Й','Ц','У','К','Е','Н','Г','Ш','Щ','З','Х',
@@ -117,6 +151,7 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(({ data, onError, onLetterF
       let nextEmptyIndex = data.hiddenIndexes.find(
         index => index > selectedIndex && !newFilledLetters[index]
       )
+      console.log(data.hiddenIndexes, nextEmptyIndex, data.text[nextEmptyIndex]);
       
       // Если не нашли после текущей позиции, ищем с начала фразы
       if (nextEmptyIndex === undefined) {
@@ -159,8 +194,16 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(({ data, onError, onLetterF
   }, [wrongLetters, handleKeyPress])
 
   useImperativeHandle(ref, () => ({
-    handleKeyPress
+    handleKeyPress,
+    updatePhrase
   }))
+
+  useEffect(() => {
+    try{
+      let scrollEl = document.querySelector('.selected-glow');
+      if(scrollEl) scrollEl.scrollIntoView({behavior: 'smooth', block: "center"});
+    }catch(ignored){}
+  }, [selectedIndex])
 
   return (
     <div className={`phrase-row ${isLevelCompleted ? 'levelCompleted' : ''}`}>

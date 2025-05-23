@@ -14,9 +14,50 @@
   font-weight: 500;
 }
 .menu__top{
-     padding: 15px;
-     display: flex;
-     justify-content: flex-start;
+  position: relative;
+  width: 100%;
+  padding: 15px;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+}
+.menu__top .moneyCount{
+  position: absolute;
+  transform: none;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  cursor: pointer;
+}
+.noAds{
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  font-size: 1rem;
+
+  color: #dddce1;
+  text-shadow: 0px 2px 0px rgba(10, 10, 10, 0.49);
+}
+.noAds .switch{
+  text-shadow: none;
+  margin-left: 3px;
+  width: 38px;
+  height: 18px;
+}
+.noAds .switch .slider{
+  background-color: #dddce1;
+  font-size: 8px;
+}
+.noAds .label.on{
+  color: #7f80c7;
+  opacity: 1 !important;
+}
+.noAds .switch .circle{
+  width: 10px;
+  height: 10px;
+  background-color: var(--mainColor) !important;
+  transform: translateX(19px) !important;
 }
 .menu-edit-btn {
   position: absolute;
@@ -101,6 +142,10 @@
   background: var(--notFilledColor);
   border-radius: 20px;
 }
+.menu-daily-title{
+  text-transform: uppercase;
+  font-size: 1.1rem;
+}
 .menu-daily-title-block {
   display: flex;
   justify-content: space-between;
@@ -134,7 +179,6 @@
 .menu-daily-value{
      background-color: #32bc49;
      height: 100%;
-     padding: px 0;
      width: 25%;
      display: flex;
      align-items: center;
@@ -142,6 +186,7 @@
      color: var(--textColor);
      margin-left: auto;
      border-radius: 0 5px 5px 0;
+     padding: 1px 0;
 }
 .menu-daily-value-red {
      background-color: #f34662;
@@ -158,7 +203,7 @@
      justify-content: space-between;
      align-items: center;
      background-color: #2e2f4d;
-     color: #777785;
+     color: #8a8a98;
      border-radius: 0 0 12px 12px;
      font-size: 0.8rem;
      padding: 3px 10px;
@@ -249,14 +294,21 @@ color: var(--textColor);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 0.25rem;
 }
 .menu-bottom-label {
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: var(--textColor);
 } 
 .icon-shop {
   background: url('../assets/shop.svg') center center no-repeat, #6c72f0;
+  background-size: 60%;
+}
+.icon-stat {
+  background: url('../assets/stats/stat.svg') center center no-repeat, #6c72f0;
+  background-size: 55%;
+}
+.icon-rating {
+  background: url('../assets/rating.svg') center center no-repeat, #6c72f0;
   background-size: 60%;
 }
 .video-bg{

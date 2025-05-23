@@ -14,3 +14,8 @@
   .fade-exit-active{
      transition: opacity 200ms;
   }
+.game-header .fade-enter-active,
+.game-header .fade-exit-active{
+   transition: opacity 1000ms;
+}
+

@@ -3,6 +3,14 @@ import Keyboard from './Keyboard'
 import Phrase from './Phrase'
 import './Game.css'
 import ProgressCircle from '../ProgressCircle'
+import { levels } from '../levels'
+import { usePageActiveTimer } from './PageTimer'
+import { UserDataProps } from '../App'
+import { SwitchTransition, CSSTransition } from 'react-transition-group';
+import Settings from './modalComponents/Settings'
+import Lottie from 'react-lottie-player'
+import animationData from '../Hi/Nerd.json'
+import Tip from './modalComponents/Tip'
 
 interface LevelData {
   text: string
@@ -12,26 +20,28 @@ interface LevelData {
 }
 interface GameProps {
   onMenu: () => void
-  userData: {
-    iq: number
-    lastLevel: number
-    lastLevelData: object
-    tips: number
+  userData: UserDataProps
+  setUserData: (userData: UserDataProps) => void
+}
+function formatTime(seconds: number) {
+  let mins = Math.floor(seconds / 60).toString();
+  if(mins.length === 1){
+    mins = '0' + mins;
   }
-  setUserData: (userData: {
-    iq: number
-    lastLevel: number
-    lastLevelData: object
-    tips: number
-  }) => void
+  let secs = (seconds % 60).toString();
+  if(secs.length === 1){
+    secs = '0' + secs;
+  }
+  return `${mins}:${secs}`;
 }
 
 const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData }) => { 
-  const [lives, setLives] = useState(3)
-  const [level, setLevel] = useState(309)
+  const [level, setLevel] = useState(userData.lastLevel)
   const [isLevelCompleted, setIsLevelCompleted] = useState(false)
+  const [isShowSettings, setIsShowSettings] = useState(false)
   const [isTipSelecting, setIsTipSelecting] = useState(false)
-  const [errors, setErrors] = useState(2)
+  const [showPlayersPassedLevel, setShowPlayersPassedLevel] = useState(false)
+  const [errors, setErrors] = useState(0)
   const [blockedTime, setBlockedTime] = useState(0)
   const [blockedTimeTimer, setBlockedTimeTimer] = useState(0)
   const [phraseData, setPhraseData] = useState<{ 
@@ -42,15 +52,18 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData }) => {
     completedNumbers: Set<number>
   }>()
   const [inactiveKeys, setInactiveKeys] = useState<Set<string>>(new Set())
-  const phraseRef = useRef<{ handleKeyPress: (key: string) => void }>(null)
+  const [levelData, setLevelData] = useState<LevelData>(levels[level]);
+  const phraseRef = useRef<{ handleKeyPress: (key: string) => void, updatePhrase: (data: {
+    text: string
+    numbers: number[]
+    hiddenIndexes: number[]
+    filledLetters: Record<number, string>
+    completedNumbers: Set<number>
+  }) => void }>(null)
 
-  // Тестовые данные для первого уровня
-  const levelData: LevelData =   {
-    text: 'НЕТ НИЧЕГО СИЛЬНЕЕ ЭТИХ ДВУХ ВОИНСТВУЮЩИХ СИЛ — ВРЕМЕНИ И ТЕРПЕНИЯ.',
-    hiddenIndexes: [2, 8, 15, 23, 32, 39, 48, 57],
-    name: 'Лев Толстой',
-    desc: 'Русский писатель, 1869 год'
-  };
+  //Время
+  const { getSeconds, reset } = usePageActiveTimer()
+  
   const endBlockTime = () => {
     setBlockedTime(0)
     setBlockedTimeTimer(0)
@@ -85,11 +98,24 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData }) => {
 
   useEffect(() => {
     if(phraseData && Object.keys(phraseData.filledLetters).length === phraseData.hiddenIndexes.length){
+      setUserData({...userData, lastLevel: level + 1});
       setTimeout(()=>{
-        setIsLevelCompleted(true)
-      }, 4000);
+        try{
+          let scrollEl = document.querySelector('.phrase-row');
+          if(scrollEl) scrollEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }catch(ignored){}
+        setTimeout(()=>{
+          setIsLevelCompleted(true)
+        }, 500)
+      }, 3300);
     }
   }, [phraseData])
+
+  const getNextLevel = () => {
+    setLevel(level + 1)
+    setLevelData(levels[level + 1]);
+    reset();
+  }
 
   const generateNumbersForLetters = (text: string) => {
     // Преобразуем текст в верхний регистр
@@ -100,7 +126,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData }) => {
 
     text.split('').forEach((char) => {
       // Пропускаем знаки препинания и пробелы
-      if (/[^А-ЯЁ]/.test(char)) {
+      if (/[^А-Я]/.test(char)) {
         numbers.push(0) // 0 для не-букв
         return
       }
@@ -172,8 +198,13 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData }) => {
     })
     setPhraseData(prev => prev ? { ...prev, filledLetters, completedNumbers } : prev)
   }
-
-  useEffect(() => {
+  const generateLevel = () => {
+    console.log("generateLevel");
+    setIsLevelCompleted(false)
+    setErrors(0)
+    setIsTipSelecting(false)
+    setBlockedTime(0)
+    setBlockedTimeTimer(0)
     // Генерируем числа при первой загрузке уровня
     const text = levelData.text.toUpperCase()
     const numbers = generateNumbersForLetters(text)
@@ -222,7 +253,19 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData }) => {
 
     setInactiveKeys(newInactiveKeys)
     setPhraseData(initialPhraseData)
-  }, [])
+    console.log(phraseRef);
+    console.log(phraseRef.current);
+    phraseRef.current?.updatePhrase(initialPhraseData);
+  }
+  //Вызываем перегенерацию уровня при первой загрузке и при смене уровня
+
+  useEffect(() => {
+    generateLevel()
+    setShowPlayersPassedLevel(true);
+    setTimeout(() => {
+      setShowPlayersPassedLevel(false);
+    }, 5000);
+  }, [level])
 
     const guessedPercent = phraseData
     ? Math.round(
@@ -233,31 +276,58 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData }) => {
   if (!phraseData) return null
 
   return (
-    <div className="game-bg">
-      {isTipSelecting && <div className="game-bg-blackout"></div>}
+    <div className={`game-bg ${isLevelCompleted ? 'game-bg_levelCompleted' : ''}`}>
+      {isTipSelecting  && <div className="game-bg-blackout"></div>}
+      {showPlayersPassedLevel && <div className="game-bg-blackout game-bg-blackout_playersPassed" onClick={() => setShowPlayersPassedLevel(false)}></div>}
       {isLevelCompleted && <div className="game-bg-blur"></div>}
       {/* Header */}
-      <div className={`game-header ${isLevelCompleted ? 'game-header_hidden' : ''}`}>
-        <div className="game-header-wrap">
-          <div className="menu-settings-btn" onClick={onMenu} style={{opacity: isTipSelecting ? 0 : 1}}></div>
-          <div className='game-header_sameSize' style={{opacity: isTipSelecting ? 0 : 1}}>{guessedPercent}%</div>
-          <div className="text-center" style={{opacity: isTipSelecting ? 0 : 1}}>
-              <div>Ошибки</div>
-              <div className="flex mt-1 justify-center">
-                {[...Array(3)].map((_, i) => (
-                  <div 
-                    key={i} 
-                    className={`mistakeCircle ${i < errors ? 'mistakeCircle_got' : ''}`} 
-                  >
-                  </div>
-                ))}
-              </div>
-           </div>
-           <div className='game-header_sameSize' style={{opacity: isTipSelecting ? 0 : 1}}>Ур. {level}</div>
-           <div className={`menu-tips-btn ${isTipSelecting ? 'menu-tips-btn_close' : ''}`} onClick={switchTipSelecting}>
-              <div className="menu-tips-btn__count" style={{opacity: isTipSelecting ? 0 : 1}}>{userData.tips}</div>
-           </div>
+      <div className={`game-header`}>
+      <SwitchTransition mode="out-in">
+      <CSSTransition
+        key={isLevelCompleted ? 'game-header_big' : 'game-header_small'}
+        timeout={1000}
+        classNames="fade"
+      >
+        <div>
+        {isLevelCompleted ?
+                <div className="game-header-wrap">
+                  <div className="menu-home-btn" onClick={onMenu}></div>
+                  <div className="game-header-gameName">
+                    <div className="quote-icon"></div>
+                    <span className='game-header-gameName_text'>Цитаты</span>
+                 </div>
+                 <div className='game-header-time'>
+                  <div className="game-header-time-icon"></div>
+                  <span className='game-header-time_text'>{formatTime(getSeconds())}</span>
+                 </div>
+                </div>
+                 :
+                <div className="game-header-wrap">
+                <div className="menu-settings-btn" onClick={() => setIsShowSettings(true)} style={{opacity: isTipSelecting ? 0 : 1}}></div>
+                <div className='game-header_sameSize' style={{opacity: isTipSelecting ? 0 : 1}} onClick={getSeconds}> {guessedPercent}%</div>
+                <div className="text-center" style={{opacity: isTipSelecting ? 0 : 1}}>
+                    <div>Ошибки</div>
+                    <div className="flex mt-1 justify-center">
+                      {[...Array(3)].map((_, i) => (
+                        <div 
+                          key={i} 
+                          className={`mistakeCircle ${i < errors ? 'mistakeCircle_got' : ''}`} 
+                        >
+                        </div>
+                      ))}
+                    </div>
+                 </div>
+                 <div className='game-header_sameSize' style={{opacity: isTipSelecting ? 0 : 1}}>Ур. {level+1}</div>
+                 <div className={`menu-tips-btn ${isTipSelecting ? 'menu-tips-btn_close' : ''}`} onClick={switchTipSelecting}>
+                    <div className="menu-tips-btn__count" style={{opacity: isTipSelecting ? 0 : 1}}>{userData.tips}</div>
+                 </div>
+              </div>}
         </div>
+        
+      </CSSTransition>
+    </SwitchTransition>
+        
+
       </div>
 
 
@@ -274,6 +344,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData }) => {
           isTipSelecting={isTipSelecting}
           useTip={useTip}
           isLevelCompleted={isLevelCompleted}
+          level={level}
         />
         {isLevelCompleted && (
           <div className="game-main_author">
@@ -282,9 +353,9 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData }) => {
           </div>
         )}
         {isLevelCompleted && (
-          <div className="nextLevelButton">
+          <div className="nextLevelButton" onClick={getNextLevel}>
             <div className="nextLevelButton-text">ДАЛЕЕ</div>
-            <div className="nextLevelButton-level">Уровень {level + 1}</div>
+            <div className="nextLevelButton-level">Уровень {level + 2}</div>
           </div>
         )}
       </div>
@@ -313,9 +384,25 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData }) => {
           </div>
         )}
         {isTipSelecting && (
-          <div className="keyboard-tip-text">
-            Выберите ячейку, которую вы хотите открыть
-          </div>
+          <Tip character="nerd">
+            Выберите ячейку<br></br> для открытия
+          </Tip>
+        )}
+        <Tip
+         character="dance"
+          tipClassName="tip-upper"
+           notShow={!showPlayersPassedLevel || isTipSelecting}
+           onClick={() => setShowPlayersPassedLevel(false)}
+          >
+          Только 95% игроков прошли этот уровень<br></br> без ошибок!
+        </Tip>
+        {isShowSettings && (
+          <Settings
+            userData={userData}
+            onClose={() => setIsShowSettings(false)}
+            setUserData={setUserData}
+            onHome={onMenu}
+          />
         )}
       </div>
     </div>

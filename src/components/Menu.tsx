@@ -2,18 +2,21 @@ import React, { useState } from 'react'
 import './Menu.css'
 import Lottie from 'react-lottie-player'
 import animationData from '../Hi/Think.json'
+import Statistics from './modalComponents/Statistics'
+import { UserDataProps } from '../App'
+import Settings from './modalComponents/Settings'
+import Shop from './modalComponents/Shop'
+import ShopMoney from './modalComponents/ShopMoney'
+import Rating from './modalComponents/Rating'
+
 
 interface MenuProps {
   onStart: () => void
-  userData: {
-    iq: number
-    lastLevel: number
-    lastLevelData: object
-    tips: number
-  }
+  userData: UserDataProps
+  setUserData: (userData: UserDataProps) => void
 }
 
-const Menu: React.FC<MenuProps> = ({ onStart, userData }) => {
+const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData }) => {
      const getIQcolor = (iq: number) => {
           if (iq <= 80) return '#ef4444';
           if (iq <= 90) return '#ecea4d';
@@ -23,11 +26,31 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData }) => {
           return '#3b82f6';
      }
 
+     const [showStats, setShowStats] = useState(false)
+     const [showSettings, setShowSettings] = useState(false)
+     const [showShop, setShowShop] = useState(false)
+     const [showShopMoney, setShowShopMoney] = useState(false)
+     const [showRating, setShowRating] = useState(false)
+
      return (
      <div className="menu-bg">
           {/* Настройки */}
           <div className="menu__top">
-               <button className="menu-settings-btn"></button>
+               <button className="menu-settings-btn" onClick={() => setShowSettings(true)}></button>
+               <div className="moneyCount" onClick={() => setShowShopMoney(true)}>
+                    <div className="modal-shop-row-price-icon">
+                    </div>{userData.money}
+               </div>
+               <div className="noAds" onClick={() => setShowShopMoney(true)}>
+                    <div className="noAds_text">ADS</div>
+                    <label className="switch">
+                         <input type="checkbox" defaultChecked={true}/>
+                         <span className="slider">
+                              <span className="label on">ВКЛ</span>
+                              <span className="circle"></span>
+                         </span>
+                    </label>
+               </div>
           </div>
           {/* Карточки режимов */}
           {/* <div className="menu-modes">
@@ -62,7 +85,7 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData }) => {
           <div className="menu-daily-title-block">
                <span className="menu-daily-title">Дневной результат</span>
                <span className="menu-daily-iq">IQ 
-                    <span className="menu-daily-iq-number" style={{color: getIQcolor(userData.iq)}}> {userData.iq}</span>
+                    <span className="menu-daily-iq-number" style={{color: getIQcolor(userData.statistics.iq)}}> {userData.statistics.iq}</span>
                </span>
           </div>
           <div className="menu-daily-row-block">
@@ -102,12 +125,12 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData }) => {
                <div>Выполняйте ежедневные задания:</div>
                <div className="flex items-center">
                     <span className="menu-daily-iq">IQ 
-                          <span className="menu-daily-iq-number" style={{color: getIQcolor(userData.iq)}}> {userData.iq}
+                          <span className="menu-daily-iq-number" style={{color: getIQcolor(userData.statistics.iq)}}> {userData.statistics.iq}
                          </span>
                     </span>
                     <span className="menu-daily-arrow"></span>
                     <span className="menu-daily-iq menu-daily-nextiq">IQ 
-                    <span className="menu-daily-iq-number" style={{color: getIQcolor(userData.iq + 1)}}> {userData.iq + 1}
+                    <span className="menu-daily-iq-number" style={{color: getIQcolor(userData.statistics.iq + 1)}}> {userData.statistics.iq + 1}
                          </span>
                     </span>
                </div>
@@ -117,8 +140,8 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData }) => {
           {/* Продолжить */}
           <div className="menu-continue">
           <button className="menu-continue-btn" onClick={onStart}>
-               <span>ПРОДОЛЖИТЬ</span>
-               <span className="menu-continue-btn__level">УРОВЕНЬ 4</span></button>
+               <span>{userData.lastLevel === 0 ? 'ИГРАТЬ' : 'ПРОДОЛЖИТЬ'}</span>
+               <span className="menu-continue-btn__level">УРОВЕНЬ {userData.lastLevel+1}</span></button>
           </div>
           </div>
           
@@ -126,12 +149,53 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData }) => {
           <div className="menu-bottom">
                <div className="menu-bottom-wrap">
                     <div className="menu-bottom-item">
-                         <div className="menu-bottom-icon icon-shop"></div>
+                         <div className="menu-bottom-icon icon-shop" onClick={() => setShowShop(true)}></div>
                          <span className="menu-bottom-label">Магазин</span>
+                    </div>
+                    <div className="menu-bottom-item" onClick={() => setShowRating(true)}>
+                         <div className="menu-bottom-icon icon-rating"></div>
+                         <span className="menu-bottom-label">Рейтинг</span>
+                    </div>
+                    <div className="menu-bottom-item" onClick={() => setShowStats(true)}>
+                         <div className="menu-bottom-icon icon-stat"></div>
+                         <span className="menu-bottom-label">Статистика</span>
                     </div>
                </div>
           
           </div>
+          {showStats && (
+               <Statistics
+                    userData={userData}
+                    onClose={() => setShowStats(false)}
+               />
+          )}
+          {showSettings && (
+               <Settings
+                    userData={userData}
+                    onClose={() => setShowSettings(false)}
+                    setUserData={setUserData}
+               />
+          )}
+          {showShop && (
+               <Shop
+                    userData={userData}
+                    onClose={() => setShowShop(false)}
+                    setUserData={setUserData}
+               />
+          )}
+          {showShopMoney && (
+               <ShopMoney
+                    userData={userData}
+                    onClose={() => setShowShopMoney(false)}
+                    setUserData={setUserData}
+               />
+          )}
+          {showRating && (
+               <Rating
+                    userData={userData}
+                    onClose={() => setShowRating(false)}
+               />
+          )}
      </div>
      )
 }

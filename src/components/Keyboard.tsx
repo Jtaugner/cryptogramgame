@@ -1,8 +1,10 @@
+import React from 'react'
+import './Keyboard.css'
+
 interface KeyboardProps {
   onKeyPress: (key: string) => void
   inactiveKeys?: Set<string>
 }
-import './Keyboard.css'
 
 const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress, inactiveKeys = new Set() }) => {
   const rows = [
@@ -14,7 +16,7 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress, inactiveKeys = new Set(
   return (
     <div className="keyboard-container">
       {rows.map((row, i) => (
-        <div key={i} className="keyboard-row">
+        <div key={'keyboard-' + i} className="keyboard-row">
           {row.map(key => (
             <button
               key={key}
