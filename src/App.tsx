@@ -1,8 +1,10 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Game from './components/Game'
 import Menu from './components/Menu'
 import { CSSTransition, SwitchTransition } from 'react-transition-group'
 import './AppTransition.css'
+import { usePageActiveTimer } from './components/PageTimer'
+import { appIsReady, saveData } from './main'
 let iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 if(iOS){
   document.documentElement.addEventListener('gesturestart', function (event) {
@@ -20,17 +22,29 @@ export type StatisticsProps = {
   errors: number;
   avgTime: number;
   bestTime: number;
-  lettersPerMinute: number;
 };
 
 export type SettingsProps = {
   sounds: boolean,
-  music: boolean
+  music: boolean,
+  arrowLeft: boolean
+};
+
+export type LevelDataProps = {
+  text: string,
+  numbers: number[],
+  hiddenIndexes: number[],
+  filledLetters: Record<number, string>,
+  completedNumbers: Set<number>,
+  errors: number,
+  isKeyboardBlocked: boolean,
+  time: number,
+  atLeastOneError: boolean
 };
 
 export type UserDataProps = {
-  lastLevel: number
-  lastLevelData: object
+  lastLevel: number,
+  lastLevelData: LevelDataProps | null,
   tips: number,
   statistics: StatisticsProps,
   settings: SettingsProps,
@@ -38,29 +52,25 @@ export type UserDataProps = {
 }
 
 
-const App = () => {
+
+export type AppProps = {
+  allUserData: UserDataProps
+}
+
+const App: React.FC<AppProps> = ({allUserData}) => {
   const [showGame, setShowGame] = useState(false)
-  const [userData, setUserData] = useState<UserDataProps>({
-    lastLevel: 0,
-    lastLevelData: {},
-    tips: 5,
-    statistics: {
-      iq: 0,
-      levels: 1,
-      letters: 12,
-      words: 123,
-      perfectLevels: 4,
-      errors: 421,
-      avgTime: 123,
-      bestTime: 33,
-      lettersPerMinute: 21
-    },
-    settings: {
-      sounds: true,
-      music: true
-    },
-    money: 582
-  })
+  const { getSeconds, reset } = usePageActiveTimer()
+  const [userData, setUserData] = useState<UserDataProps>(allUserData)
+  useEffect(() => {
+    saveData(userData);
+  }, [userData])
+  useEffect(() => {
+    console.log('time:', getSeconds());
+  }, [showGame])
+  //Вызываем один раз при рендере компонента
+  useEffect(() => {
+    appIsReady();
+  }, [])
 
   return (
     <SwitchTransition mode="out-in">
@@ -69,7 +79,7 @@ const App = () => {
         timeout={200}
         classNames="fade"
       >
-        <div>
+        <div style={{height: '100%', width: '100%'}}>
         {showGame ? (
           <Game
            onMenu={() => setShowGame(false)}

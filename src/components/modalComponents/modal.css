@@ -38,6 +38,7 @@
 .modal-wrapper{
      height: 100%;
      overflow-y: auto;
+     padding-bottom: 20px;
 }
 .modal-title {
   display: flex;
@@ -68,9 +69,9 @@
   height: 27px;
 }
 .modal-close {
-  background: url('../../assets/close.svg') center center no-repeat;
+  background: url('../../assets/close1.svg') center center no-repeat;
   background-size: 100%;
   cursor: pointer;
-  width: 21px;
-  height: 21px;
+  width: 25px;
+  height: 25px;
 }

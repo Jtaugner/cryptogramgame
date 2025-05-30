@@ -39,6 +39,11 @@
 .modal-settings-row_rules, .modal-settings-row_important{
   background-color: rgb(53, 178, 74);
   box-shadow: 0 1px 0px 0 rgba(10, 10, 10, 0.25), inset 0px -2px 0px 0px rgba(10, 10, 10, 0.15);
+  cursor: pointer;
+}
+.modal-settings-row_important:active, .modal-settings-row_rules:active{
+  box-shadow: none;
+  transform: scale(0.99);
 }
 .modal-settings-row_rules .modal-settings-row-text,
 .modal-settings-row_important .modal-settings-row-text{

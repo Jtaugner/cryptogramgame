@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './settings.css';
 import { UserDataProps } from '../../App';
 import Modal from './Modal';
+import Rules from '../Rules';
 
 type SettingsProps = {
   userData: UserDataProps,
@@ -11,32 +12,24 @@ type SettingsProps = {
 };
 
 const Settings: React.FC<SettingsProps> = ({userData, onClose, setUserData, onHome }) => {
-  const changeSounds = () => {
+  const [showRules, setShowRules] = useState(false);
+  const changeSettings = (newSettings: object) => {
     setUserData({
       ...userData,
       settings: {
         ...userData.settings,
-        sounds: !userData.settings.sounds
+        ...newSettings
       }
     })
   }
-  const changeMusic = () => {
-    setUserData({
-      ...userData,
-      settings: {
-        ...userData.settings,
-        music: !userData.settings.music
-      }
-    })
-  }
-  return <Modal
+  return showRules ? <Rules onClose={() => setShowRules(false)}/>  : <Modal
             title="НАСТРОЙКИ"
             modalClassName="modal-settings"
             onClose={onClose}>
               <div className="modal-settings-row">
                 <span className="modal-settings-row-text">Звуки</span>
                 <label className  ="switch">
-                  <input type="checkbox" checked={userData.settings.sounds} onChange={changeSounds}/>
+                  <input type="checkbox" checked={userData.settings.sounds} onChange={() => changeSettings({sounds: !userData.settings.sounds})}/>
                   <span className="slider">
                     <span className="label off">ВЫК</span>
                     <span className="label on">ВКЛ</span>
@@ -47,7 +40,7 @@ const Settings: React.FC<SettingsProps> = ({userData, onClose, setUserData, onHo
               <div className="modal-settings-row">
                 <span className="modal-settings-row-text">Музыка</span>
                 <label className="switch">
-                  <input type="checkbox" checked={userData.settings.music} onChange={changeMusic}/>
+                  <input type="checkbox" checked={userData.settings.music} onChange={() => changeSettings({music: !userData.settings.music})}/>
                   <span className="slider">
                     <span className="label off">ВЫК</span>
                     <span className="label on">ВКЛ</span>
@@ -55,7 +48,18 @@ const Settings: React.FC<SettingsProps> = ({userData, onClose, setUserData, onHo
                   </span>
                 </label>
               </div>
-              <div className="modal-settings-row modal-settings-row_rules">
+              <div className="modal-settings-row">
+                <span className="modal-settings-row-text">Стрелочки слева</span>
+                <label className="switch">
+                  <input type="checkbox" checked={userData.settings.arrowLeft} onChange={() => changeSettings({arrowLeft: !userData.settings.arrowLeft})}/>
+                  <span className="slider">
+                    <span className="label off">ВЫК</span>
+                    <span className="label on">ВКЛ</span>
+                    <span className="circle"></span>
+                  </span>
+                </label>
+              </div>
+              <div className="modal-settings-row modal-settings-row_rules" onClick={() => setShowRules(true)}>
                 <span className="modal-settings-row-text">Как играть?</span>
                 <div className='modal-settings-row-icon'></div>
               </div>

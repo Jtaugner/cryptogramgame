@@ -2,6 +2,7 @@ import React from 'react';
 import './statistics.css';
 import { UserDataProps } from '../../App';
 import Modal from './Modal';
+import { formatTime } from '../../levels';
 
 type StatisticsProps = {
   userData: UserDataProps,
@@ -24,9 +25,8 @@ const Statistics: React.FC<StatisticsProps> = ({userData, onClose }) => (
       </div>
       <div className="modal-section statistics-section-time">
         <div className="modal-section-title">Время</div>
-        <div className="statistics-row"><span className="statistics-icon statistics-icon_time"></span> Среднее время на уровень <span className="statistics-value">{userData.statistics.avgTime}</span></div>
-        <div className="statistics-row"><span className="statistics-icon statistics-icon_time"></span> Лучшее время на уровне <span className="statistics-value">{userData.statistics.bestTime}</span></div>
-        <div className="statistics-row"><span className="statistics-icon statistics-icon_time"></span> Букв в минуту <span className="statistics-value">{userData.statistics.lettersPerMinute}</span></div>
+        <div className="statistics-row"><span className="statistics-icon statistics-icon_time"></span> Среднее время на уровень <span className="statistics-value">{formatTime(userData.statistics.avgTime)}</span></div>
+        <div className="statistics-row"><span className="statistics-icon statistics-icon_time"></span> Лучшее время на уровне <span className="statistics-value">{formatTime(userData.statistics.bestTime)}</span></div>
       </div>
   </Modal>
 );

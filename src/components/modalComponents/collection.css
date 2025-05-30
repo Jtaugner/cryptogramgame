@@ -1,0 +1,70 @@
+.modal-collection .modal-icon{
+  background: url('../../assets/collection/collection.svg') center center no-repeat;
+  background-size: 100%;
+}
+.modal-collection-icon{
+  background-color: #a76cf1;
+  height: 80px;
+  width: 80px;
+  border-radius: 4px 0 0 4px;
+}
+.modal-collection .modal-shop-row{
+  padding: 0 5px 0 0;
+  border-radius: 10px 4px 4px 10px;
+}
+.modal-collection .modal-shop-row-name{
+  font-size: 1.2rem;
+}
+.modal-collection-book-icon{
+  background: url('../../assets/collection/b.svg') center center no-repeat;
+  background-size: 100%;
+  height: 36px;
+  width: 40px;
+}
+.modal-collection-value{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #278737;
+  border-radius: 3px;
+  width: 53px;
+  font-size: 0.7rem;
+  color: #fff;
+  text-shadow: none;
+  margin-top: 2px;
+}
+.modal-collection .modal-shop-row-price{
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+  height: 65px;
+  width: 100px;
+}
+
+
+.modal-collection-icon_quotes{
+  background: url('../../assets/collection/q.svg') center center no-repeat, #a76cf1;
+  background-size: 50%;
+}
+.modal-collection-icon_poems{
+  background: url('../../assets/collection/p.svg') center center no-repeat, #a76cf1;
+  background-size: 50%;
+}
+.modal-collection-icon_aphorisms{
+  background: url('../../assets/collection/a.svg') center center no-repeat, #a76cf1;
+  background-size: 50%;
+}
+.modal-collection-icon_music{
+  background: url('../../assets/collection/m.svg') center center no-repeat, #a76cf1;
+  background-size: 50%;
+}
+.modal-collection-icon_cinema{
+  background: url('../../assets/collection/c.svg') center center no-repeat, #a76cf1;
+  background-size: 50%;
+}
+.modal-collection-icon_science{
+  background: url('../../assets/collection/s.svg') center center no-repeat, #a76cf1;
+  background-size: 50%;
+}
+

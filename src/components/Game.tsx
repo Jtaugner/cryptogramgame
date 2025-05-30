@@ -3,37 +3,23 @@ import Keyboard from './Keyboard'
 import Phrase from './Phrase'
 import './Game.css'
 import ProgressCircle from '../ProgressCircle'
-import { levels } from '../levels'
+import { countWordsWithHiddenLetters, levels } from '../levels'
 import { usePageActiveTimer } from './PageTimer'
-import { UserDataProps } from '../App'
+import { UserDataProps, LevelDataProps } from '../App'
 import { SwitchTransition, CSSTransition } from 'react-transition-group';
 import Settings from './modalComponents/Settings'
-import Lottie from 'react-lottie-player'
-import animationData from '../Hi/Nerd.json'
 import Tip from './modalComponents/Tip'
+import { LevelData, formatTime} from '../levels'
+import { showAdv } from '../main'
 
-interface LevelData {
-  text: string
-  hiddenIndexes: number[]
-  name: string
-  desc: string
-}
 interface GameProps {
   onMenu: () => void
   userData: UserDataProps
   setUserData: (userData: UserDataProps) => void
 }
-function formatTime(seconds: number) {
-  let mins = Math.floor(seconds / 60).toString();
-  if(mins.length === 1){
-    mins = '0' + mins;
-  }
-  let secs = (seconds % 60).toString();
-  if(secs.length === 1){
-    secs = '0' + secs;
-  }
-  return `${mins}:${secs}`;
-}
+
+const cancelBlockPrice = 1;
+let realLevelTime = 0;
 
 const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData }) => { 
   const [level, setLevel] = useState(userData.lastLevel)
@@ -43,40 +29,105 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData }) => {
   const [showPlayersPassedLevel, setShowPlayersPassedLevel] = useState(false)
   const [errors, setErrors] = useState(0)
   const [blockedTime, setBlockedTime] = useState(0)
+  const [notShowKeyboard, setNotShowKeyboard] = useState(false)
   const [blockedTimeTimer, setBlockedTimeTimer] = useState(0)
-  const [phraseData, setPhraseData] = useState<{ 
-    text: string
-    numbers: number[]
-    hiddenIndexes: number[]
-    filledLetters: Record<number, string>
-    completedNumbers: Set<number>
-  }>()
+  const [phraseData, setPhraseData] = useState<LevelDataProps>()
   const [inactiveKeys, setInactiveKeys] = useState<Set<string>>(new Set())
   const [levelData, setLevelData] = useState<LevelData>(levels[level]);
-  const phraseRef = useRef<{ handleKeyPress: (key: string) => void, updatePhrase: (data: {
-    text: string
-    numbers: number[]
-    hiddenIndexes: number[]
-    filledLetters: Record<number, string>
-    completedNumbers: Set<number>
-  }) => void }>(null)
+  const phraseRef = useRef<{ handleKeyPress: (key: string) => void, updatePhrase: (data: LevelDataProps) => void, getNextEmptyIndex: (getPrevious: boolean) => void }>(null)
 
   //Время
   const { getSeconds, reset } = usePageActiveTimer()
+  const [levelTime, setLevelTime] = useState(0)
+
+
+  const getLevelTime = () => {
+    return getSeconds() + levelTime;
+  }
+
+
+
+  const updateLastLevelData = (newLevelData: object, levelCompleted: boolean = false) => {
+    if(levelCompleted){
+      //Для статистики
+      const newLetters = levelData ? levelData.hiddenIndexes.length : 0;
+      const newWords = levelData ? countWordsWithHiddenLetters(levelData) : 0;
+      const levelWithoutMistake = userData.lastLevelData ? !userData.lastLevelData.atLeastOneError : false;
+      const passedLevels = userData.statistics.levels + 1;
+      const avgTime = (userData.statistics.avgTime * userData.statistics.levels + realLevelTime) / (passedLevels);
+      let bestTime = Math.min(userData.statistics.bestTime, realLevelTime);
+      if(bestTime === 0) bestTime = realLevelTime;
+      console.log('avgTime', avgTime);
+      console.log('bestTime', bestTime);
+      setUserData({
+        ...userData,
+        lastLevel: level + 1,
+        lastLevelData: null,
+        statistics: {
+          ...userData.statistics,
+          levels: passedLevels,
+          letters: userData.statistics.letters + newLetters,
+          words: userData.statistics.words + newWords,
+          perfectLevels: levelWithoutMistake ? userData.statistics.perfectLevels + 1 : userData.statistics.perfectLevels,
+          avgTime: avgTime,
+          bestTime: bestTime
+        }
+      })
+    }else{
+      //Если обновляем кол-во ошибок, то записываем в статистику
+      let addErrors = false;
+      if(newLevelData.errors && newLevelData.errors > 0) {
+        addErrors = true;
+      }
+      setUserData({...userData,
+        lastLevelData: {
+         ...userData.lastLevelData,
+         ...newLevelData,
+         time: getLevelTime()
+       },
+       statistics: {
+        ...userData.statistics,
+        errors: addErrors ? userData.statistics.errors + 1 : userData.statistics.errors,
+       }
+     })
+    }
+  }
+
+  const saveDataAndGoMenu = () => {
+    updateLastLevelData({}, false)
+    onMenu()
+  }
   
   const endBlockTime = () => {
     setBlockedTime(0)
-    setBlockedTimeTimer(0)
+    setTimeout(() => {
+      setBlockedTimeTimer(0)
+    }, 1000)
     setErrors(0)
+    updateLastLevelData({errors: 0, isKeyboardBlocked: false})
+  }
+  const cancelBlockedByMoney = () => {
+    if(userData.money >= cancelBlockPrice){
+      setUserData({...userData, money: userData.money - cancelBlockPrice})
+      endBlockTime();
+    }
+  }
+  const switchOnBlockedKeyboard = () => {
+    showAdv();
+    let blockedTime = 15000;
+    setBlockedTime(blockedTime)
+    setBlockedTimeTimer(blockedTime / 1000);
   }
   const addErrors = () => {
-    setErrors(prev => prev + 1)
     if(errors >= 2){
-      console.log('blockedTime')
-      let blockedTime = 10000;
-      setBlockedTime(blockedTime)
-      setBlockedTimeTimer(blockedTime / 1000);
+      switchOnBlockedKeyboard();
+      updateLastLevelData({errors: errors+1, isKeyboardBlocked: true})
+    }else{
+      updateLastLevelData({errors: errors+1, isKeyboardBlocked: false, atLeastOneError: true})
+      if(phraseData) setPhraseData({...phraseData, atLeastOneError: true})
     }
+    setErrors(prev => prev + 1)
+    
   }
   const switchTipSelecting = () => {
     if(!isTipSelecting && userData.tips > 0){
@@ -98,7 +149,6 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData }) => {
 
   useEffect(() => {
     if(phraseData && Object.keys(phraseData.filledLetters).length === phraseData.hiddenIndexes.length){
-      setUserData({...userData, lastLevel: level + 1});
       setTimeout(()=>{
         try{
           let scrollEl = document.querySelector('.phrase-row');
@@ -108,6 +158,10 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData }) => {
           setIsLevelCompleted(true)
         }, 500)
       }, 3300);
+      realLevelTime = getLevelTime();
+      updateLastLevelData({}, true)
+    }else if(phraseData){
+      updateLastLevelData(phraseData)
     }
   }, [phraseData])
 
@@ -115,6 +169,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData }) => {
     setLevel(level + 1)
     setLevelData(levels[level + 1]);
     reset();
+    setNotShowKeyboard(false)
   }
 
   const generateNumbersForLetters = (text: string) => {
@@ -123,6 +178,14 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData }) => {
     
     const letterMap = new Map<string, number>()
     const numbers: number[] = []
+    const smallNumber = [1,2,3,4,5,6,7,8,9];
+    function getRandomSmallNumber(){
+      if(smallNumber.length === 0) return -1;
+      const rand = Math.floor(Math.random() * smallNumber.length);
+      const num = smallNumber[rand];
+      smallNumber.splice(rand, 1);
+      return num;
+    }
 
     text.split('').forEach((char) => {
       // Пропускаем знаки препинания и пробелы
@@ -133,10 +196,15 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData }) => {
 
       if (!letterMap.has(char)) {
         // Генерируем случайное число от 1 до 99 для новой буквы
-        let randomNum
-        do {
-          randomNum = Math.floor(Math.random() * 99) + 1
-        } while (Array.from(letterMap.values()).includes(randomNum)) // Убеждаемся, что число уникально
+        let randomNum = -1;
+        if(level < 3){
+          randomNum = getRandomSmallNumber();
+        }
+        if(randomNum === -1){
+          do {
+            randomNum = Math.floor(Math.random() * 99) + 1
+          } while (Array.from(letterMap.values()).includes(randomNum)) // Убеждаемся, что число уникально
+        }
         letterMap.set(char, randomNum)
       }
 
@@ -200,20 +268,27 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData }) => {
   }
   const generateLevel = () => {
     console.log("generateLevel");
+    showAdv()
     setIsLevelCompleted(false)
     setErrors(0)
     setIsTipSelecting(false)
+    setNotShowKeyboard(false)
     setBlockedTime(0)
     setBlockedTimeTimer(0)
+    setLevelTime(0)
     // Генерируем числа при первой загрузке уровня
     const text = levelData.text.toUpperCase()
     const numbers = generateNumbersForLetters(text)
-    const initialPhraseData = {
+    let initialPhraseData = {
       text,
       numbers,
       hiddenIndexes: levelData.hiddenIndexes,
       filledLetters: {} as Record<number, string>,
-      completedNumbers: new Set<number>()
+      completedNumbers: new Set<number>(),
+      errors: 0,
+      isKeyboardBlocked: false,
+      time: 0,
+      atLeastOneError: false
     }
 
     // Проверяем начальные completedNumbers
@@ -226,6 +301,22 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData }) => {
       }
     )
     initialPhraseData.completedNumbers = initialCompletedNumbers
+
+    //Если игрок проходил этот уровень ранее, то загружаем данные из последнего уровня
+    if(userData.lastLevelData && userData.lastLevelData.text === initialPhraseData.text){
+      initialPhraseData = userData.lastLevelData;
+      if(initialPhraseData.isKeyboardBlocked){
+        switchOnBlockedKeyboard();
+      }
+      setErrors(initialPhraseData.errors);
+      setLevelTime(initialPhraseData.time);
+    }else{
+      //Вызываем подсказку, сколько игроков прошли этот уровень без ошибок
+      setShowPlayersPassedLevel(true);
+      setTimeout(() => {
+        setShowPlayersPassedLevel(false);
+      }, 5000);
+    }
 
     // Проверяем неактивные буквы
     const newInactiveKeys = new Set<string>()
@@ -253,18 +344,12 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData }) => {
 
     setInactiveKeys(newInactiveKeys)
     setPhraseData(initialPhraseData)
-    console.log(phraseRef);
-    console.log(phraseRef.current);
     phraseRef.current?.updatePhrase(initialPhraseData);
   }
   //Вызываем перегенерацию уровня при первой загрузке и при смене уровня
 
   useEffect(() => {
     generateLevel()
-    setShowPlayersPassedLevel(true);
-    setTimeout(() => {
-      setShowPlayersPassedLevel(false);
-    }, 5000);
   }, [level])
 
     const guessedPercent = phraseData
@@ -298,7 +383,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData }) => {
                  </div>
                  <div className='game-header-time'>
                   <div className="game-header-time-icon"></div>
-                  <span className='game-header-time_text'>{formatTime(getSeconds())}</span>
+                  <span className='game-header-time_text'>{formatTime(realLevelTime)}</span>
                  </div>
                 </div>
                  :
@@ -361,28 +446,47 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData }) => {
       </div>
 
       {/* Keyboard */}
-      <div className={`game-keyboard ${isLevelCompleted ? 'game-keyboard_hidden' : ''}`}>
+      {!notShowKeyboard && (
+        <div
+       className={`game-keyboard ${isLevelCompleted ? 'game-keyboard_hidden' : ''}`}
+       onAnimationEnd={(e)=>{
+        if(e.animationName === 'keyboardAnimation'){
+          setNotShowKeyboard(true)
+        }
+      }}
+      >
         <Keyboard 
           onKeyPress={(key) => phraseRef.current?.handleKeyPress(key)} 
           inactiveKeys={inactiveKeys}
+          phraseData={phraseData}
         />
-        {blockedTime > 0 && (
-          <div className="keyboard-blocked">
+        <div className={`game-keyboard-buttons ${userData.settings.arrowLeft ? 'game-keyboard-buttons_left' : ''}`}>
+          <div className="game-keyboard-moveLeft" onClick={() => {phraseRef.current?.getNextEmptyIndex(true)}}></div>
+          <div className="game-keyboard-moveRight" onClick={() => {phraseRef.current?.getNextEmptyIndex(false)}}></div>
+        </div>
+        <div className={`keyboard-blocked ${blockedTime > 0 ? 'keyboard-blocked_show' : ''}`}>
             <ProgressCircle
-             duration={blockedTime}
-             size={70}
-             strokeWidth={1}
-             endBlockTime={endBlockTime}
-             blockedTimeTimer={blockedTimeTimer}
-             setBlockedTimeTimer={setBlockedTimeTimer}
-            />
+                  duration={blockedTime}
+                  size={65}
+                  strokeWidth={1}
+                  endBlockTime={endBlockTime}
+                  blockedTimeTimer={blockedTimeTimer}
+                  setBlockedTimeTimer={setBlockedTimeTimer}
+              />
+            
 
             <div className="keyboard-blocked-text">
-              Вы сделали 3 ошибки, поэтому клавиатура заблокирована на <span className="keyboard-blocked-text__time">{blockedTimeTimer} секунд
+              Вы сделали 3 ошибки, поэтому клавиатура <br></br> заблокирована на <span className="keyboard-blocked-text__time">{blockedTimeTimer} секунд
               </span>
             </div>
-          </div>
-        )}
+            <div className="cancelBlocked" onClick={cancelBlockedByMoney}>
+              <div className="moneyCount">
+                    <div className="modal-shop-row-price-icon">
+                    </div>{cancelBlockPrice}
+               </div>
+              <div className="cancelBlocked-text">ОТМЕНИТЬ</div>
+            </div>
+        </div>
         {isTipSelecting && (
           <Tip character="nerd">
             Выберите ячейку<br></br> для открытия
@@ -396,15 +500,17 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData }) => {
           >
           Только 95% игроков прошли этот уровень<br></br> без ошибок!
         </Tip>
-        {isShowSettings && (
+      </div>
+      )}
+      
+      {isShowSettings && (
           <Settings
             userData={userData}
             onClose={() => setIsShowSettings(false)}
             setUserData={setUserData}
-            onHome={onMenu}
+            onHome={saveDataAndGoMenu}
           />
         )}
-      </div>
     </div>
   )
 }

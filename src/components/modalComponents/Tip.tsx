@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './tip.css';
 import Lottie from 'react-lottie-player';
 import nerdData from '../../Hi/Nerd.json'
@@ -22,19 +22,30 @@ const Tip: React.FC<TipProps> = ({children, character, tipClassName, notShow, on
     }
     return allCharacters['nerd']
   }
+  const [isShow, setIsShow] = useState(true);
+
+  useEffect(() => {
+    if(!notShow){
+      setIsShow(true)
+    }
+  }, [notShow])
   return <div
           className={`tip-text ${tipClassName} ${notShow ? 'tip-text_notShow' : ''}`}
+          onTransitionEnd={(e) => {if(notShow)setIsShow(false)}}
           onClick={onClick}
           >
             {children}
+            {isShow && 
             <div className="tip-character">
-            <Lottie
-                        loop         // зациклить
-                        play         // сразу запускать
-                        animationData={getCharacter()}
-                        
-                    />
+              <Lottie
+                          loop         // зациклить
+                          play         // сразу запускать
+                          animationData={getCharacter()}
+                          
+                      />
             </div>
+            }
+
         </div>
 };
 

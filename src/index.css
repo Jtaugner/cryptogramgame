@@ -18,6 +18,20 @@
   font-display: swap;
 }
 @font-face {
+  font-family: 'SF Mono';
+  src: url('./assets/font/SFMono-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'SF Pro Display';
+  src: url('./assets/font/SF-Pro-Display-RegularItalic.otf') format('opentype');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
   font-family: 'SF Pro Display';
   src: url('./assets/font/SF-Pro-Display-Bold.otf') format('opentype');
   font-weight: 700;
@@ -77,12 +91,15 @@ body, #root{
   background-position: 10%;
   background-size: cover;
   height: 100vh;
+  height: 100dvh;
   width: 100vw;
+  width: 100dvw;
 }
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  min-height: 100dvh;
 }
 
 button {

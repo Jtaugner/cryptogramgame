@@ -19,8 +19,8 @@
   height: 80px;
 }
 .game-bg{
-  min-height: 100vh;
-  height: 100vh;
+  height: 100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   background: url('../assets/bgSpring-big.png') center center no-repeat;
@@ -85,6 +85,7 @@
   width: 14px;
   height: 14px;
   margin: 0 2px;
+  transition: background 0.3s ease-in-out;
 }
 .mistakeCircle_got{
   box-shadow: 0px 1px 0px 0px rgba(10, 10, 10, 0.35),inset -2.457px 1.721px 0px 0px rgba(250, 125, 146, 0.004),inset 2.007px 2.229px 0px 0px rgba(250, 125, 146, 0.004);
@@ -92,7 +93,6 @@
   background: url('../assets/cross.svg') center center no-repeat, #ff4463;
   background-position: center center;
   background-size: 80%;
-  /* transition: background 0.3s ease-in-out; */
   animation: errorShake 1s ease-in-out;
 }
 
@@ -163,7 +163,56 @@
   margin: 0 auto;
   background: #30347b;  
   padding: 16px 6px;
+  /* top: 500px; */
+  /* animation: keyboardAnimationReverse 0.8s linear forwards; */
 } 
+.game-keyboard-buttons{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: absolute;
+  width: 100px;
+  height: 40px;
+  background-color: white;
+  top: -1px;
+  right: 5px;
+  transform: translate(0, -100%);
+  background-color: rgba(48, 52, 123, 0.89);
+  border: 2px solid rgb(54, 58, 137);
+  border-radius: 4px 4px 0 0;
+  /* border-bottom: 3px solid #282b65; */
+  
+}
+.game-keyboard-buttons_left{
+  left: 5px;
+  right: auto;
+}
+.game-keyboard-buttons:after{
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: -2px;
+  width: 100px;
+  height: 3px;
+  background-color: #282b65;
+  transform: translateY(100%);
+}
+.game-keyboard-moveLeft, .game-keyboard-moveRight{
+  width: 50%;
+  height: 100%;
+  background: url('../assets/arrow1.svg') center center no-repeat;
+  background-size: 40%;
+  border-right: 1px solid #282b65;
+  cursor: pointer;
+}
+.game-keyboard-moveLeft:active, .game-keyboard-moveRight:active{
+  background-color: #282b65;
+}
+.game-keyboard-moveRight{
+  transform: rotate(180deg);
+  border-left: none;
+  border-left: 1px solid #282b65;
+}
 @keyframes fadeAnimation {
   from {
     opacity: 0;
@@ -184,27 +233,77 @@
   flex-flow: column nowrap;
   justify-content: center;
   align-items: center;
-  animation: fadeAnimation 0.5s ease-in-out;
+  transition: opacity 0.5s ease-in-out;
+  opacity: 0;
+  pointer-events: none;
+}
+.keyboard-blocked_show{
+  opacity: 1;
+  pointer-events: all;
 }
 .keyboard-blocked-text{
-  text-align: center;
+  text-align: left;
   font-weight: 500;
   margin-top: 10px;
+  font-size: 1rem;
+  line-height: 1.3rem;
+  margin: 10px 0 20px 0;
 }
 .keyboard-blocked-text__time{
   color: #ff4463;
 }
-@keyframes keynoardAnimation{
+.cancelBlocked{
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  color: #fdfdfd;
+}
+.cancelBlocked::after{
+  content: '';
+  position: absolute;
+  left: -10px;
+  top: -10px;
+  bottom: -10px;
+  right: -10px;
+}
+.cancelBlocked .moneyCount{
+  position: static;
+  left: 0;
+  transform: none;
+  font-size: 1.3rem;
+  line-height: 1.3rem;
+}
+.cancelBlocked .moneyCount .modal-shop-row-price-icon{
+  width: 28px;
+  height: 23.04px;
+}
+.cancelBlocked-text{
+  color: #43d109;
+  text-transform: uppercase;
+  font-size: 1.2rem;
+  line-height: 1.35rem;
+  margin-left: 10px;
+  border-bottom: 1px solid #43d109;
+}
+@keyframes keyboardAnimationReverse{
   0%{
-    transform: translateY(0);
+    top: 500px;
   }
   100%{
-    display: none;
-    transform: translateY(100%);
+    top: 0;
+  }
+}
+@keyframes keyboardAnimation{
+  0%{
+    top: 0;
+  }
+  100%{
+    top: 300px;
   }
 }
 .game-keyboard_hidden{
-  animation: keynoardAnimation 0.8s linear forwards;
+  animation: keyboardAnimation 0.8s linear forwards;
 }
 @keyframes mainOpacityAnimation{
   0%{
@@ -255,6 +354,10 @@
     cursor: pointer;
     margin-top: auto;
     margin-bottom: 10vh;
+}
+.nextLevelButton:active{
+  box-shadow: none;
+  transform: scale(0.99);
 }
 .nextLevelButton-text{
     font-size: 1.2rem;

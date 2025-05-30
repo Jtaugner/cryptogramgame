@@ -1,5 +1,6 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
 import './Phrase.css'
+import { LevelDataProps } from '../App'
 
 interface PhraseProps {
   data: {
@@ -17,34 +18,21 @@ interface PhraseProps {
   useTip: () => void
   isLevelCompleted: boolean
   level: number
+  isFromRules?: boolean
+  adviceStepFromRules?: boolean
 }
 
 interface PhraseHandle {
   handleKeyPress: (key: string) => void
 }
 
-const emojis = [
-  '😀','😃','😄','😁','😆','😅','😂','🤣','😊','😇',
-  '🙂','🙃','😉','😌','😍','😘','😗','😙','😚','😋',
-  '😜','😝','😛','🤑','🤗','🤭','🤫','🤔','🤐','🤨',
-  '😐','😑','😶','😏','😒','🙄','😬','🤥','😌','😔',
-  '😪','🤤','😴','😷','🤒','🤕','🤢','🤮','🥵','🥶',
-  '😵','🤯','🤠','🥳','😎','🤓','🧐','😕','😟','🙁',
-  '☹️','😮','😯','😲','😳','🥺','😦','😧','😨','😰',
-  '🐶','🐱','🐭','🐹','🐰','🦊','🐻','🐼','🐨','🐯',
-  '🦁','🐮','🐷','🐸','🐵','🙈','🙉','🙊','🐒','🐔',
-  '🍎','🍌','🍇','🍓','🍉','🍑','🍍','🥝','🥥','🥑'
-];
-
 
 const Phrase = forwardRef<PhraseHandle, PhraseProps>(
   ({ data, onError, onLetterFill, onCompleteNumber,
-     blockedTime, isTipSelecting, useTip, isLevelCompleted, level }, ref) => {
+     blockedTime, isTipSelecting, useTip, isLevelCompleted, level, isFromRules, adviceStepFromRules }, ref) => {
       
   const letters = data.text.split('')
-  const [selectedIndex, setSelectedIndex] = React.useState<number | null>(() => {
-    return data.hiddenIndexes[0] ?? null
-  })
+  const [selectedIndex, setSelectedIndex] = React.useState<number | null>(-1);
   const [correctLetters, setCorrectLetters] = React.useState<Record<number, boolean>>({})
   const [wrongLetters, setWrongLetters] = React.useState<Record<number, string>>({})
   const [completingNumbers, setCompletingNumbers] = React.useState<Set<number>>(new Set())
@@ -53,18 +41,14 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
 
 
 
-  const updatePhrase = (data: {
-    text: string
-    numbers: number[]
-    hiddenIndexes: number[]
-    filledLetters: Record<number, string>
-    completedNumbers: Set<number>
-  }) => {
+  const updatePhrase = (data: LevelDataProps) => {
+    console.log('updatePhrase');
     setSelectedIndex(data.hiddenIndexes[0] ?? null);
     setCorrectLetters({});
     setWrongLetters({});
     setCompletingNumbers(new Set());
     setHidingNumbers(new Set(data.completedNumbers));
+    console.log(new Set(data.completedNumbers));
     setNumberCompleted(new Set());
   }
   // Буквы, разрешённые для игрового ввода
@@ -89,8 +73,64 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
   }
   useEffect(() => {
     openLetterByTip();
+    console.log('mounted');
   }, [selectedIndex])
 
+  const findNextEmptyIndex = (filledLetters: Record<number, string>) => {
+    if(selectedIndex === null) return undefined;
+    let nextEmptyIndex = data.hiddenIndexes.find(
+      index => index > selectedIndex && !filledLetters[index]
+    )      
+    // Если не нашли после текущей позиции, ищем с начала фразы
+    if (nextEmptyIndex === undefined) {
+      nextEmptyIndex = data.hiddenIndexes.find(
+        index => index < selectedIndex && !filledLetters[index]
+      )
+    }
+    return nextEmptyIndex;
+  }
+  const findPreviousEmptyIndex = (filledLetters: Record<number, string>) => {
+    if(selectedIndex === null) return undefined;
+    let previousEmptyIndex = undefined;
+    let selectedIndexIndex = data.hiddenIndexes.indexOf(selectedIndex);
+
+    for(let i = selectedIndexIndex - 1; i >= 0; i--){
+      let index = data.hiddenIndexes[i];
+      if(!filledLetters[index]){
+        previousEmptyIndex = index;
+        break;
+      }
+    }
+
+    if (previousEmptyIndex === undefined) {
+      for(let i = data.hiddenIndexes.length - 1; i >= 0; i--){
+        let index = data.hiddenIndexes[i];
+        if(!filledLetters[index]){
+          previousEmptyIndex = index;
+          break;
+        }
+      }
+    }
+    return previousEmptyIndex;
+  }
+  const getNextEmptyIndex = 
+      (getPrevious: boolean = false,
+      filledLetters: Record<number, string> = data.filledLetters,
+      ) => {
+        console.log('getdasda');
+
+    let nextEmptyIndex = findNextEmptyIndex(filledLetters);
+    if(getPrevious){
+      nextEmptyIndex = findPreviousEmptyIndex(filledLetters);
+    }
+    console.log('nextEmptyIndex',nextEmptyIndex);
+    //Убираем выделение, если нет пустых клеток
+    if (nextEmptyIndex === undefined) {
+      setSelectedIndex(null)
+    } else {
+      setSelectedIndex(nextEmptyIndex)
+    }
+  }
   const handleKeyPress = (letter: string, doItWhatever?: boolean) => {
     if(selectedIndex === null) return
     if (!doItWhatever && (blockedTime > 0 || isTipSelecting)) return
@@ -147,25 +187,7 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
         setCorrectLetters(prev => ({ ...prev, [selectedIndex]: false }))
       }, 2000)
 
-      // Ищем следующую пустую клетку сначала после текущей позиции
-      let nextEmptyIndex = data.hiddenIndexes.find(
-        index => index > selectedIndex && !newFilledLetters[index]
-      )
-      console.log(data.hiddenIndexes, nextEmptyIndex, data.text[nextEmptyIndex]);
-      
-      // Если не нашли после текущей позиции, ищем с начала фразы
-      if (nextEmptyIndex === undefined) {
-        nextEmptyIndex = data.hiddenIndexes.find(
-          index => index < selectedIndex && !newFilledLetters[index]
-        )
-      }
-
-      // Если пустых клеток больше нет, убираем выделение
-      if (nextEmptyIndex === undefined) {
-        setSelectedIndex(null)
-      } else {
-        setSelectedIndex(nextEmptyIndex)
-      }
+      getNextEmptyIndex(false,newFilledLetters);
     } else {
       setWrongLetters(prev => ({ ...prev, [selectedIndex]: letter }))
       onError()
@@ -181,7 +203,14 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
   }
 
   React.useEffect(() => {
+    if(isFromRules) return;
     const handlePhysicalKey = (e: KeyboardEvent) => {
+      if(e.key === 'ArrowLeft'){
+        getNextEmptyIndex(true);
+      }
+      if(e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Space'){
+        getNextEmptyIndex(false);
+      }
       if (Object.keys(wrongLetters).length > 0) return
       let key = e.key.toUpperCase()
       if (key === 'Ё') key = 'Е'
@@ -190,12 +219,15 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
       handleKeyPress(key)
     }
     window.addEventListener('keydown', handlePhysicalKey)
-    return () => window.removeEventListener('keydown', handlePhysicalKey)
+    return () => {
+      window.removeEventListener('keydown', handlePhysicalKey);
+    }
   }, [wrongLetters, handleKeyPress])
 
   useImperativeHandle(ref, () => ({
     handleKeyPress,
-    updatePhrase
+    updatePhrase,
+    getNextEmptyIndex
   }))
 
   useEffect(() => {
@@ -204,6 +236,13 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
       if(scrollEl) scrollEl.scrollIntoView({behavior: 'smooth', block: "center"});
     }catch(ignored){}
   }, [selectedIndex])
+
+  useEffect(() => {
+    getNextEmptyIndex(false, data.filledLetters);
+    if(adviceStepFromRules){
+      setSelectedIndex(12);
+    }
+  }, [])
 
   return (
     <div className={`phrase-row ${isLevelCompleted ? 'levelCompleted' : ''}`}>
@@ -238,9 +277,13 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
               const filledLetter = data.filledLetters[index]
               const shouldShowNumber = isLetter && number > 0 && !hidingNumbers.has(number)
               const isCompletingNumber = number > 0 && completingNumbers.has(number)
+              let changeLetterForRules = false;
+              if(adviceStepFromRules && number === 4){
+                changeLetterForRules = true;
+              }
               if (!isLetter) {
                 return (
-                  <span key={index} className="text-[1.8225rem] text-white uppercase ml-[2px]" style={{zIndex: isLevelCompleted ? 1 : 0}}>
+                  <span key={index} className="noLetterSymbol text-[1.8225rem] text-white uppercase ml-[2px]" style={{zIndex: isLevelCompleted ? 1 : 0}}>
                     {letter}
                   </span>
                 )
@@ -269,7 +312,7 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
                       ${isLetter && number > 0 ? 'text-white' : !isLetter ? 'text-white' : letter !== '.' ? 'text-[#4a2b2b]' : 'text-gray-600'}
                     `}
                   >
-                    {!isHidden && (
+                    {(!isHidden || changeLetterForRules) && (
                       <span>
                         {letter}
                       </span>

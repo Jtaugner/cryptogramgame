@@ -28,4 +28,14 @@
 .modal-shop-money .modal-shop-row-price{
   background-color: var(--mainColor);
   color: #ffffff;
+  font-size: 1rem;
+}
+.modal-shop-row-price_icon{
+  width: 17px;
+  height: 17px;
+  margin: 0 0 0 2px;
+}
+.modal-shop-money .modal-shop-row-price_money{
+  color: #fed65a;
+  font-size: 0.8rem;
 }

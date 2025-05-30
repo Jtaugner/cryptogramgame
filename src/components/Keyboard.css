@@ -13,6 +13,7 @@
 }
 
 .keyboard-key {
+  cursor: pointer;
   width: 2rem;
   height: 2.8rem;
   border-radius: 0.25rem;
@@ -28,22 +29,20 @@
   transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
 }
    
-.keyboard-key:active:not(:disabled) {
+.keyboard-key:active:not(.keyboard-key_inactive) {
      /* «утопление» */
      transform: translateY(1px) scale(0.99);
      background: #868cf7;
      box-shadow: 0 1px 1px rgba(0,0,0,0.1);
 }
    
+.keyboard-key_used{
+  color: #0eb516;
+}
 
-/* .keyboard-key:active {
-  background: red;
-} */
-
-.keyboard-key:disabled,
-.keyboard-key[aria-disabled="true"] {
-     background-color: rgb(115, 119, 181);
-     box-shadow: 0px 2px 0px 0px rgba(10, 10, 10, 0.22);
+.keyboard-key_inactive{
+  background-color: rgb(115, 119, 181);
+  box-shadow: 0px 2px 0px 0px rgba(10, 10, 10, 0.22);
   color: #898dce;
   cursor: default;
    

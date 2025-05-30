@@ -8,6 +8,7 @@ import Settings from './modalComponents/Settings'
 import Shop from './modalComponents/Shop'
 import ShopMoney from './modalComponents/ShopMoney'
 import Rating from './modalComponents/Rating'
+import Collection from './modalComponents/Collection'
 
 
 interface MenuProps {
@@ -31,12 +32,13 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData }) => {
      const [showShop, setShowShop] = useState(false)
      const [showShopMoney, setShowShopMoney] = useState(false)
      const [showRating, setShowRating] = useState(false)
+     const [showCollection, setShowCollection] = useState(false)
 
      return (
      <div className="menu-bg">
           {/* Настройки */}
           <div className="menu__top">
-               <button className="menu-settings-btn" onClick={() => setShowSettings(true)}></button>
+               <div className="menu-settings-btn" onClick={() => setShowSettings(true)}></div>
                <div className="moneyCount" onClick={() => setShowShopMoney(true)}>
                     <div className="modal-shop-row-price-icon">
                     </div>{userData.money}
@@ -62,7 +64,7 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData }) => {
                <div className="menu-mode-progress">
                Прогресс <span className="ml-auto text-red-500 font-bold">0/5</span>
                </div>
-               <button onClick={onStart} className="menu-mode-play">ИГРАТЬ</button>
+               <div onClick={onStart} className="menu-mode-play">ИГРАТЬ</div>
           </div>
           <div className="menu-mode-card locked">
                <div className="flex justify-between items-center mb-2">
@@ -73,7 +75,7 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData }) => {
                <svg width="32" height="32" fill="none" stroke="#3b3e7e" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
                <span className="text-xs text-[#3b3e7e] mt-1">Пройти уровней 0/19</span>
                </div>
-               <button disabled className="menu-mode-play">ИГРАТЬ</button>
+               <div disabled className="menu-mode-play">ИГРАТЬ</div>
                <div className="absolute inset-0 flex items-center justify-center">
                <svg width="40" height="40" fill="none" stroke="#3b3e7e" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 12l2 2 4-4"/></svg>
                </div>
@@ -139,27 +141,27 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData }) => {
           </div>
           {/* Продолжить */}
           <div className="menu-continue">
-          <button className="menu-continue-btn" onClick={onStart}>
+          <div className="menu-continue-btn" onClick={onStart}>
                <span>{userData.lastLevel === 0 ? 'ИГРАТЬ' : 'ПРОДОЛЖИТЬ'}</span>
-               <span className="menu-continue-btn__level">УРОВЕНЬ {userData.lastLevel+1}</span></button>
+               <span className="menu-continue-btn__level">УРОВЕНЬ {userData.lastLevel+1}</span></div>
           </div>
           </div>
           
           {/* Нижнее меню */}
           <div className="menu-bottom">
                <div className="menu-bottom-wrap">
-                    <div className="menu-bottom-item">
-                         <div className="menu-bottom-icon icon-shop" onClick={() => setShowShop(true)}></div>
+                    <div className="menu-bottom-icon icon-shop" onClick={() => setShowShop(true)}>
                          <span className="menu-bottom-label">Магазин</span>
                     </div>
-                    <div className="menu-bottom-item" onClick={() => setShowRating(true)}>
-                         <div className="menu-bottom-icon icon-rating"></div>
+                    <div className="menu-bottom-icon icon-rating" onClick={() => setShowRating(true)}>
                          <span className="menu-bottom-label">Рейтинг</span>
                     </div>
-                    <div className="menu-bottom-item" onClick={() => setShowStats(true)}>
-                         <div className="menu-bottom-icon icon-stat"></div>
+                    <div className="menu-bottom-icon icon-stat" onClick={() => setShowStats(true)}>
                          <span className="menu-bottom-label">Статистика</span>
                     </div>
+                    <div className="menu-bottom-icon icon-collection" onClick={() => setShowCollection(true)}>
+                         <span className="menu-bottom-label">Коллекция</span>
+                    </div>     
                </div>
           
           </div>
@@ -180,6 +182,7 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData }) => {
                <Shop
                     userData={userData}
                     onClose={() => setShowShop(false)}
+                    openShopMoney={() => setShowShopMoney(true)}
                     setUserData={setUserData}
                />
           )}
@@ -194,6 +197,12 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData }) => {
                <Rating
                     userData={userData}
                     onClose={() => setShowRating(false)}
+               />
+          )}
+          {showCollection && (
+               <Collection
+                    userData={userData}
+                    onClose={() => setShowCollection(false)}
                />
           )}
      </div>

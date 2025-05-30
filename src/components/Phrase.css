@@ -6,7 +6,6 @@
   flex-wrap: wrap;
   justify-content: center;
   width: 100%;
-  margin-bottom: 2rem;
   padding: 30px 0;
 }
 
@@ -24,6 +23,7 @@
   width: fit-content;
   border-radius: 2px;
   transition: border-color 0.2s;
+  font-family: 'SF Mono';
 }
 .phrase-cell, .phrase-cell_done .phrase-cell-inner{
      border: var(--cellBorderSize) solid rgb(114, 119, 236);
@@ -69,6 +69,7 @@
   color: #dddce1;
   font-weight: 300;
   max-height: 100px;
+  font-family: 'SF Pro Display';
 }
 .phrase-cell_notFilled .phrase-cell-number{
      color: #6C72F0;
@@ -217,7 +218,7 @@
 }
 @keyframes levelCompletedAnimation{
      100%{     
-          transform: scale(1.4);
+          transform: scale(1.9);
      }
 }
 @keyframes levelCompletedAnimationInner{
@@ -232,7 +233,7 @@
 
      }
      100%{
-          margin: 0 10px 5px 10px;
+          margin: 0 10px 15px 10px;
           /* gap: 0; */
      }
 }
@@ -249,7 +250,7 @@
           transform: scale(1);
      }
      100%{
-          transform: scale(0.8);
+          transform: scale(0.75);
           padding: 0;
      }
 }
@@ -258,7 +259,7 @@
 }
 
 
-.levelCompleted .phrase-cell{
+.levelCompleted .phrase-cell, .levelCompleted .noLetterSymbol{
      animation: levelCompletedAnimation 1.5s ease-in-out forwards;
 }
 .levelCompleted .phrase-cell_done .phrase-cell-inner{

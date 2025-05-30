@@ -3,7 +3,8 @@
   --textColor: #fdfdfd;
 }
 .menu-bg {
-  min-height: 100vh;
+  height: 100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -150,7 +151,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-radius: 12px 12px 0 0;
+  border-radius: 8px 8px 0 0;
   background-color: var(--mainColor);
   padding: 2px 10px;
   color: var(--textColor);
@@ -204,7 +205,7 @@
      align-items: center;
      background-color: #2e2f4d;
      color: #8a8a98;
-     border-radius: 0 0 12px 12px;
+     border-radius: 0 0 8px 8px;
      font-size: 0.8rem;
      padding: 3px 10px;
      box-shadow: 0 2px 0px 0px rgba(0, 0, 0, 0.3);
@@ -249,16 +250,21 @@ color: var(--textColor);
   color: var(--textColor);
   font-weight: bold;
   font-size: 1.5rem;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
   border-radius: 7px;
 
   box-shadow: 0 1px 0px 0 rgba(10, 10, 10, 0.4),inset 0px -2px 0px 0px rgba(10,10,10,0.4);
-   
+  cursor: pointer;
+  max-width: 300px;
 }
 .menu-continue-btn__level {
-  font-size: 1.1rem;
+  font-size: 1rem;
+  color: #147424;
+  text-shadow: none;
 }
 .menu-continue-btn:active {
-  background: #3db710;
+  box-shadow: none;
+  transform: scale(0.99) translateY(1px);
 }
 .menu-bottom {
   position: relative;
@@ -279,12 +285,6 @@ color: var(--textColor);
   top: -10px;
   left: 0;
 }
-.menu-bottom-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  
-}
 .menu-bottom-icon {
   width: 4rem;
   height: 4rem;
@@ -294,8 +294,14 @@ color: var(--textColor);
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  cursor: pointer;
 }
 .menu-bottom-label {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, 100%);
   font-size: 1rem;
   color: var(--textColor);
 } 
@@ -309,6 +315,10 @@ color: var(--textColor);
 }
 .icon-rating {
   background: url('../assets/rating.svg') center center no-repeat, #6c72f0;
+  background-size: 60%;
+}
+.icon-collection {
+  background: url('../assets/collection/collection.svg') center center no-repeat, #6c72f0;
   background-size: 60%;
 }
 .video-bg{

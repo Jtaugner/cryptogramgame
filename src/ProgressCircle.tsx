@@ -44,6 +44,7 @@ const ProgressCircle: React.FC<ProgressCircleProps> = ({
 
   // Таймер: обновляем elapsed каждые 100 мс
   useEffect(() => {
+     if(duration === 0) return;
     const start = Date.now();
     const tick = () => {
       const now = Date.now();

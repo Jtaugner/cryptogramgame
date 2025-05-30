@@ -1,0 +1,188 @@
+.modal-collection-category{
+  justify-content: center !important;
+  align-items: center !important;
+}
+.collection-category-container{
+  width: 90%;
+  max-width: 500px;
+  height: 600px;
+  max-height: 99%;
+  background-color: #fff;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1;
+  overflow: hidden;
+}
+.collection-category-main-title{
+  position: relative;
+  width: 100%;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.collection-category-main-title-text{
+  font-size: 1.5rem;
+  line-height: 1.5rem;
+  text-transform: uppercase;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+  color: #fff;
+  font-weight: bold;
+}
+.collection-category-main-title-center{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.collection-category-main-title-icon{
+  width: 32px;
+  height: 32px;
+  background: url(../../assets/collection/q.svg) center center no-repeat;
+  margin-right: 10px;
+  transform: translateY(-3px);
+}
+.collection-category-main-title-icon_quotes{
+  background: url(../../assets/collection/q.svg) center center no-repeat;
+  transform: none;
+}
+.collection-category-main-title-icon_poems{
+  background: url(../../assets/collection/p.svg) center center no-repeat; 
+  transform: translateY(-1px); 
+}
+.collection-category-main-title-icon_aphorisms{
+  background: url(../../assets/collection/a.svg) center center no-repeat;
+}
+.collection-category-main-title-icon_music{
+  background: url(../../assets/collection/m.svg) center center no-repeat;
+  transform: translateY(-1px);
+}
+.collection-category-main-title-icon_cinema{
+  background: url(../../assets/collection/c.svg) center center no-repeat;
+}
+.collection-category-main-title-icon_science{
+  background: url(../../assets/collection/s.svg) center center no-repeat;
+}
+.collection-category-main-title-icon{
+  background-size: 100%;
+}
+.collection-category-main-title .modal-close{
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+}
+.collection-category-main{
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--mainColor);
+  border-radius: 10px 10px 0 0;
+}
+.collection-category-main-quote{
+  flex: 1;
+  font-weight: 400;
+  color: #fff;
+  font-size: 1.9rem;
+  line-height: 2.3rem;
+  text-align: center;
+  padding: 0 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.collection-category-main-bottom{
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  width: 100%;
+}
+.collection-category-main-count{
+  background-color: #5b61da;
+  color: #fff;
+  font-size: 0.8rem;
+  line-height: 0.8rem;
+  border-radius: 0 3px 3px 0;
+  width: 60px;
+  padding: 5px;
+  text-align: right;
+  margin-bottom: 5px;
+  flex: 0 0 auto;
+}
+.collection-category-main-author{
+  margin-right: 20px;
+  margin-bottom: 10px;
+}
+.collection-category-main-author-name{
+    color: #f2f3fc;
+    font-size: 1.2rem;
+    line-height: 1.2rem;
+    font-weight: 500;
+    font-style: italic;
+    text-align: right;
+}
+.collection-category-main-author-desc{
+  color: #afb2f5;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1rem;
+  text-align: right;
+  margin-top: 10px;
+}
+.collection-category-buttons{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 10px;
+}
+.collection-category-buttons-button{
+  position: relative;
+  width: 135px;
+  height: 52px;
+  background-color: rgb(53, 178, 74);
+  box-shadow: 0 1px 0px 0 rgba(10, 10, 10, 0.25), inset 0px -2px 0px 0px rgba(10, 10, 10, 0.15);
+  cursor: pointer;
+  border-radius: 8px;
+}
+.collection-category-buttons-button::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: url(../../assets/collection/arrow.svg) center center no-repeat;
+  background-size: 20%;
+}
+.collection-category-buttons-button_disabled{
+  background-color: #7f80c7;
+}
+.collection-category-buttons-button_disabled::before{
+  background: url(../../assets/collection/arrow_no.svg) center center no-repeat;
+  background-size: 20%;
+}
+.collection-category-buttons-button_right::before{
+  transform: rotate(180deg);
+}
+.collection-category-buttons-button_disabled::before{
+  background: url(../../assets/collection/arrow_no.svg) center center no-repeat;
+  background-size: 20%;
+  transform: rotate(180deg);
+}
+.collection-category-buttons-button_disabled.collection-category-buttons-button_right::before{
+  transform: none;
+}
+
+
+/*Прокрутка*/
+.modal-collection-category .rules-track{
+  flex: 1;
+}
