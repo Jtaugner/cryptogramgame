@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import Keyboard from './Keyboard'
 import Phrase from './Phrase'
 import './Game.css'
@@ -31,6 +31,8 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData }) => {
   const [blockedTime, setBlockedTime] = useState(0)
   const [notShowKeyboard, setNotShowKeyboard] = useState(false)
   const [blockedTimeTimer, setBlockedTimeTimer] = useState(0)
+  const [glowScreenAnimation, setGlowScreenAnimation] = useState(false)
+  const [errorScreenAnimation, setErrorScreenAnimation] = useState(false)
   const [phraseData, setPhraseData] = useState<LevelDataProps>()
   const [inactiveKeys, setInactiveKeys] = useState<Set<string>>(new Set())
   const [levelData, setLevelData] = useState<LevelData>(levels[level]);
@@ -97,15 +99,23 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData }) => {
     updateLastLevelData({}, false)
     onMenu()
   }
-  
+  const blockedTimeRef = useRef(blockedTime);
+  useEffect(() => {
+    blockedTimeRef.current = blockedTime;
+  }, [blockedTime]);
   const endBlockTime = () => {
+    if(blockedTimeRef.current === 0) return;
+    console.log('endBlockTime 2', blockedTimeRef.current, errors);
     setBlockedTime(0)
     setTimeout(() => {
       setBlockedTimeTimer(0)
     }, 1000)
     setErrors(0)
     updateLastLevelData({errors: 0, isKeyboardBlocked: false})
-  }
+    setTimeout(() => {
+      console.log('endBlockTime 3', blockedTimeRef.current);
+    }, 1000)
+  };
   const cancelBlockedByMoney = () => {
     if(userData.money >= cancelBlockPrice){
       setUserData({...userData, money: userData.money - cancelBlockPrice})
@@ -114,7 +124,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData }) => {
   }
   const switchOnBlockedKeyboard = () => {
     showAdv();
-    let blockedTime = 15000;
+    let blockedTime = 5000;
     setBlockedTime(blockedTime)
     setBlockedTimeTimer(blockedTime / 1000);
   }
@@ -126,6 +136,10 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData }) => {
       updateLastLevelData({errors: errors+1, isKeyboardBlocked: false, atLeastOneError: true})
       if(phraseData) setPhraseData({...phraseData, atLeastOneError: true})
     }
+    setErrorScreenAnimation(true);
+    setTimeout(() => {
+      setErrorScreenAnimation(false);
+    }, 800)
     setErrors(prev => prev + 1)
     
   }
@@ -144,7 +158,6 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData }) => {
   }
   const handleCompleteNumber = (letter: string) => {
     setInactiveKeys(prev => new Set([...prev, letter.toLowerCase()]))
-
   }
 
   useEffect(() => {
@@ -254,6 +267,13 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData }) => {
     })
 
     return completedNumbers
+  }
+
+  const switchOnGlowScreen = () => {
+    // setGlowScreenAnimation(true)
+    setTimeout(() => {
+      // setGlowScreenAnimation(false)
+    }, 1500)
   }
 
   const handleLetterFill = (filledLetters: Record<number, string>) => {
@@ -366,6 +386,14 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData }) => {
       {showPlayersPassedLevel && <div className="game-bg-blackout game-bg-blackout_playersPassed" onClick={() => setShowPlayersPassedLevel(false)}></div>}
       {isLevelCompleted && <div className="game-bg-blur"></div>}
       {/* Header */}
+      {(glowScreenAnimation || errorScreenAnimation) &&
+       <div className={`glow-screen ${errorScreenAnimation ? 'glow-screen_error' : ''}`}>
+        <div className="edge-line-left"></div>
+        <div className="edge-line-right"></div>
+      </div>
+      }
+      
+
       <div className={`game-header`}>
       <SwitchTransition mode="out-in">
       <CSSTransition
@@ -430,6 +458,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData }) => {
           useTip={useTip}
           isLevelCompleted={isLevelCompleted}
           level={level}
+          switchOnGlowScreen={switchOnGlowScreen}
         />
         {isLevelCompleted && (
           <div className="game-main_author">
@@ -466,7 +495,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData }) => {
         </div>
         <div className={`keyboard-blocked ${blockedTime > 0 ? 'keyboard-blocked_show' : ''}`}>
             <ProgressCircle
-                  duration={blockedTime}
+                  blockedTime={blockedTime}
                   size={65}
                   strokeWidth={1}
                   endBlockTime={endBlockTime}

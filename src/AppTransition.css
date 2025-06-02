@@ -19,3 +19,145 @@
    transition: opacity 1000ms;
 }
 
+.zeroOpacity{
+   opacity: 0;
+}
+
+/* Анимация свечения */
+
+.glow-screen {
+     pointer-events: none;
+     position: absolute;
+     top: 0;
+     left: 0;
+     height: 100%;
+     width: 100%;
+     z-index: 100;
+     background: transparent;
+     animation: pulseShadow 0.5s ease-out forwards;
+}
+@keyframes wave-red2 {
+     0%{
+       box-shadow:
+        inset -1px -1px 5px 2px rgba(188, 0, 0, 0.4),
+        inset  1px -1px 5px 2px rgba(188, 0, 0, 0.4),
+        inset  1px  1px 5px 2px rgba(188, 0, 0, 0.4),
+        inset -1px  1px 5px 2px rgba(188, 0, 0, 0.4);
+     }
+     100% {
+       /* тени расходятся и плавно исчезают */
+       box-shadow:
+          inset -1px -1px 10px 30px rgba(188, 0, 0, 0),
+          inset  1px -1px 10px 30px rgba(188, 0, 0, 0),
+          inset  1px  1px 10px 30px rgba(188, 0, 0, 0),
+          inset -1px  1px 10px 30px rgba(188, 0, 0, 0);
+     }
+   }
+.glow-screen_error{
+     /* animation: wave-red2 1.4s ease-in-out forwards; */
+     animation: pulseShadowError 0.8s cubic-bezier(0.8, 0, 0.2, 1) forwards;
+     /* animation: none; */
+}
+@keyframes pulseShadowError {
+     0%, 100%{
+          box-shadow: inset 0 0 0px 0 rgba(188, 0, 0, 0);
+        }
+        1%, 60% {
+          box-shadow: inset 0 0 30px 15px rgba(188, 0, 0, 0.6);
+        }
+}
+   
+   @keyframes pulseShadow {
+     0%, 100%{
+       box-shadow: inset 0 0 0px 0 rgba(188, 0, 0, 0);
+     }
+     1%, 60% {
+       box-shadow: inset 0 0 40px 20px rgba(188, 0, 0, 0.6);
+     }
+   }
+   @keyframes fallTransform {
+     0% {
+       transform: translateY(0) scale(1) rotate(0deg);
+       box-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
+     }
+     10%,15% {
+       transform: translateY(-5px) scale(1.1) rotate(-2deg);
+       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+     }
+     30% {
+       transform: translateY(0) scale(1) rotate(5deg);
+     }
+     70% {
+       transform: translateY(40dvh) rotate(7deg);
+       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+       opacity: 1;
+     }
+     100% {
+       transform: translateY(80dvh) rotate(10deg);
+       opacity: 0;
+     }
+   }
+   @keyframes fallTransform2 {
+     0% {
+       transform: translateY(0) scale(1) rotate(0deg);
+       box-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
+     }
+     10%,15% {
+       transform: translateY(-5px) scale(1.1) rotate(2deg);
+       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+     }
+     30% {
+       transform: translateY(0) scale(1) rotate(-5deg);
+     }
+     70% {
+       transform: translateY(40dvh) rotate(-7deg);
+       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+       opacity: 1;
+     }
+     100% {
+       transform: translateY(80dvh) rotate(-10deg);
+       opacity: 0;
+     }
+   }
+
+   /*Блик по кнопки*/
+   @keyframes shineButton {
+     0% {
+       left: -100%;
+     }
+     80% {
+       left: -100%; /* не двигаем до 90% времени */
+     }
+     98% {
+       left: 120%; /* быстро пробежал */
+     }
+     100% {
+       left: 120%;
+     }
+   }
+
+   .shiny-button {
+     position: relative;
+     overflow: hidden;
+   }
+   
+   /* сам блик */
+.shiny-button::before {
+     content: "";
+     position: absolute;
+     top: 0;
+     left: -100%;
+     width: 60%;
+     height: 100%;
+     background: linear-gradient(
+       120deg,
+       rgba(255, 255, 255, 0) 0%,
+       rgba(255, 255, 255, 0.5) 50%,
+       rgba(255, 255, 255, 0) 100%
+     );
+     transform: skewX(-20deg);
+     animation: shineButton 4s infinite;
+   }
+
+
+

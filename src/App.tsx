@@ -62,7 +62,7 @@ const App: React.FC<AppProps> = ({allUserData}) => {
   const { getSeconds, reset } = usePageActiveTimer()
   const [userData, setUserData] = useState<UserDataProps>(allUserData)
   useEffect(() => {
-    saveData(userData);
+    // saveData(userData);
   }, [userData])
   useEffect(() => {
     console.log('time:', getSeconds());

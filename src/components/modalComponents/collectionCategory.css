@@ -15,6 +15,14 @@
   align-items: center;
   z-index: 1;
   overflow: hidden;
+  animation: modalFadeInCenter 0.35s ease-in-out forwards;
+}
+.collection-category_closing .blackout{
+  transition: opacity 0.35s ease-in-out;
+  opacity: 0;
+}
+.collection-category_closing .collection-category-container{
+  animation: modalCloseInCenter 0.35s ease-in-out forwards;
 }
 .collection-category-main-title{
   position: relative;

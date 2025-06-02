@@ -9,6 +9,7 @@ import Shop from './modalComponents/Shop'
 import ShopMoney from './modalComponents/ShopMoney'
 import Rating from './modalComponents/Rating'
 import Collection from './modalComponents/Collection'
+import { levels } from '../levels'
 
 
 interface MenuProps {
@@ -39,7 +40,10 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData }) => {
           {/* Настройки */}
           <div className="menu__top">
                <div className="menu-settings-btn" onClick={() => setShowSettings(true)}></div>
-               <div className="moneyCount" onClick={() => setShowShopMoney(true)}>
+               <div
+                className={`moneyCount ${showShop || showShopMoney ? 'moneyCount_big' : ''}`}
+                onClick={() => setShowShopMoney(true)}
+                >
                     <div className="modal-shop-row-price-icon">
                     </div>{userData.money}
                </div>
@@ -141,8 +145,9 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData }) => {
           </div>
           {/* Продолжить */}
           <div className="menu-continue">
-          <div className="menu-continue-btn" onClick={onStart}>
-               <span>{userData.lastLevel === 0 ? 'ИГРАТЬ' : 'ПРОДОЛЖИТЬ'}</span>
+          <div className="menu-continue-btn shiny-button" onClick={onStart}>
+               <div className={`menu-continue-btn-category ${'menu-continue-btn-category_' + levels[userData.lastLevel].type}`}></div>       
+               <span>ПРОДОЛЖИТЬ</span>
                <span className="menu-continue-btn__level">УРОВЕНЬ {userData.lastLevel+1}</span></div>
           </div>
           </div>

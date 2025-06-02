@@ -9,10 +9,17 @@ type RulesProps = {
 }
 const levelPhraseRules = {
   text:"ИГРА ПРОСТА",
-  numbers:[1,2,7,8,0,8,7,4,5,6,8],
+  numbers:[1,2,7,8,0,9,7,4,5,6,8],
   hiddenIndexes:[3,6],
   filledLetters:{},
-  completedNumbers:new Set([1,2,4,5,6])
+  completedNumbers:new Set([1,2,4,5,6,9])
+};
+const levelPhraseRules3 = {
+  text:"УГАДАЙ СЛОВО",
+  numbers:[1,2,3,4,3,5,0,6,7,8,9,8],
+  hiddenIndexes:[2,4,8,9,11],
+  filledLetters:{},
+  completedNumbers:new Set([1,2,4,5,6,9])
 };
 const levelPhraseRules2 = {
   text:"ШИНШИЛЛА ПИЩИТ",
@@ -29,16 +36,16 @@ const rulesTexts = [
     levelRules: levelPhraseRules
   },
   {
+    id: 'phrase-step-2',
+    title: 'Цель игры',
+    text: 'Ваша задача - заполнить все клетки, чтобы получить исходную фразу.',
+    levelRules: levelPhraseRules3
+  },
+  {
     id: 'phrase-step-advice',
     title: 'Совет',
     text: 'Сначала заполните те клетки, числа которых вы уже знаете',
     levelRules: levelPhraseRules2
-  },
-  {
-    id: 'phrase-step-3',
-    title: 'Бустер «Расстановщик»',
-    text: 'Бла-блашка',
-    levelRules: levelPhraseRules
   }
 ]
 const Rules: React.FC<RulesProps> = ({onClose }) => {
@@ -105,7 +112,7 @@ const Rules: React.FC<RulesProps> = ({onClose }) => {
             <div className={`rules-step ${index === ruleStep ? 'rules-step-active' : ''}`} key={index} onClick={() => setRuleStep(index)}></div>
           ))}
         </div>
-        <div className="rules-button" onClick={nextStep}>
+        <div className="rules-button shiny-button" onClick={nextStep}>
           {ruleStep === rulesTexts.length - 1 ? 'ИГРАТЬ' : 'ДАЛЕЕ'}
         </div>
       </div>

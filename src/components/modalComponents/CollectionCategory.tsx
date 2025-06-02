@@ -27,10 +27,17 @@ const CollectionCategory: React.FC<CollectionCategoryProps> = ({onClose, categor
       trackTouch: true,
       preventDefaultTouchmoveEvent: true,
     });
+    const [isClosing, setIsClosing] = useState(false);
+    const closeModal = () => {
+      setIsClosing(true);
+      setTimeout(() => {
+        onClose();
+      }, 350);
+    }
 
     return (
-    <div className={`modal-bg modal-collection-category`}>
-      <div className="blackout" onClick={onClose}></div>
+    <div className={`modal-bg modal-collection-category ${isClosing ? 'collection-category_closing' : ''}`}>
+      <div className="blackout" onClick={closeModal}></div>
       <div className="collection-category-container" {...handlers}>
         <div className="collection-category-main">
 

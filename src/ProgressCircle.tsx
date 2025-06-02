@@ -3,7 +3,7 @@ import './ProgressCircle.css'
 
 interface ProgressCircleProps {
   /** Общая длительность в мс */
-  duration: number;
+  blockedTime: number;
   endBlockTime: () => void;
   setBlockedTimeTimer: (time: number) => void;
   blockedTimeTimer: number;
@@ -18,7 +18,7 @@ interface ProgressCircleProps {
 }
 
 const ProgressCircle: React.FC<ProgressCircleProps> = ({
-  duration,
+  blockedTime,
   endBlockTime,
   setBlockedTimeTimer,
   blockedTimeTimer,
@@ -44,17 +44,17 @@ const ProgressCircle: React.FC<ProgressCircleProps> = ({
 
   // Таймер: обновляем elapsed каждые 100 мс
   useEffect(() => {
-     if(duration === 0) return;
+     if(blockedTime === 0) return;
     const start = Date.now();
     const tick = () => {
       const now = Date.now();
       const diff = now - start;
-      const clamped = Math.min(diff, duration);
+      const clamped = Math.min(diff, blockedTime);
       setElapsed(clamped);
-      setPct((clamped / duration) * 100);
-      if (clamped < duration) {
+      setPct((clamped / blockedTime) * 100);
+      if (clamped < blockedTime) {
         requestAnimationFrame(tick);
-        let n = Math.ceil((duration - clamped) / 1000);
+        let n = Math.ceil((blockedTime - clamped) / 1000);
         if(n < blockedTimeTimer){
             setBlockedTimeTimer(n)
         }
@@ -63,7 +63,7 @@ const ProgressCircle: React.FC<ProgressCircleProps> = ({
       }
     };
     requestAnimationFrame(tick);
-  }, [duration]);
+  }, [blockedTime]);
 
   // Анимация круга при изменении pct
   useEffect(() => {
@@ -75,7 +75,7 @@ const ProgressCircle: React.FC<ProgressCircleProps> = ({
   }, [pct, circumference]);
 
   // Оставшееся время в секундах
-//   const remainingSec = Math.ceil((duration - elapsed) / 1000);
+//   const remainingSec = Math.ceil((blockedTime - elapsed) / 1000);
 
   return (
     <div className='progress-circle' style={{ width: size, height: size }}>

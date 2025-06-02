@@ -14,13 +14,13 @@
 
 .keyboard-key {
   cursor: pointer;
-  width: 2rem;
-  height: 2.8rem;
-  border-radius: 0.25rem;
+  width: 32px;
+  height: 44.8px;
+  border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
+  font-size: 24px;
   text-transform: uppercase;
   background-color: rgb(227, 236, 251);
   box-shadow: 0px 2px 0px 0px rgba(10, 10, 10, 0.22);
@@ -31,7 +31,7 @@
    
 .keyboard-key:active:not(.keyboard-key_inactive) {
      /* «утопление» */
-     transform: translateY(1px) scale(0.99);
+     transform: scale(0.99);
      background: #868cf7;
      box-shadow: 0 1px 1px rgba(0,0,0,0.1);
 }

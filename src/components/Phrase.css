@@ -2,11 +2,17 @@
 /* Стили для Phrase */
 
 .phrase-row {
+  flex: 1;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  align-items: flex-start;
+  align-content: flex-start;
   width: 100%;
   padding: 30px 0;
+}
+.phrase-row_overflowHidden{
+     overflow: hidden;
 }
 
 .phrase-word {
@@ -24,6 +30,10 @@
   border-radius: 2px;
   transition: border-color 0.2s;
   font-family: 'SF Mono';
+  background-color: var(--mainColor);
+}
+.phrase-cell_bg{
+     background-color: var(--mainColor);
 }
 .phrase-cell, .phrase-cell_done .phrase-cell-inner{
      border: var(--cellBorderSize) solid rgb(114, 119, 236);
@@ -32,6 +42,7 @@
 .phrase-cell_done{
      border: none;
      box-shadow: none;
+     background: transparent;
 }
 .phrase-cell_done .phrase-cell-inner{
      box-sizing: content-box;
@@ -63,6 +74,10 @@
 }
 
 .phrase-cell-number {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-size: 1.3rem;
   line-height: 1.7rem;
   transition: color 0.2s;
@@ -70,22 +85,16 @@
   font-weight: 300;
   max-height: 100px;
   font-family: 'SF Pro Display';
+  position: relative;
 }
 .phrase-cell_notFilled .phrase-cell-number{
      color: #6C72F0;
 }
-@keyframes pulsate-red {
-     0%, 100% {
-          box-shadow: inset 0 0 0 var(--wrongLetterColor);
-        }
-        50% {
-          box-shadow: inset 0 0 6px var(--wrongLetterColor);
-        }
-}
+
    @keyframes wave {
      0%, 100% {
        box-shadow:
-          inset 0 0 0 1px var(--rightLetterColor),
+          inset 0 0 0 1px #4eff00,
          -1px -1px 0 0 rgba(81, 224, 38, 0.3),
           1px -1px 0 0 rgba(81, 224, 38, 0.3),
           1px  1px 0 0 rgba(81, 224, 38, 0.3),
@@ -94,7 +103,7 @@
      50% {
        /* тени расходятся и плавно исчезают */
        box-shadow:
-          inset 0 0 0 1px var(--rightLetterColor),
+          inset 0 0 0 1px #4eff00,
          -1px -1px 0 3px rgba(81, 224, 38, 0),
           1px -1px 0 3px rgba(81, 224, 38, 0),
           1px  1px 0 3px rgba(81, 224, 38, 0),
@@ -102,12 +111,23 @@
      }
    }
 .selected-glow {
+     position: relative;
      animation: wave 3s infinite ease-out;
-     border: var(--cellBorderSize) solid var(--rightLetterColor);
-     box-shadow: inset 0 0 0 1px var(--rightLetterColor);
+     border: var(--cellBorderSize) solid #4eff00;
 } 
+.selected-glow:before{
+     content: '';
+     position: absolute;
+     top: 0;
+     left: 0;
+     width: 100%;
+     height: 100%;
+     
+     box-shadow: inset 0 0 0 1px #4eff00, inset 0 0 2px 1px #50527e;
+     z-index: 1;
+}
 .selected-glow .phrase-cell-number{
-     color: #53e028;
+     color: #34377c;
 }
 .border-white{
      border-color: #dddce1;
@@ -116,7 +136,7 @@
      border-color: var(--mainColor);
 }
 .selected-glow .border-white{
-     border-color: #43d109;
+     border-color: #50527e;
 }
 /* Анимации ввода букв */   
 @keyframes shake {
@@ -125,19 +145,59 @@
      30%, 70%{ transform: rotate(7.5deg); }
    }
 .shake {
-     animation: shake 1.5s ease-in-out;
+     /* animation: shake 1s ease-in-out; */
      transform-origin: center center;
      color: var(--wrongLetterColor);
 }
+@keyframes wave-red {
+     0%{
+       box-shadow:
+          inset 0 0 0 1px rgba(188, 0, 0, 1),
+         -1px -1px 0 0 rgba(188, 0, 0, 0.3),
+          1px -1px 0 0 rgba(188, 0, 0, 0.3),
+          1px  1px 0 0 rgba(188, 0, 0, 0.3),
+         -1px  1px 0 0 rgba(188, 0, 0, 0.3);
+     }
+     50% {
+       /* тени расходятся и плавно исчезают */
+       box-shadow:
+          inset 0 0 0 1px rgba(188, 0, 0, 1),
+         -1px -1px 0 3px rgba(188, 0, 0, 0),
+          1px -1px 0 3px rgba(188, 0, 0, 0),
+          1px  1px 0 3px rgba(188, 0, 0, 0),
+         -1px  1px 0 3px rgba(188, 0, 0, 0);
+     }
+     100%{
+          box-shadow:
+          inset 0 0 0 1px rgba(188, 0, 0, 1),
+         -1px -1px 0 0 rgba(188, 0, 0, 0.3),
+          1px -1px 0 0 rgba(188, 0, 0, 0.3),
+          1px  1px 0 0 rgba(188, 0, 0, 0.3),
+         -1px  1px 0 0 rgba(188, 0, 0, 0.3);
+     }
+   }
 .wrong-letter{
-     animation: pulsate-red 1.7s ease-in-out infinite;
+     animation: wave-red 3s ease-in-out infinite;
+     /* box-shadow: inset 0 0 3px var(--wrongLetterColor); */
      border: var(--cellBorderSize) solid var(--wrongLetterColor);
 }
+@keyframes wrongLetterColor {
+     0%{
+          color: transparent;
+     }
+     40%, 100%{
+          color: var(--wrongLetterColor);
+     }
+}
 .wrong-letter .phrase-cell-number{
+     /* animation: wrongLetterColor 1s ease-out infinite; */
      color: var(--wrongLetterColor);
 }
 .wrong-letter .border-white{
      border-color: var(--wrongLetterColor);
+}
+.wrong-letter:before{
+     box-shadow: inset 0 0 0 1px var(--wrongLetterColor);
 }
    
 @keyframes correctLetter {
@@ -150,62 +210,69 @@
           color: #fff;
       }
    }
-@keyframes correctLetterColor {
-     0%{
-          color: var(--rightLetterColor);
-     }
-     100% {
-          color: #fff;
-      }
-   }
-@keyframes correctLetterNumberColor {
-     0%{
-          color: var(--rightLetterColor);
-     }
-     100% {
-          color: #dddce1;
-      }
-   }
 .correct-letter {
-     animation: correctLetter 1s ease-in-out forwards;
-}
-.correct-letter .phrase-cell-inner{
-     animation: correctLetterColor 0.5s ease-in-out forwards;
-}
-.correct-letter.phrase-cell-number{
-     animation: correctLetterNumberColor 0.5s ease-in-out forwards;
+     /* animation: correctLetter 0.5s ease-in-out forwards; */
 }
 @keyframes completeNumber {
      0%{
           transform: scale(1) translateY(0);
-          box-shadow: none;
+          text-shadow: none;
      }
-     50%{
-          transform: scale(1.05) translateY(-20%);
-          box-shadow: 0 0 2px 2px rgba(255, 255, 255, 0.9);
+     10%, 80%{
+          transform: scale(1.26) translateY(-1px);
+          text-shadow: 0px 0 10px #398026;
      }
      100%{
           transform: scale(1) translateY(0);
+          text-shadow: none;
      }
 }
-.complete-number{
-     animation: completeNumber 2s ease-in-out;
-     
+@keyframes completeNumberInner {
+     0%{
+          background-color: var(--mainColor);
+     }
+     10%, 80%{
+          background-color: #3f41a0;
+     }
+     100%{
+          background-color: var(--mainColor);
+     }
+}
+.complete-number .phrase-cell-inner{
+     /* animation: completeNumber 1s ease-out forwards; */
+     /* animation: completeNumberInner 1.4s ease-out forwards; */
+}
+.complete-number .phrase-cell-letter{
+     animation: completeNumber 0.8s ease-out forwards;
      z-index: 2;
 }
-.phrase-cell_done .phrase-cell-number{
-     opacity: 0;
-     transition: opacity 0.2s ease-in-out;
+.complete-number1 .phrase-cell-number{
+     background-color: var(--mainColor);
+     animation: fallTransform 0.5s ease-in forwards;
 }
-@keyframes fadeout {
+.complete-number2 .phrase-cell-number, .complete-number3 .phrase-cell-number{
+     background-color: var(--mainColor);
+     animation: fallTransform2 0.5s ease-in forwards;
+}
+.phrase-cell_done:not(.complete-number):not(.numberCompleted) .phrase-cell-number{
+     opacity: 0;
+}
+@keyframes cellDoneLetterAnimation {
      0%{
           opacity: 1;
+          transform: scale(4) rotate(15deg) translate(15%, -35%);
      }
-     50%{
+     20%{
           opacity: 1;
+          transform: scale(1.2) rotate(0deg) translate(0, 0);
+     }
+     80%{
+          opacity: 1;
+          transform: scale(1.2) rotate(0deg) translate(0, 0);
      }
      100%{
           opacity: 0;
+          transform: scale(1.2) rotate(0deg) translate(0, 0);
      }
 }
 .numberCompleted .phrase-cell-number{
@@ -214,8 +281,90 @@
      color: transparent;
      background: url(../assets/doneLetter.png) no-repeat center center;
      background-size: 100%;
-     animation: fadeout 3s ease-in-out forwards; 
+     animation: cellDoneLetterAnimation 1.4s ease-out forwards;
+     z-index: 2; 
 }
+.numberCompleted .phrase-cell-number:before,
+.numberCompleted .phrase-cell-number:after {
+  position: absolute;
+  content: '';
+  display: block;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  z-index: -1000;
+  background-repeat: no-repeat;
+}
+
+.numberCompleted .phrase-cell-number:before {
+  display: block;
+  animation: topBubbles 1.7s ease-out forwards;
+  top: 0;
+  background-image:
+    radial-gradient(circle, #43d109 20%, transparent 20%),
+    radial-gradient(circle, transparent 20%, #43d109 20%, transparent 30%),
+    radial-gradient(circle, #43d109 20%, transparent 20%),
+    radial-gradient(circle, #43d109 20%, transparent 20%),
+    radial-gradient(circle, transparent 10%, #43d109 15%, transparent 20%),
+    radial-gradient(circle, #43d109 20%, transparent 20%),
+    radial-gradient(circle, #43d109 20%, transparent 20%),
+    radial-gradient(circle, #43d109 20%, transparent 20%),
+    radial-gradient(circle, #43d109 20%, transparent 20%);
+  background-size: 10% 10%, 20% 20%, 15% 15%, 20% 20%, 18% 18%, 10% 10%, 15% 15%, 10% 10%, 18% 18%;
+}
+
+.numberCompleted .phrase-cell-number:after {
+  display: block;
+  animation: bottomBubbles 1.7s ease-out forwards;
+  background-image:
+    radial-gradient(circle, #43d109 20%, transparent 20%),
+    radial-gradient(circle, #43d109 20%, transparent 20%),
+    radial-gradient(circle, transparent 10%, #43d109 15%, transparent 20%),
+    radial-gradient(circle, #43d109 20%, transparent 20%),
+    radial-gradient(circle, #43d109 20%, transparent 20%),
+    radial-gradient(circle, #43d109 20%, transparent 20%),
+    radial-gradient(circle, #43d109 20%, transparent 20%);
+  background-size: 15% 15%, 20% 20%, 18% 18%, 20% 20%, 15% 15%, 10% 10%, 20% 20%;
+}
+@keyframes topBubbles {
+  0%, 15%{
+     opacity: 0;
+     background-size: 10% 10%, 20% 20%, 15% 15%, 20% 20%, 18% 18%, 10% 10%, 15% 15%, 10% 10%, 18% 18%;
+
+  }
+  16% {
+    opacity: 1;
+    background-position: 5% 90%, 10% 90%, 10% 90%, 15% 90%, 25% 90%, 25% 90%, 40% 90%, 55% 90%, 70% 90%;
+  }
+  50% {
+    background-position: 0% 80%, 0% 20%, 10% 40%, 20% 0%, 30% 30%, 22% 50%, 50% 50%, 65% 20%, 90% 30%;
+  }
+  100% {
+    background-position: 0% 70%, 0% 10%, 10% 30%, 20% -10%, 30% 20%, 22% 40%, 50% 40%, 65% 10%, 90% 20%;
+    /* background-size: 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%; */
+  }
+}
+
+@keyframes bottomBubbles {
+  0%, 15%{
+     opacity: 0;
+     background-size: 15% 15%, 20% 20%, 18% 18%, 20% 20%, 15% 15%, 10% 10%, 20% 20%;
+  }
+  16% {
+    opacity: 1;
+    background-position: 10% -10%, 30% 10%, 55% -10%, 70% -10%, 85% -10%, 70% -10%, 70% 0%;
+  }
+  50% {
+    background-position: 0% 80%, 20% 80%, 45% 60%, 60% 100%, 75% 70%, 95% 60%, 105% 0%;
+  }
+  100% {
+    background-position: 0% 90%, 20% 90%, 45% 70%, 60% 110%, 75% 80%, 95% 70%, 110% 10%;
+    /* background-size: 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%; */
+  }
+}
+
+
 @keyframes levelCompletedAnimation{
      100%{     
           transform: scale(1.9);
@@ -271,3 +420,14 @@
 .levelCompleted .phrase-cell-number{
      animation: levelCompletedAnimationNumber 1.5s ease-in-out forwards;
 }
+
+.bottomLine{
+     width: calc(100% + 2px) !important;
+     left: -1px !important;
+     z-index: 0;
+   }
+   .selected-glow .bottomLine{
+     width: 100% !important;
+     left: 0 !important;
+     z-index: 0;
+   }

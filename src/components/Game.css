@@ -1,6 +1,4 @@
 /* Стили для Game */
-
-
 /*Header*/
 .game-header{
      color: #fdfdfd;
@@ -93,14 +91,14 @@
   background: url('../assets/cross.svg') center center no-repeat, #ff4463;
   background-position: center center;
   background-size: 80%;
-  animation: errorShake 1s ease-in-out;
+  animation: errorShake 0.7s ease-in-out;
 }
 
 @keyframes errorShake {
   0%, 100% {
      transform: scale(1);
      }
-  50% { transform: scale(2); }
+  50% { transform: scale(1.7); }
 }
 .mistakeCircle__svg{
   height: 80%;

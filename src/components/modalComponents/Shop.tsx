@@ -56,7 +56,6 @@ const Shop: React.FC<ShopProps> = ({userData, onClose, setUserData, openShopMone
           title="МАГАЗИН"
           modalClassName="modal-shop"
           onClose={onClose}>
-            <div className="moneyCount"><div className="modal-shop-row-price-icon"></div>{userData.money}</div>
             <div className="modal-section">
               <div className="modal-section-title">Подсказки</div>
               {shopItems.map((item, index) => (

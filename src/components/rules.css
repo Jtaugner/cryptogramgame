@@ -21,6 +21,7 @@
   /* margin: 0 auto; */
   touch-action: pan-y;
   position: relative;
+  animation: modalFadeInCenter 0.35s ease-in-out forwards;
 }
 .rules .phrase-row {
   margin: 0;
@@ -110,6 +111,43 @@
   background-color: #25277b;
 }
 .rules .phrase-cell_notFilled .phrase-cell-inner{
-  color: #53e028;
+  color: transparent;
   text-shadow: none;
+}
+.rules .selected-glow:not(.phrase-cell_notFilled) .phrase-cell-number{
+  color: white;
+}
+
+@keyframes letterForRulesAnimation {
+  0%{
+       opacity: 1;
+       color: #53e028;
+       transform: scale(1.3) rotate(5deg) translate(25%, -65%);
+  }
+  40%, 100%{
+       opacity: 1;
+       transform: scale(1) rotate(0deg) translate(0, 0);
+       color: #53e028;
+  }
+}
+.changeLetterForRules.phrase-cell_notFilled .phrase-cell-letter{
+  animation: letterForRulesAnimation 3s forwards;
+}
+.changeLetterForRules1.phrase-cell_notFilled .phrase-cell-letter{
+  animation-delay: 1.5s;
+}
+.changeLetterForRules2.phrase-cell_notFilled .phrase-cell-letter{
+  animation-delay: 3s;
+}
+.jumping-letter{
+  animation: jumpLetter 1.5s ease-in-out infinite;
+  box-shadow: 0 0 4px 1px rgba(255, 255, 255, 0.9);
+}
+@keyframes jumpLetter {
+  0%, 100%{
+    transform: translateY(0) scale(1);
+  }
+  50%{
+    transform: translateY(-2px) scale(1.03);
+  }
 }

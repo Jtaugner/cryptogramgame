@@ -132,3 +132,29 @@ button:disabled {
   background: rgba(0, 0, 0, 0.7);
   cursor: pointer;
 }
+
+/* Применяется ко всем элементам */
+* {
+  scrollbar-width: thin;              /* для Firefox */
+  scrollbar-color: rgba(255,255,255,0.2) transparent; /* трек и ползунок */
+}
+
+/* WebKit (Chrome, Edge, Safari) */
+*::-webkit-scrollbar {
+  width: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.5);
+}

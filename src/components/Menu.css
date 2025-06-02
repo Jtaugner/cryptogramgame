@@ -23,13 +23,49 @@
   justify-content: space-between;
   align-items: center;
 }
+.moneyCount{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%) translateY(-120%);
+  font-size: 1.6rem;
+  line-height: 1.6rem;
+  color: #fcd249;
+  text-shadow: 0px 1px 0px rgba(10, 10, 10, 0.49);
+  font-weight: 600;
+}
+.moneyCount .modal-shop-row-price-icon{
+  width: 33px;
+  height: 27.156px;
+  margin-right: 5px;
+}
 .menu__top .moneyCount{
   position: absolute;
   transform: none;
   top: 50%;
   left: 50%;
-  transform: translateX(-50%) translateY(-50%);
+  transform: translateX(-50%) translateY(-50%) scale(1);
+  transition: transform 0.35s ease-in-out;
   cursor: pointer;
+  opacity: 1;
+}
+@keyframes moneyAnimation {
+  0%{
+    transform: translateX(-50%) translateY(-50%) scale(1);
+  }
+  100%{
+    transform: translateX(-50%) translateY(-50%) scale(1.2);
+  }
+}
+.menu__top .moneyCount_big{
+  z-index: 10000;
+  transform: translateX(-50%) translateY(-50%) scale(1.2);
+}
+.menu__top .moneyCount_small{
+  transform: translateX(-50%) translateY(-50%) scale(1); 
 }
 .noAds{
   display: flex;
@@ -244,21 +280,56 @@ color: var(--textColor);
   flex-flow: column nowrap;
   align-items: center;
     width: 90%;
-  max-width: 400px;
-  padding: 7px 0;
+  max-width: 320px;
+  padding: 10px 0;
   background: #35b24a;
   color: var(--textColor);
   font-weight: bold;
   font-size: 1.5rem;
+  line-height: 1.5rem;
   text-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
   border-radius: 7px;
 
   box-shadow: 0 1px 0px 0 rgba(10, 10, 10, 0.4),inset 0px -2px 0px 0px rgba(10,10,10,0.4);
   cursor: pointer;
-  max-width: 300px;
+  position: relative;
+  padding-left: 20px;
 }
+.menu-continue-btn-category{
+  position: absolute;
+  height: 40px;
+  width: 40px;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: url('../assets/collection/forButton/q.svg') center center no-repeat;
+  background-size: 100%;
+}
+.menu-continue-btn-category_quotes{
+  background: url('../assets/collection/forButton/q.svg') center center no-repeat;
+}
+.menu-continue-btn-category_aphorisms{
+  background: url('../assets/collection/forButton/a.svg') center center no-repeat;
+}
+.menu-continue-btn-category_poems{
+  background: url('../assets/collection/forButton/p.svg') center center no-repeat;
+}
+.menu-continue-btn-category_music{
+  background: url('../assets/collection/forButton/m.svg') center center no-repeat;
+}
+.menu-continue-btn-category_cinema{
+  background: url('../assets/collection/forButton/c.svg') center center no-repeat;
+}
+.menu-continue-btn-category_science{
+  background: url('../assets/collection/forButton/s.svg') center center no-repeat;
+}
+.menu-continue-btn-category{
+  background-size: 100%;
+} 
 .menu-continue-btn__level {
   font-size: 1rem;
+  line-height: 1rem;
+  margin-top: 5px;
   color: #147424;
   text-shadow: none;
 }

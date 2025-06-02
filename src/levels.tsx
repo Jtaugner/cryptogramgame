@@ -6,12 +6,30 @@ export interface LevelData {
      type: string
 }
 export const levelsData: LevelData[] = [
+     // {
+     //      text: 'МЫ ВСЕ НОСИМ МАСКИ, ПРОСТО ИНОГДА ОНИ КРАСИВЕЕ.',
+     //      hiddenIndexes: [
+     //        0, 1, 3, 4, 5, 7, 8, 9, 10, 12, 13, 14,
+     //        16, 17, 18, 19, 21, 22, 23, 25, 26, 27,
+     //        29, 30, 31, 33, 34, 35, 36, 38, 39, 40,
+     //        41, 43, 44, 45, 46, 48, 49, 50
+     //      ],
+     // quotes: [],
+     // poems: [],
+     // aphorisms: [],
+     // music: [],
+     // cinema: [],
+     // science: []
+     //      name: 'Маска',
+     //      desc: 'Фильм, 1994 год',
+     //      type: 'quotes'
+     //    },
      {
           text: 'УЖЕ ЗАВТРА, А ТЫ ПРИШЁЛ.',
           hiddenIndexes: [2, 9, 18],
           name: 'Авторская фраза',
           desc: 'Фраза с сарказмом',
-          type: 'quotes'
+          type: 'music'
         },
         {
           text: 'В счастье всё-таки желают продолжения.',

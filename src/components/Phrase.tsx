@@ -20,6 +20,7 @@ interface PhraseProps {
   level: number
   isFromRules?: boolean
   adviceStepFromRules?: boolean
+  switchOnGlowScreen: () => void
 }
 
 interface PhraseHandle {
@@ -29,7 +30,7 @@ interface PhraseHandle {
 
 const Phrase = forwardRef<PhraseHandle, PhraseProps>(
   ({ data, onError, onLetterFill, onCompleteNumber,
-     blockedTime, isTipSelecting, useTip, isLevelCompleted, level, isFromRules, adviceStepFromRules }, ref) => {
+     blockedTime, isTipSelecting, useTip, isLevelCompleted, level, isFromRules, adviceStepFromRules, switchOnGlowScreen }, ref) => {
       
   const letters = data.text.split('')
   const [selectedIndex, setSelectedIndex] = React.useState<number | null>(-1);
@@ -38,7 +39,7 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
   const [completingNumbers, setCompletingNumbers] = React.useState<Set<number>>(new Set())
   const [hidingNumbers, setHidingNumbers] = React.useState<Set<number>>(() => new Set(data.completedNumbers))
   const [numberCompleted, setNumberCompleted] = React.useState<Set<number>>(new Set())
-
+  const [adviceLetterForRules, setAdviceLetterForRules] = React.useState<boolean>(false)
 
 
   const updatePhrase = (data: LevelDataProps) => {
@@ -59,6 +60,7 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
   ]
 
   const handleLetterClick = (index: number) => {
+    if(isFromRules) return;
     if (!data.hiddenIndexes.includes(index) || data.filledLetters[index]) return
     setSelectedIndex(index)
     if(index === selectedIndex){
@@ -84,7 +86,7 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
     // Если не нашли после текущей позиции, ищем с начала фразы
     if (nextEmptyIndex === undefined) {
       nextEmptyIndex = data.hiddenIndexes.find(
-        index => index < selectedIndex && !filledLetters[index]
+        index => index <= selectedIndex && !filledLetters[index]
       )
     }
     return nextEmptyIndex;
@@ -117,13 +119,13 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
       (getPrevious: boolean = false,
       filledLetters: Record<number, string> = data.filledLetters,
       ) => {
-        console.log('getdasda');
-
     let nextEmptyIndex = findNextEmptyIndex(filledLetters);
     if(getPrevious){
-      nextEmptyIndex = findPreviousEmptyIndex(filledLetters);
+      let prev = findPreviousEmptyIndex(filledLetters);
+      if(prev !== undefined){
+        nextEmptyIndex = prev;
+      }
     }
-    console.log('nextEmptyIndex',nextEmptyIndex);
     //Убираем выделение, если нет пустых клеток
     if (nextEmptyIndex === undefined) {
       setSelectedIndex(null)
@@ -156,30 +158,10 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
 
         if (!hasEmptySlots) {
           setCompletingNumbers(prev => new Set([...prev, currentNumber]))
+          setHidingNumbers(prev => new Set([...prev, currentNumber]))
           // Ждем окончания анимации перед тем как скрыть числа
-          setTimeout(() => {
-            setCompletingNumbers(prev => {
-              const updated = new Set(prev)
-              updated.delete(currentNumber)
-              return updated
-            })
-            setHidingNumbers(prev => new Set([...prev, currentNumber]))
-            // Добавляем numberCompleted на 2 секунды
-            setNumberCompleted(prev => {
-              const updated = new Set(prev)
-              updated.add(currentNumber)
-              return updated
-            })
-            setTimeout(() => {
-              setNumberCompleted(prev => {
-                const updated = new Set(prev)
-                updated.delete(currentNumber)
-                return updated
-              })
-            }, 3000)
-            // Передаем завершенную букву
-            onCompleteNumber(letter)
-          }, 2000)
+          switchOnGlowScreen();
+          onCompleteNumber(letter)
         }
       }
 
@@ -191,14 +173,13 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
     } else {
       setWrongLetters(prev => ({ ...prev, [selectedIndex]: letter }))
       onError()
-
       setTimeout(() => {
         setWrongLetters(prev => {
           const newState = { ...prev }
           delete newState[selectedIndex]
           return newState
         })
-      }, 1500)
+      }, 1000)
     }
   }
 
@@ -241,11 +222,17 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
     getNextEmptyIndex(false, data.filledLetters);
     if(adviceStepFromRules){
       setSelectedIndex(12);
+      setAdviceLetterForRules(true);
     }
   }, [])
 
   return (
-    <div className={`phrase-row ${isLevelCompleted ? 'levelCompleted' : ''}`}>
+    <div
+     className={`phrase-row
+       ${isLevelCompleted ? 'levelCompleted' : ''}
+       ${completingNumbers.size > 0 ? 'phrase-row_overflowHidden' : ''}
+       `}
+    >
       {data.text.split(/(\s+)/).map((word, wordIdx, arr) => {
         if (word.trim() === '') {
           return null
@@ -278,8 +265,22 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
               const shouldShowNumber = isLetter && number > 0 && !hidingNumbers.has(number)
               const isCompletingNumber = number > 0 && completingNumbers.has(number)
               let changeLetterForRules = false;
-              if(adviceStepFromRules && number === 4){
+              let changeLetterForRulesNumber = 0;
+              let jumpingLetter = false;
+              if(adviceLetterForRules && number === 4){
                 changeLetterForRules = true;
+                let indexes = [];
+                for(let i = 0; i < data.numbers.length; i++){
+                  if(data.numbers[i] === 4){
+                    indexes.push(i);
+                  }
+                }
+                changeLetterForRulesNumber = indexes.indexOf(index);
+              }
+              if(isFromRules){
+                if(number === 8 && index === 10){
+                  jumpingLetter = true;
+                }
               }
               if (!isLetter) {
                 return (
@@ -293,15 +294,15 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
                   key={index} 
                   className={`phrase-cell
                     ${isSelected && !isTipSelecting ? 'selected-glow' : ''}
-                    ${shouldShowNumber && !(isHidden && !filledLetter) ? 'border border-[#7277ec] border-[1px] shadow-[0_0_0.5px_0.5px_rgba(0,0,0,0.1)]' : ''}
                     ${isHidden ? 'cursor-pointer' : ''}
-                    ${isLetter && number > 0 && !shouldShowNumber ? 'bg-transparent phrase-cell_done' : ''}
-                    ${isLetter && number > 0 && shouldShowNumber ? 'bg-[#6C72F0] rounded-t-[2px]' : ''}
+                    ${isLetter && number > 0 && !shouldShowNumber ? 'phrase-cell_done' : ''}
                     ${isHidden && !filledLetter ? 'phrase-cell_notFilled' : ''}
                     ${numberCompleted.has(number) ? 'numberCompleted' : ''}
                     ${isCorrect || (isCompletingNumber && correctLetters[index]) ? 'correct-letter' : ''} 
-                    ${isCompletingNumber ? 'complete-number' : ''} 
+                    ${isCompletingNumber ? 'complete-number ' + 'complete-number' + ((index % 3) + 1) : ''} 
                     ${wrongLetter ? 'wrong-letter' : ''} 
+                    ${changeLetterForRules ? 'changeLetterForRules changeLetterForRules' + changeLetterForRulesNumber : ''} 
+                    ${jumpingLetter ? 'jumping-letter' : ''} 
                   `}
                   onClick={() => handleLetterClick(index)}
                 >
@@ -313,33 +314,60 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
                     `}
                   >
                     {(!isHidden || changeLetterForRules) && (
-                      <span>
-                        {letter}
+                      <span
+                       className={`phrase-cell-letter`}
+                       onAnimationEnd={() => {
+                        if(changeLetterForRules && changeLetterForRulesNumber === 2){
+                          setAdviceLetterForRules(false);
+                          setTimeout(() => {
+                            setAdviceLetterForRules(true);
+                          }, 1000);
+                        }
+                       }}
+                       >
+                        {letter.toUpperCase()}
                       </span>
                     )}
                     {isHidden && filledLetter && (
-                      <span className={`
-                        
-                      `}>
+                      <span className={`phrase-cell-letter`}>
                         {filledLetter.toUpperCase()}
                       </span>
                     )}
                     {isHidden && wrongLetter && (
-                      <span className="absolute inset-0 flex items-center justify-center shake">
+                      <span className="phrase-cell-letter absolute inset-0 flex items-center justify-center shake">
                         {wrongLetter.toUpperCase()}
                       </span>
                     )}
                     {isLetter && shouldShowNumber && (
-                      <div className={`absolute bottom-0 left-0 w-full border-b border-white`} />
+                      <div className={`bottomLine absolute bottom-0 left-0 w-full border-b border-white`} />
                     )}
                   </div>
                   {isLetter && number > 0 && (
-                    <div className={`phrase-cell-number
-                      ${isSelected ? 'text-[#3db710]' : isHidden && !filledLetter ? 'text-[#6C72F0]' : 'text-white'}
-                      transition-opacity duration-200
-                    `}>
+                    <div
+                     className={`phrase-cell-number`}
+                     onAnimationEnd={(e) => {
+                          if(e.animationName === 'cellDoneLetterAnimation'){
+                            setNumberCompleted(prev => {
+                              const updated = new Set(prev)
+                              updated.delete(number)
+                              return updated
+                            })
+                            setCompletingNumbers(prev => {
+                              const updated = new Set(prev)
+                              updated.delete(number)
+                              return updated
+                            })
+                          }else if(e.animationName.indexOf('fallTransform') !== -1){
+                            setNumberCompleted(prev => {
+                              const updated = new Set(prev)
+                              updated.add(number)
+                              return updated
+                            })
+                          }
+                     }}
+                    >
                       
-                      <span className={`${shouldShowNumber ? '' : 'opacity-0'}`}>
+                      <span className={`${numberCompleted.has(number) ? 'zeroOpacity' : ''}`}>
                         {number}
                       </span>
                     </div>
