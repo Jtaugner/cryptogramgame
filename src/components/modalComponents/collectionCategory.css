@@ -94,6 +94,9 @@
   background-color: var(--mainColor);
   border-radius: 10px 10px 0 0;
 }
+.collection-category-main .rules-track{
+  width: 100%;
+}
 .collection-category-main-quote{
   flex: 1;
   font-weight: 400;

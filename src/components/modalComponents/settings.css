@@ -63,6 +63,7 @@
   display: inline-block;
   width: 50px;
   height: 20px;
+  cursor: pointer;
 }
 .switch::after{
   content: '';

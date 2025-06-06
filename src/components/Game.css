@@ -45,6 +45,7 @@
   z-index: 11;
   background: rgba(0, 0, 0, 0.5);
   pointer-events: all;
+  cursor: pointer;
 }
 @keyframes bgBlur{
   0%{

@@ -1,0 +1,113 @@
+@media (min-width: 600px) {
+     .menu-bottom-wrap{
+          justify-content: center;
+          top: -35px;
+     }
+     .noAds{
+          font-size: 1.2rem;
+          line-height: 1.2rem;
+          align-items: center;
+     }
+     .noAds_text{
+          margin-right: 5px;
+     }
+     .menu-bottom-icon{
+          width: 5rem;
+          height: 5rem;
+          margin: 0 30px;
+     }
+     .menu-bottom-label{
+          font-size: 1.2rem;
+     }
+     .menu-continue-btn{
+          max-width: 350px;
+          font-size: 1.7rem;
+          line-height: 1.7rem;
+     }
+     .menu-continue-btn__level{
+          font-size: 1.1rem;
+          line-height: 1.1rem;
+     }
+     .modal{
+          max-width: 420px;
+     }
+     .modal, .rules, .collection-category-container{
+          animation: modalFadeInCenter 0.2s ease-out forwards;
+     }
+     .modal_closing .blackout{
+          transition: opacity 0.2s ease-out;
+          opacity: 0;
+        }
+     .modal_closing .modal{
+          animation: modalCloseInCenter 0.2s ease-out forwards;
+     }
+     .modal-title{
+          font-size: 1.5rem;
+          padding: 7px 10px;
+     }
+     .modal-icon{
+          width: 32px;
+          height: 32px;
+     }
+     .modal-close{
+          width: 29px;
+          height: 29px;
+     }
+     .modal-section-title{
+          font-size: 1.3rem;
+     }
+     .modal-settings-row-text{
+          font-size: 1.3rem;
+     }
+     .modal-settings .modal{
+          width: 370px;
+     }
+     .switch{
+          transform: scale(1.15);
+     }
+     .modal-shop-row-icon{
+          width: 65px;
+          height: 65px;
+     }
+     .modal-shop-row-name{
+          font-size: 1.25rem;
+     }
+     .modal-shop-row-price{
+          width: 105px;
+          height: 65px;
+          font-size: 1.25rem;
+     }
+     .modal-shop-row-price-icon{
+          width: 28.6px;
+          height: 23.5345px;
+     }
+     .rating-row-icon{
+          width: 50px;
+          height: 50px;
+     }
+     .rating-row-name{
+          font-size: 1.2rem;
+          width: 220px;
+          max-width: 220px;
+     }
+     .modal-collection .modal-shop-row-name{
+          font-size: 1.3rem;
+     }
+     .game-header{
+          font-size: 1.3rem;
+     }
+     .game-header-wrap{
+          max-width: 1000px;
+          margin: 0 auto;
+     }
+     .phrase-row{
+          max-width: 1000px;
+     }
+     .menu-settings-btn, .menu-tips-btn{
+          width: 50px;
+          height: 50px;
+     }
+     .game-keyboard{
+          max-width: 600px;
+     }
+}

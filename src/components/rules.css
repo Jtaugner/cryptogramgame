@@ -2,11 +2,14 @@
   justify-content: center !important;
   align-items: center !important;
 }
+.modal-rules .blackout{
+  background: rgba(0, 0, 0, 0.1);
+}
 .rules{
   width: 90%;
   max-width: 500px;
   height: 650px;
-  max-height: 99%;
+  max-height: 98%;
   background-color: #fff;
   border-radius: 10px;
   /* padding: 20px; */

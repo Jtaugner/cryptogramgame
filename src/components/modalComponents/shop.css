@@ -11,7 +11,6 @@
   margin-bottom: 10px;
   padding: 8px 6px;
   border-radius: 3px;
-  cursor: pointer;
 }
 .modal-shop-row-name{
   font-size: 1.1rem;
@@ -56,6 +55,7 @@
   border-radius: 4px;
   box-shadow: 0 1px 0px 0 rgba(10, 10, 10, 0.25), inset 0px -2px 0px 0px rgba(10, 10, 10, 0.15);
   flex: none;
+  cursor: pointer;
 }
 .modal-shop-row-price_disabled{
   color: #fd5d70;

@@ -1,32 +1,48 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import './Menu.css'
 import Lottie from 'react-lottie-player'
 import animationData from '../Hi/Think.json'
 import Statistics from './modalComponents/Statistics'
-import { UserDataProps } from '../App'
+import { TaskObjectProps, UserDataProps } from '../App'
 import Settings from './modalComponents/Settings'
 import Shop from './modalComponents/Shop'
 import ShopMoney from './modalComponents/ShopMoney'
 import Rating from './modalComponents/Rating'
 import Collection from './modalComponents/Collection'
 import { levels } from '../levels'
-
+import { copyObject, getTaskName } from '../tasks'
+import { getMinutesFromSeconds } from '../tasks'
+import ProgressCounter from './ProgressCounter'
 
 interface MenuProps {
   onStart: () => void
   userData: UserDataProps
   setUserData: (userData: UserDataProps) => void
+  getGameSeconds: () => number
+  previousTasksData: TaskObjectProps
+  setPreviousTasksData: (previousTasksData: TaskObjectProps) => void
+  previousIQ: number
+  addPreviousIQ: () => void
+}
+const getIQcolor = (iq: number) => {
+     if (iq <= 10) return '#e28f2e';
+     if (iq <= 20) return '#fba641';
+     if (iq <= 40) return '#fbde41';
+     if (iq <= 60) return '#ffea79';
+     if (iq <= 80) return '#f6ff79';
+     if (iq <= 120) return '#cbff79';
+     if (iq <= 150) return '#abff79';
+     if (iq <= 200) return '#34ce00';
+     if (iq <= 350) return '#93ffee';
+     if (iq <= 500) return '#20ffdc';
+     if (iq <= 700) return '#e9a2ff';
+     return '#ff7ceb';
 }
 
-const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData }) => {
-     const getIQcolor = (iq: number) => {
-          if (iq <= 80) return '#ef4444';
-          if (iq <= 90) return '#ecea4d';
-          if (iq <= 100) return '#ecbd4d';
-          if (iq <= 110) return '#ecbd4d';
-          if (iq <= 120) return '#16a34a';
-          return '#3b82f6';
-     }
+let taskObjectBefore: TaskObjectProps = null;
+
+const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeconds, previousTasksData, setPreviousTasksData, previousIQ, addPreviousIQ }) => {
+
 
      const [showStats, setShowStats] = useState(false)
      const [showSettings, setShowSettings] = useState(false)
@@ -34,6 +50,54 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData }) => {
      const [showShopMoney, setShowShopMoney] = useState(false)
      const [showRating, setShowRating] = useState(false)
      const [showCollection, setShowCollection] = useState(false)
+     const lottieRef = useRef();
+     const isFirstRender = useRef(true)
+
+     const addPreviousIQWrapper = () => {
+          if(isFirstRender.current){
+               isFirstRender.current = false;
+          }
+          addPreviousIQ();
+     }
+     const startGame = () => {
+          console.log('startGame');
+          setPreviousTasksData(copyObject(taskObjectBefore));
+          onStart();
+     }
+
+     
+     useEffect(() => {
+          const taskObject = userData.taskObject;
+          if(taskObject && taskObject.tasks['time']){
+               let time = getMinutesFromSeconds(getGameSeconds());
+               console.log('settime', time, taskObject.tasks['time'].goal);
+               if(!taskObject.tasks['time'].taskCompleted){
+                    taskObject.tasks['time'].now = time;
+                    let addIQ = 0;
+                    if(time >= taskObject.tasks['time'].goal){
+                         addIQ = 1;
+                         taskObject.tasks['time'].now = taskObject.tasks['time'].goal;
+                         taskObject.tasks['time'].taskCompleted = true;
+                    }
+                    setUserData(
+                         {...userData,
+                         statistics: {
+                              ...userData.statistics,
+                               iq: userData.statistics.iq + addIQ
+                         },
+                         taskObject: taskObject
+                         }
+                    );
+               }
+          }
+          console.log('previousTasksData', previousTasksData);
+          console.log('taskObject', taskObject);
+          taskObjectBefore = taskObject;
+     }, []);
+
+     useEffect(() => {
+          console.log('changeUSERDATA');
+     }, [userData]);
 
      return (
      <div className="menu-bg">
@@ -91,29 +155,56 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData }) => {
           <div className="menu-daily-title-block">
                <span className="menu-daily-title">Дневной результат</span>
                <span className="menu-daily-iq">IQ 
-                    <span className="menu-daily-iq-number" style={{color: getIQcolor(userData.statistics.iq)}}> {userData.statistics.iq}</span>
+                    <span
+                         className={`
+                              menu-daily-iq-number
+                               ${!isFirstRender.current ? 'menu-daily-iq-number_new' : ''}`}
+                         style={{
+                              color: getIQcolor(previousIQ),
+                              width: 15 * String(previousIQ).length + 'px'
+                         }}
+                         key={'previousIQ_' + previousIQ}
+                     >
+                          {previousIQ}
+                     </span>
                </span>
           </div>
           <div className="menu-daily-row-block">
                <div className="menu-daily-row-block-left">
-                    <div className="menu-daily-row">
-                    <span className="menu-daily-label">Пройдено уровней</span>
-                    <span className="menu-daily-value menu-daily-value-green">10/10</span>
-                    </div>
-                    <div className="menu-daily-row">
-                    <span className="menu-daily-label">Время в игре (мин)</span>
-                    <span className="menu-daily-value menu-daily-value-red">10/30</span>
-                    </div>
-                    <div className="menu-daily-row">
-                    <span className="menu-daily-label">Побед без ошибок 0%</span>
-                    <span className="menu-daily-value menu-daily-value-red">0/5</span>
-                    </div>
+                    {
+                         userData.taskObject &&
+                          Object.keys(userData.taskObject.tasks).map((task, index) => (
+                              <div className="menu-daily-row" key={'task_' + index}>
+                                   <span className="menu-daily-label">
+                                        {getTaskName(task)}
+                                   </span>
+                                   <ProgressCounter
+                                        previousTarget={previousTasksData?.tasks[task].now || 0}
+                                        target={userData.taskObject?.tasks[task].now || 0}
+                                        total={userData.taskObject?.tasks[task].goal || 0}
+                                        addPreviousIQ={addPreviousIQWrapper}
+                                      />
+                              </div>
+                         ))
+                    }
                </div>
                
                <div className="menu-daily-broccoli">
                     <Lottie
-                         loop         // зациклить
-                         play         // сразу запускать
+                         play
+                         loop
+                         ref={lottieRef}
+                         // onClick={() => {
+                         //      try{
+                         //           lottieRef.current?.play();
+                         //      }catch(e){}
+                         // }}
+                         // onLoopComplete={() => {
+                         //      console.log('complete')
+                         //      try{
+                         //           lottieRef.current?.pause();
+                         //      }catch(e){}
+                         // }}
                          animationData={animationData}
                          
                     />
@@ -131,12 +222,12 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData }) => {
                <div>Выполняйте ежедневные задания:</div>
                <div className="flex items-center">
                     <span className="menu-daily-iq">IQ 
-                          <span className="menu-daily-iq-number" style={{color: getIQcolor(userData.statistics.iq)}}> {userData.statistics.iq}
+                          <span className="" style={{color: getIQcolor(previousIQ)}}> {previousIQ}
                          </span>
                     </span>
                     <span className="menu-daily-arrow"></span>
                     <span className="menu-daily-iq menu-daily-nextiq">IQ 
-                    <span className="menu-daily-iq-number" style={{color: getIQcolor(userData.statistics.iq + 1)}}> {userData.statistics.iq + 1}
+                    <span className="" style={{color: getIQcolor(previousIQ + 1)}}> {previousIQ+ 1}
                          </span>
                     </span>
                </div>
@@ -145,7 +236,7 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData }) => {
           </div>
           {/* Продолжить */}
           <div className="menu-continue">
-          <div className="menu-continue-btn shiny-button" onClick={onStart}>
+          <div className="menu-continue-btn shiny-button" onClick={startGame}>
                <div className={`menu-continue-btn-category ${'menu-continue-btn-category_' + levels[userData.lastLevel].type}`}></div>       
                <span>ПРОДОЛЖИТЬ</span>
                <span className="menu-continue-btn__level">УРОВЕНЬ {userData.lastLevel+1}</span></div>

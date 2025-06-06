@@ -181,7 +181,8 @@
 }
 .menu-daily-title{
   text-transform: uppercase;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
+  font-weight: 600; 
 }
 .menu-daily-title-block {
   display: flex;
@@ -194,22 +195,49 @@
   font-size: 1.25rem;
   margin-bottom: 8px;
 }
+@keyframes iqAnimation {
+  0%{
+    transform: scale(1) translateY(0);
+    text-shadow: 0 0 0 white;
+  }
+  50%{
+    transform: scale(1.6) translateY(-20%);
+    /* text-shadow: 0 0 5px white; */
+  }
+  100%{
+    transform: scale(1) translateY(0);
+    text-shadow: 0 0 0 white;
+  }
+}
 .menu-daily-iq-number{
      color: #ecea4d;
+     display: inline-block;
+     margin-left: 5px;
+     text-align: center;
+     
+}
+.menu-daily-iq-number_new{
+  animation: iqAnimation 1.2s ease-in-out forwards;
 }
 .menu-daily-iq {
   color: var(--textColor);
+  font-weight: 500;
+}
+.menu-daily-title-block .menu-daily-iq{
+    font-size: 1.6rem;
+    line-height: 1.6rem;
 }
 .menu-daily-row-block{
      display: flex;
 }
 .menu-daily-row {
+  height: 27px;
   display: flex;
   align-items: center;
   margin: 2px 10px;
   padding-left: 5px;
   background-color: #6669bd;
-  box-shadow: 0 1px 1px 0 rgba(10, 10, 10, 0.25);
+  box-shadow: 0 1px 1px 0 rgba(10, 10, 10, 0.05);
   border-radius: 5px;
    
 }
@@ -224,6 +252,41 @@
      margin-left: auto;
      border-radius: 0 5px 5px 0;
      padding: 1px 0;
+     transition: background-color 0.4s ease-in-out;
+     position: relative;
+}
+@keyframes doneTaskAnimation {
+  0%{
+      transform: scale(2) rotate(-10deg) translate(0, -100%);
+  }
+  100%{
+       transform: scale(1) rotate(0deg) translate(-50%, -50%);
+  }
+}
+.menu-daily-value-done{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 18px;
+  background: url('../assets/doneTask.svg') center center no-repeat;
+  background-size: 100%;
+}
+.menu-daily-value-done_new{
+  animation: doneTaskAnimation 0.3s ease-in forwards;
+}
+@keyframes doneTaskTextAnimation {
+  0%, 90%{
+    opacity: 1;
+  }
+  100%{
+    opacity: 0;
+  }
+  
+}
+.menu-daily-value_finished .menu-daily-value-text{
+  animation: doneTaskTextAnimation 1s ease-in-out forwards;
 }
 .menu-daily-value-red {
      background-color: #f34662;
@@ -255,9 +318,11 @@ color: var(--textColor);
 }
 .menu-daily-broccoli {
   width: 30%;
-  background: url('../assets/Sticker_Angry.webm') center center no-repeat;
-  background-size: 100%;
   margin-right: 4px;
+  transition: transform 0.1s ease-in-out;
+}
+.menu-daily-broccoli:active{
+  transform: scale(1.5) translateY(-10%);
 }
 .menu-daily-arrow {
   width: 20.5px;

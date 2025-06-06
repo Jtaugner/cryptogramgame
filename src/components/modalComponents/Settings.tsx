@@ -22,7 +22,8 @@ const Settings: React.FC<SettingsProps> = ({userData, onClose, setUserData, onHo
       }
     })
   }
-  return showRules ? <Rules onClose={() => setShowRules(false)}/>  : <Modal
+  return <>
+      <Modal
             title="НАСТРОЙКИ"
             modalClassName="modal-settings"
             onClose={onClose}>
@@ -73,6 +74,8 @@ const Settings: React.FC<SettingsProps> = ({userData, onClose, setUserData, onHo
                 </div>
               )}
           </Modal>
+    {showRules && <Rules onClose={() => setShowRules(false)}/>}
+    </>
 }
 
 export default Settings; 

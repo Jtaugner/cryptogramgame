@@ -26,7 +26,7 @@ const Modal: React.FC<ModalProps> = ({children, onClose, title, modalClassName }
   <div className="modal-title">
         <div className="modal-icon"></div>
         <span>{title}</span>
-        <div className="modal-close" onClick={onClose}></div>
+        <div className="modal-close" onClick={closeModal}></div>
     </div>
    <div className="modal-wrapper">
     {children}

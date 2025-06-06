@@ -11,17 +11,19 @@ import Settings from './modalComponents/Settings'
 import Tip from './modalComponents/Tip'
 import { LevelData, formatTime} from '../levels'
 import { showAdv } from '../main'
+import { getMinutesFromSeconds } from '../tasks'
 
 interface GameProps {
   onMenu: () => void
   userData: UserDataProps
   setUserData: (userData: UserDataProps) => void
+  getGameSeconds: () => number
 }
 
 const cancelBlockPrice = 1;
 let realLevelTime = 0;
 
-const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData }) => { 
+const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData, getGameSeconds }) => { 
   const [level, setLevel] = useState(userData.lastLevel)
   const [isLevelCompleted, setIsLevelCompleted] = useState(false)
   const [isShowSettings, setIsShowSettings] = useState(false)
@@ -59,21 +61,51 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData }) => {
       const avgTime = (userData.statistics.avgTime * userData.statistics.levels + realLevelTime) / (passedLevels);
       let bestTime = Math.min(userData.statistics.bestTime, realLevelTime);
       if(bestTime === 0) bestTime = realLevelTime;
-      console.log('avgTime', avgTime);
-      console.log('bestTime', bestTime);
+      //Добавялем IQ за выполнение задач
+      const taskObject = userData.taskObject;
+      let iq = userData.statistics.iq;
+      if(taskObject){
+        if(taskObject.tasks['levels'] && !taskObject.tasks['levels'].taskCompleted){
+          taskObject.tasks['levels'].now = taskObject.tasks['levels'].now + 1;
+          if(taskObject.tasks['levels'].now >= taskObject.tasks['levels'].goal){
+            iq = iq + 1;
+            taskObject.tasks['levels'].taskCompleted = true;
+          }
+        }
+        if(levelWithoutMistake && taskObject.tasks['levelWithoutMistake']
+          && !taskObject.tasks['levelWithoutMistake'].taskCompleted
+        ){
+          taskObject.tasks['levelWithoutMistake'].now = taskObject.tasks['levelWithoutMistake'].now + 1;
+          if(taskObject.tasks['levelWithoutMistake'].now >= taskObject.tasks['levelWithoutMistake'].goal){
+            iq = iq + 1;
+            taskObject.tasks['levelWithoutMistake'].taskCompleted = true;
+          }
+        }
+        if(taskObject.tasks['time'] &&
+           !taskObject.tasks['time'].taskCompleted
+        ){
+          taskObject.tasks['time'].now = getMinutesFromSeconds(getGameSeconds());
+          if(taskObject.tasks['time'].now >= taskObject.tasks['time'].goal){
+            iq = iq + 1;
+            taskObject.tasks['time'].taskCompleted = true;
+          }
+        }
+      }
       setUserData({
         ...userData,
         lastLevel: level + 1,
         lastLevelData: null,
         statistics: {
           ...userData.statistics,
+          iq: iq,
           levels: passedLevels,
           letters: userData.statistics.letters + newLetters,
           words: userData.statistics.words + newWords,
           perfectLevels: levelWithoutMistake ? userData.statistics.perfectLevels + 1 : userData.statistics.perfectLevels,
           avgTime: avgTime,
           bestTime: bestTime
-        }
+        },
+        taskObject: taskObject
       })
     }else{
       //Если обновляем кол-во ошибок, то записываем в статистику

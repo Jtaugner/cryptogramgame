@@ -18,6 +18,7 @@
   font-weight: 500;
   color: #ffffff;
   z-index: 15;
+  cursor: pointer;
 }
 .tip-character{
   position: absolute;

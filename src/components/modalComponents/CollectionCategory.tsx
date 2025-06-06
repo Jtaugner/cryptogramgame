@@ -48,7 +48,7 @@ const CollectionCategory: React.FC<CollectionCategoryProps> = ({onClose, categor
                 {collectionNames[category as keyof typeof collectionNames]}
               </div>
             </div>
-            <div className="modal-close" onClick={onClose}></div>
+            <div className="modal-close" onClick={closeModal}></div>
           </div>
 
             <div className='rules-track'>

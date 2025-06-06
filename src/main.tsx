@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
+import './medias.css'
 
 //Дефолтное состояние юзера
 const defaultUserData = {
@@ -24,7 +25,8 @@ const defaultUserData = {
     music: true,
     arrowLeft: false
   },
-  money: 582
+  money: 582,
+  taskObject: null
 }
 
 export const getFromLocalStorage = (name: string) => {
