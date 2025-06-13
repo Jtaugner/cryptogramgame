@@ -41,6 +41,14 @@
      z-index: 2;
      pointer-events: none;
 }
+.blackout-hint{
+  pointer-events: all;
+  z-index: 3;
+}
+.disabledButton{
+  opacity: 0;
+  pointer-events: none;
+}
 .game-bg-blackout_playersPassed{
   z-index: 11;
   background: rgba(0, 0, 0, 0.5);
@@ -77,6 +85,53 @@
 .game-header_sameSize{
   width: 100px;
   text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.game-header-type-icon{
+  width: 35px;
+  height: 35px;
+  cursor: pointer;
+}
+.game-header-type-icon_quotes{
+  background: url('../assets/collection/q.svg') center center no-repeat;
+}
+.game-header-type-icon_poems{
+  background: url('../assets/collection/p.svg') center center no-repeat;
+}
+.game-header-type-icon_aphorisms{
+  background: url('../assets/collection/a.svg') center center no-repeat;
+}
+.game-header-type-icon_music{
+  background: url('../assets/collection/m.svg') center center no-repeat;
+}
+.game-header-type-icon_cinema{
+  background: url('../assets/collection/c.svg') center center no-repeat;
+}
+.game-header-type-icon_science{
+  background: url('../assets/collection/s.svg') center center no-repeat;
+}
+.game-header-type-icon{
+  background-size: 100%;
+}
+.game-hint{
+  position: absolute;
+  top: 110%;
+  left: 50%;
+  transform: translate(-50%, 0);
+  width: 100%;
+  background-color: #6cb4f0;
+  padding: 15px;
+  width: 300px;
+  border-radius: 5px;
+}
+.game-hint-title{
+  font-size: 1.4rem;
+  margin-bottom: 5px;
+}
+.game-hint-text{
+  font-size: 1.1rem;
 }
 .mistakeCircle{
   background-color: #dddce1;
@@ -257,6 +312,7 @@
   justify-content: space-between;
   align-items: flex-start;
   color: #fdfdfd;
+  cursor: pointer;
 }
 .cancelBlocked::after{
   content: '';
@@ -308,7 +364,7 @@
   0%{
     opacity: 0;
   }
-  50%{
+  70%{
     opacity: 0;
   }
   100%{
@@ -318,12 +374,29 @@
 .game-main_author{
   z-index: 1;
   display: flex;
-  flex-flow: column nowrap;
+  flex-flow: row nowrap;
   justify-content: flex-end;
   text-align: right;
   margin-left: auto;
-  margin-right: 30px;
-  animation: mainOpacityAnimation 3s linear forwards;
+  animation: mainOpacityAnimation 1s ease-in-out forwards;
+}
+.game-main_copyButton{
+  position: relative;
+  width: 40px;
+  height: 40px;
+  background: url('../assets/copy.svg') center center no-repeat;
+  background-size: 60%;
+  margin-left: 5px;
+  transform: translateY(-2px);
+  cursor: pointer;
+}
+.game-main_copyButton:after{
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  bottom: -10px;
+  right: -10px;
 }
 .game-main_author-name{
   font-size: 1.2rem;
@@ -349,7 +422,7 @@
     background-color: #7DB2EB;
     border-radius: 10px;
     box-shadow: 0 1px 0px 0 rgba(10, 10, 10, 0.4),inset 0px -2px 0px 0px rgba(10,10,10,0.4);
-    animation: mainOpacityAnimation 3s linear forwards;
+    animation: mainOpacityAnimation 2.8s ease-in-out forwards;
     cursor: pointer;
     margin-top: auto;
     margin-bottom: 10vh;
@@ -378,15 +451,35 @@
   margin-left: 60px;
 }
 .game-header-gameName_text{
-  line-height: 1.1rem;
+  font-size: 1.4rem;
+  margin-left: 8px;
 }
-.quote-icon{
+.game-header-type-icon-levelDone{
   width: 45px;
-  height: 38.5px;
-  background: url('../assets/quote.svg') center center no-repeat;
-  background-size: 100%;
-  margin-right: 5px;
+  height: 45px;
 }
+.game-header-type-icon-levelDone_quotes{
+  background: url('../assets/collection/forLevelDone/q.svg') center center no-repeat;
+}
+.game-header-type-icon-levelDone_aphorisms{
+  background: url('../assets/collection/forLevelDone/a.svg') center center no-repeat;
+}
+.game-header-type-icon-levelDone_poems{
+  background: url('../assets/collection/forLevelDone/p.svg') center center no-repeat;
+}
+.game-header-type-icon-levelDone_music{
+  background: url('../assets/collection/forLevelDone/m.svg') center center no-repeat;
+}
+.game-header-type-icon-levelDone_cinema{
+  background: url('../assets/collection/forLevelDone/c.svg') center center no-repeat;
+}
+.game-header-type-icon-levelDone_science{
+  background: url('../assets/collection/forLevelDone/s.svg') center center no-repeat;
+}
+.game-header-type-icon-levelDone{
+  background-size: 100%;
+}
+
 .game-header-time{
   display: flex;
   flex-flow: row nowrap;

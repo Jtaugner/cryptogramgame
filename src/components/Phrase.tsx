@@ -1,6 +1,9 @@
-import React, { forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
+import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import './Phrase.css'
 import { LevelDataProps } from '../App'
+import {dices, LevelData } from '../levels'
+import Lottie from 'react-lottie-player'
+import animationData from '../Hi/boom6.json'
 
 interface PhraseProps {
   data: {
@@ -21,6 +24,11 @@ interface PhraseProps {
   isFromRules?: boolean
   adviceStepFromRules?: boolean
   switchOnGlowScreen: () => void
+  levelData: LevelData
+  copyFunction: (levelData: LevelData) => void
+  setShowConfetti: (show: boolean) => void
+  diceMode: boolean
+  playSound: (soundName: string) => void
 }
 
 interface PhraseHandle {
@@ -30,16 +38,21 @@ interface PhraseHandle {
 
 const Phrase = forwardRef<PhraseHandle, PhraseProps>(
   ({ data, onError, onLetterFill, onCompleteNumber,
-     blockedTime, isTipSelecting, useTip, isLevelCompleted, level, isFromRules, adviceStepFromRules, switchOnGlowScreen }, ref) => {
+     blockedTime, isTipSelecting, useTip, isLevelCompleted, level,
+      isFromRules, adviceStepFromRules,
+      switchOnGlowScreen, levelData, copyFunction, setShowConfetti, diceMode, playSound }, ref) => {
       
   const letters = data.text.split('')
-  const [selectedIndex, setSelectedIndex] = React.useState<number | null>(-1);
-  const [correctLetters, setCorrectLetters] = React.useState<Record<number, boolean>>({})
-  const [wrongLetters, setWrongLetters] = React.useState<Record<number, string>>({})
-  const [completingNumbers, setCompletingNumbers] = React.useState<Set<number>>(new Set())
-  const [hidingNumbers, setHidingNumbers] = React.useState<Set<number>>(() => new Set(data.completedNumbers))
-  const [numberCompleted, setNumberCompleted] = React.useState<Set<number>>(new Set())
-  const [adviceLetterForRules, setAdviceLetterForRules] = React.useState<boolean>(false)
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(-1);
+  const [correctLetters, setCorrectLetters] = useState<Record<number, boolean>>({})
+  const [wrongLetters, setWrongLetters] = useState<Record<number, string>>({})
+  const [completingNumbers, setCompletingNumbers] = useState<Set<number>>(new Set())
+  const [hidingNumbers, setHidingNumbers] = useState<Set<number>>(() => new Set(data.completedNumbers))
+  const [numberCompleted, setNumberCompleted] = useState<Set<number>>(new Set())
+  const [adviceLetterForRules, setAdviceLetterForRules] = useState<boolean>(false)
+  const [isLevelAnimationCompleted, setIsLevelAnimationCompleted] = useState(false)
+
+  const timeoutIds = useRef<number[]>([]);
 
 
   const updatePhrase = (data: LevelDataProps) => {
@@ -47,6 +60,7 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
     setSelectedIndex(data.hiddenIndexes[0] ?? null);
     setCorrectLetters({});
     setWrongLetters({});
+    setIsLevelAnimationCompleted(false);
     setCompletingNumbers(new Set());
     setHidingNumbers(new Set(data.completedNumbers));
     console.log(new Set(data.completedNumbers));
@@ -63,6 +77,7 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
     if(isFromRules) return;
     if (!data.hiddenIndexes.includes(index) || data.filledLetters[index]) return
     setSelectedIndex(index)
+    playSound('changeLetter');
     if(index === selectedIndex){
       openLetterByTip();
     }
@@ -75,7 +90,6 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
   }
   useEffect(() => {
     openLetterByTip();
-    console.log('mounted');
   }, [selectedIndex])
 
   const findNextEmptyIndex = (filledLetters: Record<number, string>) => {
@@ -141,6 +155,7 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
     const isCorrect = letters[selectedIndex].toLowerCase() === letter.toLowerCase()
 
     if (isCorrect) {
+      playSound('goodLetter');
       setCorrectLetters(prev => ({ ...prev, [selectedIndex]: true }))
       const newFilledLetters = { ...data.filledLetters, [selectedIndex]: letter }
       
@@ -160,26 +175,28 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
           setCompletingNumbers(prev => new Set([...prev, currentNumber]))
           setHidingNumbers(prev => new Set([...prev, currentNumber]))
           // Ждем окончания анимации перед тем как скрыть числа
+          playSound('doneLetters');
           switchOnGlowScreen();
           onCompleteNumber(letter)
         }
       }
 
-      setTimeout(() => {
+      timeoutIds.current.push(setTimeout(() => {
         setCorrectLetters(prev => ({ ...prev, [selectedIndex]: false }))
-      }, 2000)
+      }, 2000))
 
       getNextEmptyIndex(false,newFilledLetters);
     } else {
       setWrongLetters(prev => ({ ...prev, [selectedIndex]: letter }))
+      playSound('errorLetter');
       onError()
-      setTimeout(() => {
+      timeoutIds.current.push(setTimeout(() => {
         setWrongLetters(prev => {
           const newState = { ...prev }
           delete newState[selectedIndex]
           return newState
         })
-      }, 1000)
+      }, 1000))
     }
   }
 
@@ -188,9 +205,11 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
     const handlePhysicalKey = (e: KeyboardEvent) => {
       if(e.key === 'ArrowLeft'){
         getNextEmptyIndex(true);
+        playSound('changeLetter');
       }
       if(e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Space'){
         getNextEmptyIndex(false);
+        playSound('changeLetter');
       }
       if (Object.keys(wrongLetters).length > 0) return
       let key = e.key.toUpperCase()
@@ -224,16 +243,52 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
       setSelectedIndex(12);
       setAdviceLetterForRules(true);
     }
+
+    //Unmount
+    return () => {
+      timeoutIds.current.forEach(clearTimeout);
+    };
   }, [])
 
   return (
     <div
      className={`phrase-row
        ${isLevelCompleted ? 'levelCompleted' : ''}
+       ${isLevelCompleted && isLevelAnimationCompleted ? 'levelFullCompleted' : ''}
        ${completingNumbers.size > 0 ? 'phrase-row_overflowHidden' : ''}
        `}
+       onAnimationEnd={(e) => {
+          if(e.animationName === 'mainBlockAnim'){
+            setIsLevelAnimationCompleted(true);
+            setShowConfetti(true);
+          }
+       }}
     >
-      {data.text.split(/(\s+)/).map((word, wordIdx, arr) => {
+      {/* {isLevelCompleted && isLevelAnimationCompleted &&
+      <div className="phrase-boom">
+                  <Lottie
+                    play
+                    loop
+                    animationData={animationData}
+                    // className="phrase-boom"
+                    
+               />
+      </div>
+      } */}
+      {isLevelCompleted && isLevelAnimationCompleted ?
+      <>
+        <div className='phrase-row__text'>
+          {levelData.text}
+        </div> 
+        <div className="game-main_author">
+              <div>
+                <div className="game-main_author-name">{levelData.name}</div>
+                <div className="game-main_author-desc">{levelData.desc}</div>
+              </div>
+              <div className="game-main_copyButton" onClick={() => copyFunction(levelData)}></div>
+          </div>
+      </>:
+      data.text.split(/(\s+)/).map((word, wordIdx, arr) => {
         if (word.trim() === '') {
           return null
         }
@@ -319,9 +374,9 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
                        onAnimationEnd={() => {
                         if(changeLetterForRules && changeLetterForRulesNumber === 2){
                           setAdviceLetterForRules(false);
-                          setTimeout(() => {
+                          timeoutIds.current.push(setTimeout(() => {
                             setAdviceLetterForRules(true);
-                          }, 1000);
+                          }, 1000));
                         }
                        }}
                        >
@@ -366,10 +421,31 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
                           }
                      }}
                     >
+                      {
+                        diceMode ?
+                        <div className='dice-cell'>
+                          {
+                            dices[number - 1].split('').map((dice: string, i: number) => {
+                              return (
+                                <div
+                                 className={`
+                                  dice-cell-circle
+                                   dice-cell-circle_${dice}
+                                   ${numberCompleted.has(number) ? 'zeroOpacity' : ''}
+                                   `}
+                                key={index + 'dice' + i}>
+                                </div>
+                              )
+                            })
+                          }
+                        </div>  :
+                          <span
+                           className={`${numberCompleted.has(number) ? 'zeroOpacity' : ''}`}>
+                            {number}
+                          </span>
+                      }
                       
-                      <span className={`${numberCompleted.has(number) ? 'zeroOpacity' : ''}`}>
-                        {number}
-                      </span>
+                      
                     </div>
                   )}
                 </div>

@@ -27,8 +27,8 @@ export function usePageActiveTimer() {
   }
 
   // Сбросить таймер
-  const reset = () => {
-    setActiveTime(0)
+  const reset = (time?: number) => {
+    setActiveTime(time ? time : 0)
     if (document.visibilityState === 'visible') {
       startTimestamp.current = Date.now()
     } else {
@@ -59,8 +59,10 @@ export function usePageActiveTimer() {
   const getSeconds = () => {
     const currentInterval = startTimestamp.current !== null ? Date.now() - startTimestamp.current : 0
     const totalMs = activeTime + currentInterval
-    console.log('dasd: ', Math.floor(totalMs / 1000));
-    return Math.floor(totalMs / 1000)
+    //Время в секундах;
+    let time = Math.floor(totalMs / 1000);
+    reset(time - (Math.floor(time/60)*60));
+    return time;
   }
 
   return { getSeconds, reset }

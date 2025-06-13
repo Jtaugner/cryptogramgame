@@ -3,7 +3,7 @@ import Keyboard from './Keyboard'
 import Phrase from './Phrase'
 import './Game.css'
 import ProgressCircle from '../ProgressCircle'
-import { countWordsWithHiddenLetters, levels } from '../levels'
+import { countWordsWithHiddenLetters, getCollectionName, getHint, levels } from '../levels'
 import { usePageActiveTimer } from './PageTimer'
 import { UserDataProps, LevelDataProps } from '../App'
 import { SwitchTransition, CSSTransition } from 'react-transition-group';
@@ -12,20 +12,27 @@ import Tip from './modalComponents/Tip'
 import { LevelData, formatTime} from '../levels'
 import { showAdv } from '../main'
 import { getMinutesFromSeconds } from '../tasks'
+import Confetti from 'confetti-react';
 
 interface GameProps {
   onMenu: () => void
   userData: UserDataProps
   setUserData: (userData: UserDataProps) => void
   getGameSeconds: () => number
+  copyFunction: (levelData: LevelData) => void
+  testTasks: (taskObject: any, iq: number) => any
+  playSound: (soundName: string) => void
 }
 
 const cancelBlockPrice = 1;
 let realLevelTime = 0;
 
-const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData, getGameSeconds }) => { 
+const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
+   getGameSeconds, copyFunction, testTasks, playSound }) => { 
   const [level, setLevel] = useState(userData.lastLevel)
   const [isLevelCompleted, setIsLevelCompleted] = useState(false)
+  const [showConfetti, setShowConfetti] = useState(false)
+  const [diceMode, setDiceMode] = useState(true)
   const [isShowSettings, setIsShowSettings] = useState(false)
   const [isTipSelecting, setIsTipSelecting] = useState(false)
   const [showPlayersPassedLevel, setShowPlayersPassedLevel] = useState(false)
@@ -33,12 +40,15 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData, getGameSecon
   const [blockedTime, setBlockedTime] = useState(0)
   const [notShowKeyboard, setNotShowKeyboard] = useState(false)
   const [blockedTimeTimer, setBlockedTimeTimer] = useState(0)
+  const [selecetedHint, setSelecetedHint] = useState(0)
   const [glowScreenAnimation, setGlowScreenAnimation] = useState(false)
   const [errorScreenAnimation, setErrorScreenAnimation] = useState(false)
   const [phraseData, setPhraseData] = useState<LevelDataProps>()
   const [inactiveKeys, setInactiveKeys] = useState<Set<string>>(new Set())
   const [levelData, setLevelData] = useState<LevelData>(levels[level]);
+
   const phraseRef = useRef<{ handleKeyPress: (key: string) => void, updatePhrase: (data: LevelDataProps) => void, getNextEmptyIndex: (getPrevious: boolean) => void }>(null)
+  const timeoutIds = useRef<number[]>([]);
 
   //Время
   const { getSeconds, reset } = usePageActiveTimer()
@@ -51,7 +61,11 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData, getGameSecon
 
 
 
-  const updateLastLevelData = (newLevelData: object, levelCompleted: boolean = false) => {
+  const updateLastLevelData = (
+     newLevelData: object,
+     levelCompleted: boolean = false,
+     addErrors: boolean = false
+    ) => {
     if(levelCompleted){
       //Для статистики
       const newLetters = levelData ? levelData.hiddenIndexes.length : 0;
@@ -62,9 +76,11 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData, getGameSecon
       let bestTime = Math.min(userData.statistics.bestTime, realLevelTime);
       if(bestTime === 0) bestTime = realLevelTime;
       //Добавялем IQ за выполнение задач
-      const taskObject = userData.taskObject;
+      let taskObject = userData.taskObject;
       let iq = userData.statistics.iq;
       if(taskObject){
+        let newTaskObject = testTasks(taskObject, iq);
+        if(newTaskObject) taskObject = newTaskObject;
         if(taskObject.tasks['levels'] && !taskObject.tasks['levels'].taskCompleted){
           taskObject.tasks['levels'].now = taskObject.tasks['levels'].now + 1;
           if(taskObject.tasks['levels'].now >= taskObject.tasks['levels'].goal){
@@ -84,12 +100,13 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData, getGameSecon
         if(taskObject.tasks['time'] &&
            !taskObject.tasks['time'].taskCompleted
         ){
-          taskObject.tasks['time'].now = getMinutesFromSeconds(getGameSeconds());
+          taskObject.tasks['time'].now = taskObject.tasks['time'].now + getMinutesFromSeconds(getGameSeconds());
           if(taskObject.tasks['time'].now >= taskObject.tasks['time'].goal){
             iq = iq + 1;
             taskObject.tasks['time'].taskCompleted = true;
           }
         }
+        taskObject = testTasks(taskObject, iq);
       }
       setUserData({
         ...userData,
@@ -109,10 +126,6 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData, getGameSecon
       })
     }else{
       //Если обновляем кол-во ошибок, то записываем в статистику
-      let addErrors = false;
-      if(newLevelData.errors && newLevelData.errors > 0) {
-        addErrors = true;
-      }
       setUserData({...userData,
         lastLevelData: {
          ...userData.lastLevelData,
@@ -128,25 +141,30 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData, getGameSecon
   }
 
   const saveDataAndGoMenu = () => {
-    updateLastLevelData({}, false)
+    updateLastLevelData({}, false, false)
     onMenu()
   }
+  const switchOffHint = () => {
+    setSelecetedHint(0)
+  }
   const blockedTimeRef = useRef(blockedTime);
+
   useEffect(() => {
     blockedTimeRef.current = blockedTime;
   }, [blockedTime]);
+
   const endBlockTime = () => {
     if(blockedTimeRef.current === 0) return;
     console.log('endBlockTime 2', blockedTimeRef.current, errors);
     setBlockedTime(0)
-    setTimeout(() => {
+    timeoutIds.current.push(setTimeout(() => {
       setBlockedTimeTimer(0)
-    }, 1000)
+    }, 1000))
     setErrors(0)
-    updateLastLevelData({errors: 0, isKeyboardBlocked: false})
-    setTimeout(() => {
+    updateLastLevelData({errors: 0, isKeyboardBlocked: false}, false, false)
+    timeoutIds.current.push(setTimeout(() => {
       console.log('endBlockTime 3', blockedTimeRef.current);
-    }, 1000)
+    }, 1000))
   };
   const cancelBlockedByMoney = () => {
     if(userData.money >= cancelBlockPrice){
@@ -156,22 +174,40 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData, getGameSecon
   }
   const switchOnBlockedKeyboard = () => {
     showAdv();
-    let blockedTime = 5000;
-    setBlockedTime(blockedTime)
+    let blockedTime = 30000;
+    console.log('blockedTime', userData.lastLevelData.keyboardBlockedTimes);
+    if(userData?.lastLevelData?.keyboardBlockedTimes){
+      blockedTime += userData.lastLevelData.keyboardBlockedTimes * 10000;
+    }
     setBlockedTimeTimer(blockedTime / 1000);
+    setBlockedTime(blockedTime)
+    
   }
   const addErrors = () => {
     if(errors >= 2){
       switchOnBlockedKeyboard();
-      updateLastLevelData({errors: errors+1, isKeyboardBlocked: true})
+      playSound('keyboardBlocked');
+      let keyboardBlockedTimes = 1;
+      if(userData?.lastLevelData?.keyboardBlockedTimes){
+        keyboardBlockedTimes += userData.lastLevelData.keyboardBlockedTimes;
+      }
+      updateLastLevelData({
+         errors: errors+1,
+         isKeyboardBlocked: true,
+         keyboardBlockedTimes: keyboardBlockedTimes
+        }, false, true)
     }else{
-      updateLastLevelData({errors: errors+1, isKeyboardBlocked: false, atLeastOneError: true})
-      if(phraseData) setPhraseData({...phraseData, atLeastOneError: true})
+      console.log('update form there');
+      updateLastLevelData({
+        errors: errors+1,
+        isKeyboardBlocked: false,
+        atLeastOneError: true
+      }, false, true)
     }
     setErrorScreenAnimation(true);
-    setTimeout(() => {
+    timeoutIds.current.push(setTimeout(() => {
       setErrorScreenAnimation(false);
-    }, 800)
+    }, 800))
     setErrors(prev => prev + 1)
     
   }
@@ -194,19 +230,23 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData, getGameSecon
 
   useEffect(() => {
     if(phraseData && Object.keys(phraseData.filledLetters).length === phraseData.hiddenIndexes.length){
-      setTimeout(()=>{
+      timeoutIds.current.push(setTimeout(()=>{
         try{
           let scrollEl = document.querySelector('.phrase-row');
           if(scrollEl) scrollEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }catch(ignored){}
-        setTimeout(()=>{
+        timeoutIds.current.push(setTimeout(()=>{
           setIsLevelCompleted(true)
-        }, 500)
-      }, 3300);
+          playSound('win');
+        }, 500))
+      }, 1500));
       realLevelTime = getLevelTime();
-      updateLastLevelData({}, true)
+      updateLastLevelData({}, true, false)
     }else if(phraseData){
-      updateLastLevelData(phraseData)
+      updateLastLevelData({
+        completedNumbers: phraseData.completedNumbers,
+        filledLetters: phraseData.filledLetters
+      }, false, false)
     }
   }, [phraseData])
 
@@ -247,7 +287,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData, getGameSecon
         }
         if(randomNum === -1){
           do {
-            randomNum = Math.floor(Math.random() * 99) + 1
+            randomNum = Math.floor(Math.random() * 36) + 1
           } while (Array.from(letterMap.values()).includes(randomNum)) // Убеждаемся, что число уникально
         }
         letterMap.set(char, randomNum)
@@ -303,9 +343,6 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData, getGameSecon
 
   const switchOnGlowScreen = () => {
     // setGlowScreenAnimation(true)
-    setTimeout(() => {
-      // setGlowScreenAnimation(false)
-    }, 1500)
   }
 
   const handleLetterFill = (filledLetters: Record<number, string>) => {
@@ -320,6 +357,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData, getGameSecon
   }
   const generateLevel = () => {
     console.log("generateLevel");
+    playSound('gameStart');
     showAdv()
     setIsLevelCompleted(false)
     setErrors(0)
@@ -340,7 +378,8 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData, getGameSecon
       errors: 0,
       isKeyboardBlocked: false,
       time: 0,
-      atLeastOneError: false
+      atLeastOneError: false,
+      keyboardBlockedTimes: 0
     }
 
     // Проверяем начальные completedNumbers
@@ -365,9 +404,9 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData, getGameSecon
     }else{
       //Вызываем подсказку, сколько игроков прошли этот уровень без ошибок
       setShowPlayersPassedLevel(true);
-      setTimeout(() => {
+      timeoutIds.current.push(setTimeout(() => {
         setShowPlayersPassedLevel(false);
-      }, 5000);
+      }, 5000));
     }
 
     // Проверяем неактивные буквы
@@ -396,25 +435,31 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData, getGameSecon
 
     setInactiveKeys(newInactiveKeys)
     setPhraseData(initialPhraseData)
+    updateLastLevelData({...initialPhraseData}, false, false);
     phraseRef.current?.updatePhrase(initialPhraseData);
   }
   //Вызываем перегенерацию уровня при первой загрузке и при смене уровня
 
   useEffect(() => {
     generateLevel()
+
+
   }, [level])
 
-    const guessedPercent = phraseData
-    ? Math.round(
-        (Object.keys(phraseData.filledLetters).length / phraseData.hiddenIndexes.length) * 100
-      )
-    : 0
+  useEffect(() => {
+    //Unmount
+    return () => {
+      timeoutIds.current.forEach(clearTimeout);
+    };
+  }, [])
+
 
   if (!phraseData) return null
 
   return (
     <div className={`game-bg ${isLevelCompleted ? 'game-bg_levelCompleted' : ''}`}>
       {isTipSelecting  && <div className="game-bg-blackout"></div>}
+      {selecetedHint !== 0 && <div className="game-bg-blackout blackout-hint" onClick={switchOffHint}></div>}
       {showPlayersPassedLevel && <div className="game-bg-blackout game-bg-blackout_playersPassed" onClick={() => setShowPlayersPassedLevel(false)}></div>}
       {isLevelCompleted && <div className="game-bg-blur"></div>}
       {/* Header */}
@@ -438,8 +483,9 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData, getGameSecon
                 <div className="game-header-wrap">
                   <div className="menu-home-btn" onClick={onMenu}></div>
                   <div className="game-header-gameName">
-                    <div className="quote-icon"></div>
-                    <span className='game-header-gameName_text'>Цитаты</span>
+                    <div className={`game-header-type-icon-levelDone
+                      game-header-type-icon-levelDone_${levelData.type}`}></div>
+                    <span className='game-header-gameName_text'>{getCollectionName(levelData.type)}</span>
                  </div>
                  <div className='game-header-time'>
                   <div className="game-header-time-icon"></div>
@@ -448,35 +494,79 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData, getGameSecon
                 </div>
                  :
                 <div className="game-header-wrap">
-                <div className="menu-settings-btn" onClick={() => setIsShowSettings(true)} style={{opacity: isTipSelecting ? 0 : 1}}></div>
-                <div className='game-header_sameSize' style={{opacity: isTipSelecting ? 0 : 1}} onClick={getSeconds}> {guessedPercent}%</div>
-                <div className="text-center" style={{opacity: isTipSelecting ? 0 : 1}}>
-                    <div>Ошибки</div>
-                    <div className="flex mt-1 justify-center">
-                      {[...Array(3)].map((_, i) => (
-                        <div 
-                          key={i} 
-                          className={`mistakeCircle ${i < errors ? 'mistakeCircle_got' : ''}`} 
-                        >
-                        </div>
-                      ))}
+                  <div
+                   className={`menu-settings-btn ${isTipSelecting || (selecetedHint !== 0) ? 'disabledButton' : ''}`}
+                   onClick={() => setIsShowSettings(true)}>
+                  </div>
+                  <div className={`game-header_sameSize ${isTipSelecting || (selecetedHint !== 0 && selecetedHint !== 1) ? 'disabledButton' : ''}`}>
+                    <div className={`game-header-type-icon
+                      game-header-type-icon_${levelData.type}`}
+                      onClick={() => setSelecetedHint(1)}
+                      >
+                      </div>
+                  </div>
+                  <div className={`text-center ${isTipSelecting || (selecetedHint !== 0 && selecetedHint !== 2) ? 'disabledButton' : ''}`}
+                    onClick={() => setSelecetedHint(2)}
+                  >
+                      <div>Ошибки</div>
+                      <div className="flex mt-1 justify-center">
+                        {[...Array(3)].map((_, i) => (
+                          <div 
+                            key={i} 
+                            className={`mistakeCircle ${i < errors ? 'mistakeCircle_got' : ''}`} 
+                          >
+                          </div>
+                        ))}
+                      </div>
+                  </div>
+                  <div className={`game-header_sameSize
+                     ${isTipSelecting || (selecetedHint !== 0) ? 'disabledButton' : ''}`}>
+                    Ур. {level+1}
                     </div>
-                 </div>
-                 <div className='game-header_sameSize' style={{opacity: isTipSelecting ? 0 : 1}}>Ур. {level+1}</div>
-                 <div className={`menu-tips-btn ${isTipSelecting ? 'menu-tips-btn_close' : ''}`} onClick={switchTipSelecting}>
-                    <div className="menu-tips-btn__count" style={{opacity: isTipSelecting ? 0 : 1}}>{userData.tips}</div>
-                 </div>
-              </div>}
+                  <div className={`
+                        menu-tips-btn
+                        ${isTipSelecting ? 'menu-tips-btn_close' : ''}
+                        ${selecetedHint !== 0 ? 'disabledButton' : ''}`
+                      }
+                      onClick={switchTipSelecting}>
+                      <div className="menu-tips-btn__count"
+                       style={{opacity: isTipSelecting ? 0 : 1}}>
+                        {userData.tips}
+                        </div>
+                  </div>
+              </div>
+            }
         </div>
         
       </CSSTransition>
     </SwitchTransition>
         
+      {/* Hint */}
+      {
+        selecetedHint !== 0 &&
+        <div className="game-hint" onClick={switchOffHint}>
+          <div className="game-hint-title">{selecetedHint === 1 ? getCollectionName(levelData.type) : getHint(selecetedHint).title}</div>
+          <div className="game-hint-text">{getHint(selecetedHint).text}</div>
+        </div>
+      }
+
 
       </div>
 
 
 
+      {isLevelCompleted && showConfetti &&
+      <div className="phrase-boom">
+          <Confetti
+            width={window.innerWidth}
+            height={window.innerHeight}
+            recycle={false}
+            numberOfPieces={200}
+            gravity={0.2}
+            onConfettiComplete={() => setShowConfetti(false)}
+            />
+      </div>
+      }
       {/* Main content (Phrase + Hint) */}
       <div className="game-main">
         <Phrase 
@@ -491,13 +581,12 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData, getGameSecon
           isLevelCompleted={isLevelCompleted}
           level={level}
           switchOnGlowScreen={switchOnGlowScreen}
+          levelData={levelData}
+          copyFunction={copyFunction}
+          setShowConfetti={setShowConfetti}
+          diceMode={diceMode}
+          playSound={playSound}
         />
-        {isLevelCompleted && (
-          <div className="game-main_author">
-            <div className="game-main_author-name">{levelData.name}</div>
-            <div className="game-main_author-desc">{levelData.desc}</div>
-          </div>
-        )}
         {isLevelCompleted && (
           <div className="nextLevelButton" onClick={getNextLevel}>
             <div className="nextLevelButton-text">ДАЛЕЕ</div>
@@ -522,8 +611,14 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData, getGameSecon
           phraseData={phraseData}
         />
         <div className={`game-keyboard-buttons ${userData.settings.arrowLeft ? 'game-keyboard-buttons_left' : ''}`}>
-          <div className="game-keyboard-moveLeft" onClick={() => {phraseRef.current?.getNextEmptyIndex(true)}}></div>
-          <div className="game-keyboard-moveRight" onClick={() => {phraseRef.current?.getNextEmptyIndex(false)}}></div>
+          <div className="game-keyboard-moveLeft" onClick={() => {
+            phraseRef.current?.getNextEmptyIndex(true)
+            playSound('changeLetter');
+            }}></div>
+          <div className="game-keyboard-moveRight" onClick={() => {
+            phraseRef.current?.getNextEmptyIndex(false);
+            playSound('changeLetter');
+            }}></div>
         </div>
         <div className={`keyboard-blocked ${blockedTime > 0 ? 'keyboard-blocked_show' : ''}`}>
             <ProgressCircle

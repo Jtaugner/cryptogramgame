@@ -1,13 +1,24 @@
 import React, { useEffect, useRef, useState } from 'react'
+import Counter from './Counter/Counter'
 
 interface ProgressCounterProps {
   previousTarget: number
   target: number // конечное значение (например, 5)
   total: number  // общее количество (например, 10)
   addPreviousIQ: () => void
+  playSound: (soundName: string) => void
 }
 
-const ProgressCounter: React.FC<ProgressCounterProps> = ({ previousTarget, target, total, addPreviousIQ }) => {
+export const makePlacesForCounter = (value: number) => {
+     if(value < 10) return [1];
+     if(value < 100) return [10, 1];
+     if(value < 1000) return [100, 10, 1];
+     return [1000, 100, 10, 1];
+}
+
+
+const ProgressCounter: React.FC<ProgressCounterProps> = ({ previousTarget, target,
+      total, addPreviousIQ, playSound }) => {
   const [current, setCurrent] = useState(previousTarget)
   const [taskFinished, setTaskFinished] = useState(previousTarget === total)
   const [showDoneTask, setShowDoneTask] = useState(previousTarget === total)
@@ -44,6 +55,7 @@ const ProgressCounter: React.FC<ProgressCounterProps> = ({ previousTarget, targe
                isFirstRender.current = false;
           }
           setTimeout(() => {
+               playSound('getIQ');
                addPreviousIQ();
           }, 1600)
      }
@@ -63,7 +75,14 @@ const ProgressCounter: React.FC<ProgressCounterProps> = ({ previousTarget, targe
                          setShowDoneTask(true)
                     }}
                >
-                    {current} / {total}
+                    <Counter
+                                   value={current}
+                                   fontSize={20}
+                                   places={makePlacesForCounter(current)}
+                                   gap={4}
+                                   borderRadius={0}
+                                   
+                              /> / {total}
                </span>
                )
           }

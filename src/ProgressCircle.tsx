@@ -28,6 +28,7 @@ const ProgressCircle: React.FC<ProgressCircleProps> = ({
   progressColor = '#43d109',
 }) => {
   const circleRef = useRef<SVGCircleElement>(null);
+  const animationFrameRef = useRef<number>(0)
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
 
@@ -53,7 +54,7 @@ const ProgressCircle: React.FC<ProgressCircleProps> = ({
       setElapsed(clamped);
       setPct((clamped / blockedTime) * 100);
       if (clamped < blockedTime) {
-        requestAnimationFrame(tick);
+        animationFrameRef.current = requestAnimationFrame(tick);
         let n = Math.ceil((blockedTime - clamped) / 1000);
         if(n < blockedTimeTimer){
             setBlockedTimeTimer(n)
@@ -62,8 +63,18 @@ const ProgressCircle: React.FC<ProgressCircleProps> = ({
           endBlockTime();
       }
     };
-    requestAnimationFrame(tick);
+    animationFrameRef.current = requestAnimationFrame(tick);
+
   }, [blockedTime]);
+
+  useEffect(() => {
+    //Unmount
+    return () => {
+      if(animationFrameRef.current){
+        cancelAnimationFrame(animationFrameRef.current)
+      }
+    }
+  }, [])
 
   // Анимация круга при изменении pct
   useEffect(() => {

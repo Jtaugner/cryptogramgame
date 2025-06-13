@@ -71,3 +71,26 @@
   box-shadow: none;
   transform: scale(0.98);
 }
+.modal-section-tips{
+  font-size: 1.3rem;
+  color: var(--modalTextColor);
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.modal-section-tips-count{
+  font-weight: bold;
+  margin: 0 5px !important;
+}
+.modal-shop-row-adv{
+  background: url('../../assets/shop/advert.svg') center center no-repeat, #35b24a;
+  background-size: 50%;
+}
+.modal-shop-row-notVisible{
+  display: none;
+}
+.modal-shop-row-timer{
+  color: white;
+  font-variant-numeric: tabular-nums;
+}

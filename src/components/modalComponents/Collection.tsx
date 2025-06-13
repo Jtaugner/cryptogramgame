@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import './collection.css';
 import { UserDataProps } from '../../App';
 import Modal from './Modal';
-import { typesOfCategories, levels, levelsByCategory, collectionNames} from '../../levels';
+import { typesOfCategories, levels, levelsByCategory, collectionNames, LevelData} from '../../levels';
 import CollectionCategory from './CollectionCategory';
 
 type CollectionProps = {
   userData: UserDataProps,
   onClose: () => void;
+  copyFunction: (levelData: LevelData) => void;
 };
 
 function findTypesCount(untilLevel?: number) {
@@ -25,7 +26,7 @@ function findTypesCount(untilLevel?: number) {
 }
 
 
-const Collection: React.FC<CollectionProps> = ({userData, onClose }) => {
+const Collection: React.FC<CollectionProps> = ({userData, onClose, copyFunction }) => {
   const [userTypesCount, setUserTypesCount] = useState(findTypesCount(userData.lastLevel));
   const [showCollectionCategory, setShowCollectionCategory] = useState(false);
   const [categoryType, setCategoryType] = useState('quotes');
@@ -63,6 +64,7 @@ const Collection: React.FC<CollectionProps> = ({userData, onClose }) => {
               onClose={() => setShowCollectionCategory(false)}
               category={categoryType}
               categoryIndex={0}
+              copyFunction={copyFunction}
             />
           )}
     </>

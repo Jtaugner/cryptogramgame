@@ -128,8 +128,12 @@
   flex: 0 0 auto;
 }
 .collection-category-main-author{
-  margin-right: 20px;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-end;
+  text-align: right;
   margin-bottom: 10px;
+  margin-right: 5px;
 }
 .collection-category-main-author-name{
     color: #f2f3fc;
@@ -141,11 +145,19 @@
 }
 .collection-category-main-author-desc{
   color: #afb2f5;
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 400;
-  line-height: 1rem;
+  line-height: 0.9rem;
   text-align: right;
-  margin-top: 10px;
+  margin-top: 5px;
+}
+.collection-category-main-author .game-main_copyButton{
+  background: url(../../assets/copy-gray.svg) center center no-repeat;
+  width: 30px;
+  height: 30px;
+  background-size: 70%;
+  transform: translateY(-4px);
+  cursor: pointer;
 }
 .collection-category-buttons{
   width: 100%;

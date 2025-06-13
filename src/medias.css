@@ -110,4 +110,8 @@
      .game-keyboard{
           max-width: 600px;
      }
+     .game-header-type-icon{
+          width: 45px;
+          height: 45px;
+     }
 }

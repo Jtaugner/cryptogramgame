@@ -3,6 +3,8 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 import './medias.css'
+import { getTasks } from './tasks.tsx'
+import { playSound } from './sounds.tsx'
 
 //Дефолтное состояние юзера
 const defaultUserData = {
@@ -27,6 +29,13 @@ const defaultUserData = {
   },
   money: 582,
   taskObject: null
+}
+
+let canPlaySound = true;
+
+export const tryPlaySound = (soundName: string) => {
+  if(!canPlaySound) return;
+  playSound(soundName);
 }
 
 export const getFromLocalStorage = (name: string) => {
@@ -71,14 +80,26 @@ function stringifyJSON(obj: any) {
 }
 
 
+export function getServerTime(){
+  let dateTime = new Date().getTime();
+  try{
+    dateTime = YSDK.serverTime()
+  }catch(e){}
+  return dateTime;
+}
 
 
 var playerGame: any;
 let YSDK: any;
 
 let recentData = stringifyJSON(userData);
-
 // Сохранение данных в аккаунт пользователя Яндекса
+
+var resetAllData = () => {
+  userData = defaultUserData;
+  saveData(userData);
+}
+(window as any).resetAllData = resetAllData;
 export function saveData(newUserData: any) {
     try{
         console.log('TRY: saveData');
@@ -94,12 +115,38 @@ export function saveData(newUserData: any) {
     }catch (ignored) {}
 }
 
+export function showRewarded(callback: () => void){
+  try{
+    YSDK.adv.showRewardedVideo({
+      callbacks: {
+          onOpen: () => {
+            canPlaySound = false;
+          },
+          onRewarded: () => {
+            callback();
+          },
+          onCancel: () => {
+          },
+          onClose: () => {
+            canPlaySound = true;
+          },
+          onError: () => {
+          },
+      }
+  })
+  }catch(e){}
+}
+
 export function showAdv(){
   try{
     console.log('showAdv');
     YSDK.adv.showFullscreenAdv({
         callbacks: {
+            onOpen: function() {
+              canPlaySound = false;
+            },
             onClose: function(wasShown: boolean) {
+              canPlaySound = true;
               // Действие после закрытия рекламы.
             },
             onError: function(error: any) {

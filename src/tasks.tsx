@@ -1,4 +1,4 @@
-const taskTypes = ['levels', 'time', 'levelWithoutMistake'];
+let taskTypes = ['levels', 'time', 'levelWithoutMistake'];
 const taskTypesNames = {
      levels: 'Пройдено уровней',
      time: 'Время в игре (мин)',
@@ -28,21 +28,25 @@ export const testTasksPassed = (tasks: {
   })
   return levelPassed;
 }
+function minutesToMs(minutes: number) {
+     return minutes * 60 * 1000
+}
+
 function getTimeUntillNextTask(iq: number) {
   if(iq < 5){
-   return 15;
+   return minutesToMs(15);
   }else if(iq < 10){
-   return 30;
+   return minutesToMs(30);
   }else if(iq < 20){
-   return 60;
+   return minutesToMs(60);
   }else if(iq < 30){
-   return 120;
+   return minutesToMs(120);
   }else if(iq < 50){
-   return 360;
+   return minutesToMs(360);
   }else if(iq < 70){
-   return 720;
+   return minutesToMs(720);
   }
-  return 1440;
+  return minutesToMs(1440);
 }
 function getTask(type: string, iq: number) {
   if(type === 'levels'){
@@ -83,16 +87,18 @@ function getTask(type: string, iq: number) {
   }
   return 1;
 }
+
 export const getTasks = (iq: number) => {
   const taskObject = {
      tasks: {} as any,
-     time: getTimeUntillNextTask(iq)
+     time: getTimeUntillNextTask(iq),
+     dateToGetNewTask: 0
   };
   taskTypes.forEach(type => {
     taskObject.tasks[type] = {
      goal: getTask(type, iq),
      now: 0,
-     taskCompleted: false
+     taskCompleted: false,
     }
   })
   return taskObject;

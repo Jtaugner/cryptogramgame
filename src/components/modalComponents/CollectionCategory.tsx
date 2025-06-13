@@ -1,16 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './collectionCategory.css';
-import {levelsByCategory, collectionNames} from '../../levels';
+import {levelsByCategory, collectionNames, LevelData} from '../../levels';
 import { useSwipeable } from 'react-swipeable';
 
 type CollectionCategoryProps = {
   onClose: () => void
   category: string
   categoryIndex: number
+  copyFunction: (levelData: LevelData) => void
 }
 
-
-const CollectionCategory: React.FC<CollectionCategoryProps> = ({onClose, category, categoryIndex}) => {
+const CollectionCategory: React.FC<CollectionCategoryProps> = ({onClose, category, categoryIndex, copyFunction}) => {
     const [index, setIndex] = useState(categoryIndex);
     console.log(index);
     const getLeftButton = () => {
@@ -61,8 +61,11 @@ const CollectionCategory: React.FC<CollectionCategoryProps> = ({onClose, categor
                       {index + 1}/{levelsByCategory[category].length}
                     </div>
                     <div className="collection-category-main-author">
-                      <div className="collection-category-main-author-name">{levelsByCategory[category][index].name}</div>
-                      <div className="collection-category-main-author-desc">{levelsByCategory[category][index].desc}</div>
+                      <div>
+                        <div className="collection-category-main-author-name">{levelsByCategory[category][index].name}</div>
+                        <div className="collection-category-main-author-desc">{levelsByCategory[category][index].desc}</div>
+                      </div>
+                      <div className="game-main_copyButton" onClick={() => copyFunction(levelsByCategory[category][index])}></div>
                     </div>
                   </div>
               </div>

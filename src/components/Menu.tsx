@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react'
 import './Menu.css'
 import Lottie from 'react-lottie-player'
-import animationData from '../Hi/Think.json'
+import animationPunch1 from '../Hi/Punch00.json'
+import animationPunch2 from '../Hi/Punch01.json'
+import animationPunch3 from '../Hi/Punch03.json'
+import broccoli from '../Hi/All_Broccoli_animations.json'
 import Statistics from './modalComponents/Statistics'
 import { TaskObjectProps, UserDataProps } from '../App'
 import Settings from './modalComponents/Settings'
@@ -9,10 +12,15 @@ import Shop from './modalComponents/Shop'
 import ShopMoney from './modalComponents/ShopMoney'
 import Rating from './modalComponents/Rating'
 import Collection from './modalComponents/Collection'
-import { levels } from '../levels'
+import { LevelData, levels, msToTime } from '../levels'
 import { copyObject, getTaskName } from '../tasks'
 import { getMinutesFromSeconds } from '../tasks'
 import ProgressCounter from './ProgressCounter'
+import Timer from './TImer'
+
+
+
+
 
 interface MenuProps {
   onStart: () => void
@@ -23,6 +31,13 @@ interface MenuProps {
   setPreviousTasksData: (previousTasksData: TaskObjectProps) => void
   previousIQ: number
   addPreviousIQ: () => void
+  copyFunction: (levelData: LevelData) => void,
+  testTasks: (taskObject: any, iq: number) => any,
+  showShop: boolean
+  showShopMoney: boolean
+  setShowShop: (showShop: boolean) => void
+  setShowShopMoney: (showShopMoney: boolean) => void
+  playSound: (soundName: string) => void
 }
 const getIQcolor = (iq: number) => {
      if (iq <= 10) return '#e28f2e';
@@ -39,16 +54,20 @@ const getIQcolor = (iq: number) => {
      return '#ff7ceb';
 }
 
+let countOfPunch = 0;
+
 let taskObjectBefore: TaskObjectProps = null;
 
-const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeconds, previousTasksData, setPreviousTasksData, previousIQ, addPreviousIQ }) => {
+const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeconds,
+      previousTasksData, setPreviousTasksData, previousIQ, addPreviousIQ,
+       copyFunction, testTasks, showShop, showShopMoney, setShowShop,
+        setShowShopMoney, playSound }) => {
 
 
      const [showStats, setShowStats] = useState(false)
      const [showSettings, setShowSettings] = useState(false)
-     const [showShop, setShowShop] = useState(false)
-     const [showShopMoney, setShowShopMoney] = useState(false)
      const [showRating, setShowRating] = useState(false)
+     const [animationData, setAnimationData] = useState(animationPunch1)
      const [showCollection, setShowCollection] = useState(false)
      const lottieRef = useRef();
      const isFirstRender = useRef(true)
@@ -59,18 +78,64 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
           }
           addPreviousIQ();
      }
-     const startGame = () => {
-          console.log('startGame');
-          setPreviousTasksData(copyObject(taskObjectBefore));
-          onStart();
+
+     const playLottie = () => {
+          try{
+               if(lottieRef.current){
+                    lottieRef.current.stop();
+                    lottieRef.current.play();
+                    countOfPunch += 1;
+               }
+               // if(countOfPunch === 5){
+               //      console.log('changeAnimation');
+               //      setAnimationData(animationPunch2);
+               // }
+               // if(countOfPunch === 10 ){
+               //      console.log('changeAnimation 2');
+               //      setAnimationData(animationPunch3);
+               // }
+          }catch(e){
+               console.log('error', e);
+          }
      }
+     const stopLottie = () => {
+          try{
+               if(lottieRef.current){
+                    lottieRef.current.stop();
+               }
+          }catch(e){
+               console.log('error', e);
+          }
+     }
+     const startGame = () => {
+          if(levels[userData.lastLevel]){
+               setPreviousTasksData(copyObject(taskObjectBefore));
+               onStart();
+          }
+     }
+
+     const getNewTasks = () => {
+          let newTaskObject = testTasks(userData.taskObject, userData.statistics.iq);
+          if(newTaskObject){
+               setUserData({
+                    ...userData,
+                    taskObject: copyObject(newTaskObject)
+               });
+               setPreviousTasksData(copyObject(newTaskObject));
+               taskObjectBefore = copyObject(newTaskObject);
+          }
+     }
+     useEffect(() => {
+          console.log('CHANGE USERDATA', userData);
+     }, [userData]);
 
      
      useEffect(() => {
           const taskObject = userData.taskObject;
           if(taskObject && taskObject.tasks['time']){
-               let time = getMinutesFromSeconds(getGameSeconds());
-               console.log('settime', time, taskObject.tasks['time'].goal);
+               let time = taskObject.tasks['time'].now
+                + getMinutesFromSeconds(getGameSeconds());
+               console.log('time', time, taskObject.tasks['time'].goal);
                if(!taskObject.tasks['time'].taskCompleted){
                     taskObject.tasks['time'].now = time;
                     let addIQ = 0;
@@ -85,18 +150,26 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
                               ...userData.statistics,
                                iq: userData.statistics.iq + addIQ
                          },
-                         taskObject: taskObject
+                         taskObject: testTasks(taskObject, userData.statistics.iq)
                          }
                     );
                }
           }
-          console.log('previousTasksData', previousTasksData);
-          console.log('taskObject', taskObject);
-          taskObjectBefore = taskObject;
+
+          if(taskObject){
+               taskObjectBefore = testTasks(taskObject, userData.statistics.iq);
+          }else{
+               taskObjectBefore = testTasks(previousTasksData, userData.statistics.iq);
+          }
+          console.log('userData', userData.lastLevel);
      }, []);
 
      useEffect(() => {
           console.log('changeUSERDATA');
+
+          // setInterval(() => {
+          //      addPreviousIQ();
+          // }, 1000);
      }, [userData]);
 
      return (
@@ -153,7 +226,7 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
           <div className="menu__centerBlock">
           <div className="menu-daily">
           <div className="menu-daily-title-block">
-               <span className="menu-daily-title">Дневной результат</span>
+               <span className="menu-daily-title">ЗАДАНИЯ</span>
                <span className="menu-daily-iq">IQ 
                     <span
                          className={`
@@ -179,10 +252,12 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
                                         {getTaskName(task)}
                                    </span>
                                    <ProgressCounter
+                                        key={'task_' + task + '_' + previousTasksData?.tasks[task].now + '_' + userData.taskObject?.tasks[task].now}
                                         previousTarget={previousTasksData?.tasks[task].now || 0}
                                         target={userData.taskObject?.tasks[task].now || 0}
                                         total={userData.taskObject?.tasks[task].goal || 0}
                                         addPreviousIQ={addPreviousIQWrapper}
+                                        playSound={playSound}
                                       />
                               </div>
                          ))
@@ -191,21 +266,13 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
                
                <div className="menu-daily-broccoli">
                     <Lottie
-                         play
-                         loop
+                         play={false}
+                         loop={false}
                          ref={lottieRef}
-                         // onClick={() => {
-                         //      try{
-                         //           lottieRef.current?.play();
-                         //      }catch(e){}
-                         // }}
-                         // onLoopComplete={() => {
-                         //      console.log('complete')
-                         //      try{
-                         //           lottieRef.current?.pause();
-                         //      }catch(e){}
-                         // }}
-                         animationData={animationData}
+                         onClick={playLottie}
+                         animationData={broccoli}
+                         onComplete={stopLottie}
+                         segments={[720,749]}
                          
                     />
                     {/* <video
@@ -219,28 +286,68 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
                </div>
           </div>
           <div className="menu-daily-bottom">
-               <div>Выполняйте ежедневные задания:</div>
+               <div>
+                    {
+                         userData.taskObject &&
+                         userData.taskObject.dateToGetNewTask > 0 ?
+                         'До следующего задания:' : 
+                         'Выполняйте ежедневные задания:'
+                    }
+
+               </div>
                <div className="flex items-center">
-                    <span className="menu-daily-iq">IQ 
-                          <span className="" style={{color: getIQcolor(previousIQ)}}> {previousIQ}
-                         </span>
-                    </span>
-                    <span className="menu-daily-arrow"></span>
-                    <span className="menu-daily-iq menu-daily-nextiq">IQ 
-                    <span className="" style={{color: getIQcolor(previousIQ + 1)}}> {previousIQ+ 1}
-                         </span>
-                    </span>
+                    {
+                         userData.taskObject &&
+                         userData.taskObject.dateToGetNewTask > 0 ?
+                         <>
+                              <div className="menu-daily-time-timer"></div>
+                              <Timer
+                                startTime={userData.taskObject.dateToGetNewTask}
+                                time={userData.taskObject.time}
+                                getNewTasks={getNewTasks}
+                              />
+                         </> :
+                         <>
+                              <span className="menu-daily-iq">IQ  
+                                   <span className="" style={{color: getIQcolor(previousIQ)}}>
+                                          {' ' + previousIQ}
+                                   </span>
+                              </span>
+                              <span className="menu-daily-arrow"></span>
+                              <span className="menu-daily-iq menu-daily-nextiq">IQ 
+                                   <span className="" style={{color: getIQcolor(previousIQ + 1)}}>
+                                         {' ' + (previousIQ + 1)}
+                                   </span>
+                              </span>
+                         </> 
+                    }
+
                </div>
           </div>
           
           </div>
           {/* Продолжить */}
-          <div className="menu-continue">
-          <div className="menu-continue-btn shiny-button" onClick={startGame}>
-               <div className={`menu-continue-btn-category ${'menu-continue-btn-category_' + levels[userData.lastLevel].type}`}></div>       
-               <span>ПРОДОЛЖИТЬ</span>
-               <span className="menu-continue-btn__level">УРОВЕНЬ {userData.lastLevel+1}</span></div>
-          </div>
+               <div className="menu-continue">
+                    <div className={`menu-continue-btn shiny-button ${!levels[userData.lastLevel] ? 'menu-continue-btn_disabled' : ''}`} onClick={startGame}>
+                         {
+                              levels[userData.lastLevel] ?
+                              <>
+                              <div
+                               className={`menu-continue-btn-category
+                                ${'menu-continue-btn-category_' + levels[userData.lastLevel].type}`}>
+                              </div>       
+                              <span>ПРОДОЛЖИТЬ</span>
+                              <span className="menu-continue-btn__level">УРОВЕНЬ {userData.lastLevel+1}</span>
+                              </> :
+                              <>
+                              <span>УРОВНЕЙ НЕТ</span>
+                              <span className="menu-continue-btn__level">Они скоро появятся</span>
+                              </>
+                              
+                         }
+                         
+                    </div>
+               </div>
           </div>
           
           {/* Нижнее меню */}
@@ -274,21 +381,6 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
                     setUserData={setUserData}
                />
           )}
-          {showShop && (
-               <Shop
-                    userData={userData}
-                    onClose={() => setShowShop(false)}
-                    openShopMoney={() => setShowShopMoney(true)}
-                    setUserData={setUserData}
-               />
-          )}
-          {showShopMoney && (
-               <ShopMoney
-                    userData={userData}
-                    onClose={() => setShowShopMoney(false)}
-                    setUserData={setUserData}
-               />
-          )}
           {showRating && (
                <Rating
                     userData={userData}
@@ -299,6 +391,7 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
                <Collection
                     userData={userData}
                     onClose={() => setShowCollection(false)}
+                    copyFunction={copyFunction}
                />
           )}
      </div>

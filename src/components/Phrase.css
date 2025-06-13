@@ -2,6 +2,7 @@
 /* Стили для Phrase */
 
 .phrase-row {
+  position: relative;
   flex: 1;
   display: flex;
   flex-wrap: wrap;
@@ -29,7 +30,7 @@
   width: fit-content;
   border-radius: 2px;
   transition: border-color 0.2s;
-  font-family: 'SF Mono';
+  font-weight: 400;
   background-color: var(--mainColor);
 }
 .phrase-cell_bg{
@@ -64,7 +65,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.8225rem;
+  font-size: 1.8rem;
   border-radius: 2px;
 
   position: relative;
@@ -395,30 +396,60 @@
      }
 }
 @keyframes mainBlockAnim{
-     0%{
-          transform: scale(1);
-     }
-     100%{
-          transform: scale(0.75);
-          padding: 0;
-     }
+	0% {
+		opacity: 1;
+		filter: blur(0px);
+	}
+	100% {
+		opacity: 0.01;
+		filter: blur(3px);
+	}
 }
 .levelCompleted{
-     animation: mainBlockAnim 1.5s ease-in-out forwards;
+     animation: mainBlockAnim 0.8s ease-in-out forwards;
+}
+@keyframes mainBlockAnimFullCompleted{
+	0% {
+		opacity: 0.01;
+		filter: blur(3px);
+		transform: scale(0.5);
+	}
+	100% {
+		opacity: 1;
+          filter: blur(0px);
+		transform: scale(1);
+	}
+}
+.levelFullCompleted{
+     text-shadow: none;
+     padding: 20px;
+     flex-flow: column nowrap;
+     justify-content: center;
+     align-items: center;
+     align-content: center;
+     animation: mainBlockAnimFullCompleted 0.5s ease-in-out forwards;
+}
+.phrase-row__text{
+     text-shadow: 0px 0px 1px black;
+     color: white;
+     font-size: 2.1rem;
+     line-height: 2.3rem;
+     text-align: center;
+     margin-bottom: 40px;
 }
 
 
 .levelCompleted .phrase-cell, .levelCompleted .noLetterSymbol{
-     animation: levelCompletedAnimation 1.5s ease-in-out forwards;
+     /* animation: levelCompletedAnimation 1s ease-in-out forwards; */
 }
 .levelCompleted .phrase-cell_done .phrase-cell-inner{
-     animation: levelCompletedAnimationInner 0.6s ease-in-out forwards;
+     /* animation: levelCompletedAnimationInner 0.6s ease-in-out forwards; */
 }
 .levelCompleted .phrase-word{
-     animation: levelCompletedAnimation2 1.5s ease-in-out forwards;
+     /* animation: levelCompletedAnimation2 1s ease-in-out forwards; */
 }
 .levelCompleted .phrase-cell-number{
-     animation: levelCompletedAnimationNumber 1.5s ease-in-out forwards;
+     /* animation: levelCompletedAnimationNumber 1s ease-in-out forwards; */
 }
 
 .bottomLine{
@@ -431,3 +462,46 @@
      left: 0 !important;
      z-index: 0;
    }
+.phrase-boom{
+     position: absolute;
+     top: 0;
+     left: 0;
+     width: 100%;
+     height: 100%;
+     pointer-events: none;
+}
+.dice-cell{
+     width: 29px;
+     height: 27px;
+     display: flex;
+     flex-flow: row wrap;
+     justify-content: space-around;
+     align-items: space-around;
+     align-content: space-around;
+     padding: 0px 1px;
+     /* background-color: yellow; */
+}
+.dice-cell-circle{
+     width: 6px;
+     height: 6px;
+     margin: 0 1px;
+     border-radius: 50%;
+     background-color: #453a96;
+
+}
+.dice-cell-circle_0{
+     opacity: 0;
+}
+.dice-cell-circle_1{
+     background-color: #453a96;
+}
+.dice-cell-circle_2{
+     background-color: #e11638;
+}
+
+.phrase-cell_notFilled .dice-cell-circle_1{
+     background-color: var(--mainColor);
+}
+.phrase-cell_notFilled .dice-cell-circle_2{
+     background-color: #ff4463;
+}

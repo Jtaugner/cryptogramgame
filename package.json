@@ -11,6 +11,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "confetti-react": "^2.6.0",
+    "framer-motion": "^12.16.0",
     "lottie-web": "^5.12.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
