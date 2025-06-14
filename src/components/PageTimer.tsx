@@ -7,6 +7,7 @@ export function usePageActiveTimer() {
 
   // Начать отсчет
   const start = () => {
+    console.log('start');
     if (startTimestamp.current === null) {
       startTimestamp.current = Date.now()
     }
@@ -56,12 +57,12 @@ export function usePageActiveTimer() {
   }, [])
 
   // Функция для получения секунд по запросу
-  const getSeconds = () => {
+  const getSeconds = (doReset: boolean = true) => {
     const currentInterval = startTimestamp.current !== null ? Date.now() - startTimestamp.current : 0
     const totalMs = activeTime + currentInterval
     //Время в секундах;
     let time = Math.floor(totalMs / 1000);
-    reset(time - (Math.floor(time/60)*60));
+    if(doReset) reset(time - (Math.floor(time/60)*60));
     return time;
   }
 

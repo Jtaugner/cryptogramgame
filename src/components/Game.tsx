@@ -27,6 +27,8 @@ interface GameProps {
 const cancelBlockPrice = 1;
 let realLevelTime = 0;
 
+let timeToAdd = 0;
+
 const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
    getGameSeconds, copyFunction, testTasks, playSound }) => { 
   const [level, setLevel] = useState(userData.lastLevel)
@@ -49,14 +51,16 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
 
   const phraseRef = useRef<{ handleKeyPress: (key: string) => void, updatePhrase: (data: LevelDataProps) => void, getNextEmptyIndex: (getPrevious: boolean) => void }>(null)
   const timeoutIds = useRef<number[]>([]);
+  const levelGenerated = useRef(-1)
 
   //Время
   const { getSeconds, reset } = usePageActiveTimer()
-  const [levelTime, setLevelTime] = useState(0)
 
 
   const getLevelTime = () => {
-    return getSeconds() + levelTime;
+    let time = timeToAdd + getSeconds(false);
+    console.log('getLevelTime', time);
+    return time;
   }
 
 
@@ -125,6 +129,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
         taskObject: taskObject
       })
     }else{
+      console.log('update lastLevelData', newLevelData.time);
       //Если обновляем кол-во ошибок, то записываем в статистику
       setUserData({...userData,
         lastLevelData: {
@@ -356,7 +361,8 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
     setPhraseData(prev => prev ? { ...prev, filledLetters, completedNumbers } : prev)
   }
   const generateLevel = () => {
-    console.log("generateLevel");
+    if(levelGenerated.current === level) return;
+    console.log("\x1b[34mgenerateLevel\x1b[0m");
     playSound('gameStart');
     showAdv()
     setIsLevelCompleted(false)
@@ -365,7 +371,6 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
     setNotShowKeyboard(false)
     setBlockedTime(0)
     setBlockedTimeTimer(0)
-    setLevelTime(0)
     // Генерируем числа при первой загрузке уровня
     const text = levelData.text.toUpperCase()
     const numbers = generateNumbersForLetters(text)
@@ -395,12 +400,12 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
 
     //Если игрок проходил этот уровень ранее, то загружаем данные из последнего уровня
     if(userData.lastLevelData && userData.lastLevelData.text === initialPhraseData.text){
+      console.log('user has lastLevel data'); 
       initialPhraseData = userData.lastLevelData;
       if(initialPhraseData.isKeyboardBlocked){
         switchOnBlockedKeyboard();
       }
       setErrors(initialPhraseData.errors);
-      setLevelTime(initialPhraseData.time);
     }else{
       //Вызываем подсказку, сколько игроков прошли этот уровень без ошибок
       setShowPlayersPassedLevel(true);
@@ -433,17 +438,18 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
       }
     })
 
+
+    timeToAdd = initialPhraseData.time;
     setInactiveKeys(newInactiveKeys)
     setPhraseData(initialPhraseData)
     updateLastLevelData({...initialPhraseData}, false, false);
-    phraseRef.current?.updatePhrase(initialPhraseData);
+    phraseRef.current?.updatePhrase({...initialPhraseData});
+    levelGenerated.current = level;
   }
   //Вызываем перегенерацию уровня при первой загрузке и при смене уровня
 
   useEffect(() => {
     generateLevel()
-
-
   }, [level])
 
   useEffect(() => {

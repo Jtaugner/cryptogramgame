@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { getServerTime } from '../main'
 
 interface ProgressCounterProps {
   startTime: number,
@@ -18,7 +19,7 @@ const msToTime = (ms: number) => {
 }
 
 function getTime(startTime: number, time: number) {
-     let now = new Date().getTime();
+     let now = getServerTime();
      let diff = (startTime + time) - now;
      if(diff < 0) return 0;
      return diff;

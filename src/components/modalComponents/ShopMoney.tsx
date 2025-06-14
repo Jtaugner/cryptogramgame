@@ -2,27 +2,20 @@ import React from 'react';
 import './shopMoney.css';
 import { UserDataProps } from '../../App';
 import Modal from './Modal';
-import { shopItems } from '../../main';
+import { shopItemCount, shopItems, NOT_SHOW_ADV } from '../../main';
 
 type ShopProps = {
-  userData: UserDataProps,
   onClose: () => void;
-  setUserData: (userData: UserDataProps) => void;
+  makePurchase: (id: string) => void;
 };
 
 
-const shopItemCount: Record<string, number> = {
-  'coins_1': 10,
-  'coins_2': 50,
-  'coins_3': 100,
-}
 
-const ShopMoney: React.FC<ShopProps> = ({userData, onClose, setUserData }) => {
+const ShopMoney: React.FC<ShopProps> = ({onClose, makePurchase }) => {
 
     const getMoneyIconBackground = () => {
       if(shopItems && shopItems[0].getPriceCurrencyImage){
         let bg = shopItems[0].getPriceCurrencyImage('svg');
-        console.log(bg);
         return `url(${bg}) no-repeat center center`;
       }
       return 'none';
@@ -48,14 +41,19 @@ const ShopMoney: React.FC<ShopProps> = ({userData, onClose, setUserData }) => {
                       Монет
                       </div>
                     <div
-                      className={`modal-shop-row-price`}>
+                      className={`modal-shop-row-price`}
+                      onClick={() => makePurchase(item.id)}
+                      >
                       <div>{item.priceValue}</div>
                       <div className="modal-shop-row-price_icon" style={{background: getMoneyIconBackground(), backgroundSize: '100%'}}></div>
                       <div className="modal-shop-row-price_money">{getMoneyName()}</div>
                     </div>
                   </div>
                 ))}
-                <div className="modal-section-title">Реклама</div>
+                
+                {!NOT_SHOW_ADV && (
+                  <>
+                  <div className="modal-section-title">Реклама</div>
                   <div className="modal-shop-row">
                     <div className={`modal-shop-row-icon-coin modal-shop-row-icon-coin_ad`}>
                     </div>
@@ -63,13 +61,18 @@ const ShopMoney: React.FC<ShopProps> = ({userData, onClose, setUserData }) => {
                     Отключение рекламы  
                     </div>
                     <div
-                      className={`modal-shop-row-price`}>
+                      className={`modal-shop-row-price`}
+                      onClick={() => makePurchase('remove_ads')}
+                      >
                         <div>{shopItems[shopItems.length - 1].priceValue}</div>
                       
                       <div className="modal-shop-row-price_icon" style={{background: getMoneyIconBackground(), backgroundSize: '100%'}}></div>
                       <div className="modal-shop-row-price_money">{getMoneyName()}</div>
                     </div>
                   </div>
+                  </>)}
+
+
               </div>
           </Modal>
 }

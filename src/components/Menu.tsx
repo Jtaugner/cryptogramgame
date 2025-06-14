@@ -125,9 +125,6 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
                taskObjectBefore = copyObject(newTaskObject);
           }
      }
-     useEffect(() => {
-          console.log('CHANGE USERDATA', userData);
-     }, [userData]);
 
      
      useEffect(() => {
@@ -164,13 +161,6 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
           console.log('userData', userData.lastLevel);
      }, []);
 
-     useEffect(() => {
-          console.log('changeUSERDATA');
-
-          // setInterval(() => {
-          //      addPreviousIQ();
-          // }, 1000);
-     }, [userData]);
 
      return (
      <div className="menu-bg">
@@ -275,14 +265,6 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
                          segments={[720,749]}
                          
                     />
-                    {/* <video
-                         className="video-bg"
-                         src={broccoli} 
-                         autoPlay
-                         muted
-                         loop
-                         playsInline
-                    /> */}
                </div>
           </div>
           <div className="menu-daily-bottom">

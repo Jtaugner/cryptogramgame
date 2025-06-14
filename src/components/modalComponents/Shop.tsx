@@ -21,6 +21,7 @@ type ShopItem = {
   name: string;
   count: number;
   price: number;
+  makePurchase: (id: string) => void;
 };
 const shopItems = [
   {

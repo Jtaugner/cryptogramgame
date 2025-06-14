@@ -90,7 +90,8 @@ export function getServerTime(){
 
 
 var playerGame: any;
-let YSDK: any;
+export var payments: any;
+var YSDK: any;
 
 let recentData = stringifyJSON(userData);
 // Сохранение данных в аккаунт пользователя Яндекса
@@ -100,12 +101,28 @@ var resetAllData = () => {
   saveData(userData);
 }
 (window as any).resetAllData = resetAllData;
+
+function compareStrings(str1: string, str2: string) {
+  const maxLength = Math.max(str1.length, str2.length);
+
+  for (let i = 0; i < maxLength; i++) {
+    const char1 = str1[i] || "(пусто)";
+    const char2 = str2[i] || "(пусто)";
+
+    if (char1 !== char2) {
+      console.log(`❌ Несовпадение на позиции ${i}: "${char1}" !== "${char2}"`);
+      console.log(str1.slice(i-8, i+8));
+      console.log(str2.slice(i-8, i+8));
+    }
+  }
+}
+
 export function saveData(newUserData: any) {
     try{
-        console.log('TRY: saveData');
+        console.log('\x1b[33mTRY: saveData\x1b[0m');
         const newData = stringifyJSON(newUserData);
         if(newData === recentData) return;
-        console.log('DONE: saveData');
+        console.log('\x1b[32mDONE: saveData\x1b[0m');
         recentData = newData;
         setElementToLocalStorage('gameProgress', newData);
         if (playerGame) {
@@ -137,7 +154,14 @@ export function showRewarded(callback: () => void){
   }catch(e){}
 }
 
+export var NOT_SHOW_ADV = false;
+
+export function setNotShowAdv(){
+  NOT_SHOW_ADV = true;
+}
+
 export function showAdv(){
+  if(NOT_SHOW_ADV) return;
   try{
     console.log('showAdv');
     YSDK.adv.showFullscreenAdv({
@@ -159,7 +183,11 @@ export function showAdv(){
   }
   
 }
-
+export const shopItemCount: Record<string, number> = {
+  'coins_1': 10,
+  'coins_2': 50,
+  'coins_3': 100,
+}
 //Покупки
 export let shopItems = [
   {
@@ -180,19 +208,57 @@ export let shopItems = [
   },
 ]
 
-function consumePurchase(purchase, payments) {
+export function makePurchaseSDK(id: string, callback: (purchase: string) => void) {
+  try{
+    payments.purchase({ id: id})
+    .then((purchase: any) => {
+        callback(purchase.productID);
+    }).catch(err => {
+        console.log('err', err);
+    });
+  }catch(e){}
+}
+
+export function tryToAddUserToLeaderboard(iq: number){
+  try{
+    YSDK.leaderboards.getPlayerEntry('iq')
+    .then(res => {
+      if(res.score < iq){
+        setUserToLeaderboard(iq);
+      }
+    })
+    .catch(err => {
+      setUserToLeaderboard(iq);
+    });
+  }catch(e){}
+}
+
+export function setUserToLeaderboard(iq: number){
+  try{
+    YSDK.isAvailableMethod('leaderboards.setScore').then((res: boolean) => {
+      if(res){
+        console.log('setUserToLeaderboard', iq);
+        YSDK.leaderboards.setScore('iq', iq);
+      }
+    })
+  }catch(e){}
+}
+
+export function getLeaderboard(callback: (res: any) => void){
+  try{
+    YSDK.leaderboards.getEntries('iq',
+      { quantityTop: 20, includeUser: true, quantityAround: 5 })
+      .then(res => callback(res));
+  }catch(e){}
+  
+  
+}
+
+export function consumePurchase(purchase: any) {
     try{
         console.log('try to consume: ', purchase.productID);
-        for(let i = 0; i < shopItems.length; i++){
-            if(shopItems[i].id === purchase.productID){
-                console.log('addMoney');
-                store.dispatch(addMoney(shopItems[i].amount));
-                break;
-            }
-        }
-        giveParams({[purchase.productID]: 1});
+        if(purchase.productID === 'remove_ads') return;
         payments.consumePurchase(purchase.purchaseToken);
-        saveData();
     }catch(e){}
 }
 
@@ -242,20 +308,18 @@ export function initPlayer(ysdk) {
                 console.log(d)
             }
             ysdk.getPayments({signed: false}).then((_payments: any) => {
+                payments = _payments;
                 //Получаем каталог покупок
                 _payments.getCatalog().then((catalog: any) => {
                   shopItems = catalog;
                 });
                 // Покупки доступны.
                 console.log('покупки доступны');
-                _payments.getPurchases().then(purchases => purchases.forEach((id)=>{
-                    console.log('consumePurchase', id);
-                    consumePurchase(id, _payments);
-                }));
+                createApp();
             }).catch(err => {
                 console.log(err);
+                createApp();
             });
-            createApp();
         }).catch((e: any) => {
             createApp();
         });

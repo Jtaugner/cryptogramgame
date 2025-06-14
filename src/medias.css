@@ -114,4 +114,7 @@
           width: 45px;
           height: 45px;
      }
+     .modal-rating .modal-wrapper{
+          max-height: 475px;
+     }
 }

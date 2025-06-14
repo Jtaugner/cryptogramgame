@@ -4,7 +4,7 @@ import Menu from './components/Menu'
 import { CSSTransition, SwitchTransition } from 'react-transition-group'
 import './AppTransition.css'
 import { usePageActiveTimer } from './components/PageTimer'
-import { appIsReady, getServerTime, saveData, tryPlaySound } from './main'
+import { appIsReady, consumePurchase, getServerTime, makePurchaseSDK, setNotShowAdv, payments, saveData, shopItemCount, shopItems, tryPlaySound, setUserToLeaderboard, tryToAddUserToLeaderboard } from './main'
 import { copyObject, getTasks } from './tasks'
 import { LevelData } from './levels'
 import Shop from './components/modalComponents/Shop'
@@ -89,6 +89,29 @@ const App: React.FC<AppProps> = ({allUserData}) => {
   useState<TaskObjectProps>(userData.taskObject ? copyObject(userData.taskObject) : getTasks(userData.statistics.iq))
   const [previousIQ, setPreviousIQ] = useState<number>(userData.statistics.iq)
 
+  const getGameSeconds = () => {
+    return getSeconds(true);
+  }
+
+
+  const addMoney = (id: string) => {
+    if(id === 'remove_ads'){
+      setNotShowAdv();
+      return;
+    }
+    for(let i = 0; i < shopItems.length; i++){
+        if(shopItems[i].id === id){
+            console.log('addMoney');
+            setUserData({...userData,
+               money: userData.money + shopItemCount[id]});
+            break;
+        }
+    }
+  }
+  const makePurchase = (id: string) => {
+    makePurchaseSDK(id, addMoney);
+  }
+
   const playSound = (soundName: string) => {
     tryPlaySound(soundName);
   }
@@ -126,7 +149,7 @@ const App: React.FC<AppProps> = ({allUserData}) => {
           taskObject.dateToGetNewTask = getServerTime();
         }
     }else{
-      let dateNow = new Date().getTime();
+      let dateNow = getServerTime();
       if(dateNow >= taskObject.dateToGetNewTask + taskObject.time){
         taskObject = getTasks(iq);
         setPreviousTasksData(copyObject(taskObject));
@@ -135,12 +158,30 @@ const App: React.FC<AppProps> = ({allUserData}) => {
     return taskObject;
   }
   useEffect(() => {
-    // saveData(userData); 
+    saveData(userData); 
     console.log('userData change', userData);
   }, [userData])
+
+  //Добавляем в рейтинг
+  useEffect(() => {
+    tryToAddUserToLeaderboard(userData.statistics.iq);
+  }, [userData.statistics.iq])
+
   //Вызываем один раз при рендере компонента
   useEffect(() => {
     appIsReady();
+    if(payments){
+      payments.getPurchases().then((purchases: any) => 
+        purchases.forEach((purchase: any)=>{
+          if(purchase.productID === 'remove_ads'){
+            setNotShowAdv()
+          }else{
+            addMoney(purchase.productID);
+            consumePurchase(purchase);
+          }
+          
+      }));
+    }
     if(!userData.taskObject){
       console.log('set taskObject', previousTasksData);
       setUserData({...userData, taskObject: copyObject(previousTasksData)})
@@ -164,7 +205,7 @@ const App: React.FC<AppProps> = ({allUserData}) => {
               onMenu={() => setShowGame(false)}
               userData={userData}
               setUserData={setUserData}
-              getGameSeconds={getSeconds}
+              getGameSeconds={getGameSeconds}
               copyFunction={copyFunction}
               testTasks={testTasks}
               playSound={playSound}
@@ -174,7 +215,7 @@ const App: React.FC<AppProps> = ({allUserData}) => {
               onStart={() => setShowGame(true)}
               userData={userData}
               setUserData={setUserData}
-              getGameSeconds={getSeconds}
+              getGameSeconds={getGameSeconds}
               previousTasksData={previousTasksData}
               setPreviousTasksData={setPreviousTasksData}
               previousIQ={previousIQ}
@@ -200,9 +241,8 @@ const App: React.FC<AppProps> = ({allUserData}) => {
           )}
           {showShopMoney && (
                <ShopMoney
-                    userData={userData}
                     onClose={() => setShowShopMoney(false)}
-                    setUserData={setUserData}
+                    makePurchase={makePurchase}
                />
           )}
         </div>

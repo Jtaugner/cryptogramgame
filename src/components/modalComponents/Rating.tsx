@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './rating.css';
 import {UserDataProps } from '../../App';
 import Modal from './Modal';
+import { getLeaderboard, setUserToLeaderboard } from '../../main';
 
 type RatingProps = {
   userData: UserDataProps,
@@ -15,88 +16,70 @@ type RatingItem = {
     publicName: string
   }
 }
-const ratingTest = [
-  {
-    score: 256,
-    rank: 1,
-    player: {
-      getAvatarSrc: () => '',
-      publicName: 'Блаблашка Икаровна'
-    }
-  },
-  {
-    score: 254,
-    rank: 2,
-    player: {
-      getAvatarSrc: () => '',
-      publicName: 'Блаблашка Икаровна'
-    }
-  },
-  {
-    score: 250,
-    rank: 3,
-    player: {
-      getAvatarSrc: () => '',
-      publicName: 'Блаблашка Икаровна'
-    }
-  },
-  {
-    score: 250,
-    rank: 4,
-    player: {
-      getAvatarSrc: () => '',
-      publicName: 'Якорный Собачонок'
-    }
-  },
-  {
-    score: 250,
-    rank: 5,
-    player: {
-      getAvatarSrc: () => '',
-      publicName: 'Блаблашка Икаровна'
-    }
-  },
-  {
-    score: 250,
-    rank: 6,
-    player: {
-      getAvatarSrc: () => '',
-      publicName: 'Блаблашка Икаровна'
-    }
-  },
-  {
-    score: 250,
-    rank: 7,
-    player: {
-      getAvatarSrc: () => '',
-      publicName: 'Блаблашка Икаровна'
-    }
-  }
-];
 
-const playerRait =   {
-  score: 250,
-  rank: 4,
-  player: {
-    getAvatarSrc: () => '',
-    publicName: 'Якорный Собачонок'
-  }
-}
+const ratingTest = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+
+
 
 const Rating: React.FC<RatingProps> = ({userData, onClose }) => {
-  const [rating, setRating] = useState<RatingItem[]>(ratingTest);
+  const [rating, setRating] = useState<RatingItem[] | null>(null);
+  const [userRank, setUserRank] = useState<number>(-1);
+  useEffect(() => {
+    getLeaderboard((res: any) => {
+      setRating(res.entries);
+      setUserRank(res.userRank);
+      //Тест результата юзера
+      res.entries.forEach((item: any) => {
+        if(item.rank === userRank){
+          if(userData.statistics.iq > item.score){
+            setUserToLeaderboard(userData.statistics.iq);
+          }
+        }
+      })
+
+
+      //Скролл до юзера
+      setTimeout(() => {
+        try{
+          let scrollEl = document.querySelector('.rating-row-player');
+          if(scrollEl) scrollEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }catch(ignored){}
+      }, 700)
+    })
+  }, [])
   return <Modal
    title="РЕЙТИНГ IQ"
    modalClassName="modal-rating"
    onClose={onClose}>
         <div className="modal-section">
-        {rating.map((item, index) => (
+        {rating === null ?
+        ratingTest.map((_, i) =>
             <div
-             className={`rating-row ${item.rank === playerRait.rank ? 'rating-row-player' : ''}`}
+              className="rating-row skeleton-row"
+              key={'sceleton-row-' + i}
+            >
+              <div className="rating-row-left">
+                <div className="rating-row-icon"></div>
+              </div>
+            </div>
+          )
+        :
+        rating.map((item, index) => (
+            <div
+             className={`
+              rating-row
+               ${item.rank === userRank ? 'rating-row-player' : ''}
+               ${item.rank === 20 ? 'lastInTop' : ''}
+            `}
              key={'rating-row-' + index}
              >
               <div className="rating-row-left">
-                <div className="rating-row-icon"></div>
+                <div className="rating-row-icon"
+                style={{
+                  background: `url(${item.player.getAvatarSrc('medium')}) center center no-repeat`,
+                  backgroundSize: '100%'
+                }}
+                ></div>
                 <div className="rating-row-name">{item.player.publicName}</div>
               </div>
             

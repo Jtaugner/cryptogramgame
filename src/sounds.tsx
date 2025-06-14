@@ -106,7 +106,7 @@ const NewAudioContext = (function () {
   'doneLetters': new NewAudioContext('./sounds/doneLetters.wav'),
   'errorLetter': new NewAudioContext('./sounds/error3.wav'),
   'win': new NewAudioContext('./sounds/win2.wav'),
-  'gameStart': new NewAudioContext('./sounds/gameStart.wav'),
+  'gameStart': new NewAudioContext('./sounds/openLevel.wav'),
   'keyboardBlocked': new NewAudioContext('./sounds/keyboardBlocked.wav'),
   'getIQ': new NewAudioContext('./sounds/getIQ.wav'),
   
