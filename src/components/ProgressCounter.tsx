@@ -20,8 +20,8 @@ export const makePlacesForCounter = (value: number) => {
 const ProgressCounter: React.FC<ProgressCounterProps> = ({ previousTarget, target,
       total, addPreviousIQ, playSound }) => {
   const [current, setCurrent] = useState(previousTarget)
-  const [taskFinished, setTaskFinished] = useState(previousTarget === total)
-  const [showDoneTask, setShowDoneTask] = useState(previousTarget === total)
+  const [taskFinished, setTaskFinished] = useState(previousTarget >= total)
+  const [showDoneTask, setShowDoneTask] = useState(previousTarget >= total)
   const isFirstRender = useRef(true)
 
   useEffect(() => {
@@ -56,8 +56,10 @@ const ProgressCounter: React.FC<ProgressCounterProps> = ({ previousTarget, targe
           }
           setTimeout(() => {
                playSound('getIQ');
-               addPreviousIQ();
-          }, 1600)
+               setTimeout(() => {
+                    addPreviousIQ();
+               }, 200)
+          }, 1400)
      }
   }, [current])
 

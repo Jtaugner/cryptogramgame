@@ -27,7 +27,9 @@ const Rating: React.FC<RatingProps> = ({userData, onClose }) => {
   useEffect(() => {
     getLeaderboard((res: any) => {
       setRating(res.entries);
-      setUserRank(res.userRank);
+      if(res.userRank){
+        setUserRank(res.userRank);
+      }
       //Тест результата юзера
       res.entries.forEach((item: any) => {
         if(item.rank === userRank){

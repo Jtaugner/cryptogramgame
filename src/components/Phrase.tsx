@@ -2,8 +2,6 @@ import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } f
 import './Phrase.css'
 import { LevelDataProps } from '../App'
 import {dices, LevelData } from '../levels'
-import Lottie from 'react-lottie-player'
-import animationData from '../Hi/boom6.json'
 
 interface PhraseProps {
   data: {
@@ -29,10 +27,24 @@ interface PhraseProps {
   setShowConfetti: (show: boolean) => void
   diceMode: boolean
   playSound: (soundName: string) => void
+  inactiveKeys: Set<string>
 }
 
 interface PhraseHandle {
   handleKeyPress: (key: string) => void
+}
+
+function getTextForLevelEnd(text: string){
+  return (<>
+    {text.split('\n').map((line, index) => {
+      return (
+        <span key={'line' + index}>
+          {line}
+          <br/>
+        </span>
+      )
+    })}
+  </>);
 }
 
 
@@ -40,7 +52,8 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
   ({ data, onError, onLetterFill, onCompleteNumber,
      blockedTime, isTipSelecting, useTip, isLevelCompleted, level,
       isFromRules, adviceStepFromRules,
-      switchOnGlowScreen, levelData, copyFunction, setShowConfetti, diceMode, playSound }, ref) => {
+      switchOnGlowScreen, levelData, copyFunction, setShowConfetti,
+      diceMode, playSound, inactiveKeys }, ref) => {
       
   const letters = data.text.split('')
   const [selectedIndex, setSelectedIndex] = useState<number | null>(-1);
@@ -148,7 +161,8 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
     }
   }
   const handleKeyPress = (letter: string, doItWhatever?: boolean) => {
-    if(selectedIndex === null) return
+    if(selectedIndex === null) return;
+    if(inactiveKeys.has(letter.toLowerCase())) return;
     if (!doItWhatever && (blockedTime > 0 || isTipSelecting)) return
     if (Object.keys(wrongLetters).length > 0) return
     
@@ -277,8 +291,10 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
       } */}
       {isLevelCompleted && isLevelAnimationCompleted ?
       <>
-        <div className='phrase-row__text'>
-          {levelData.text}
+        <div className={`phrase-row__text
+          ${levelData.text.length > 120 ? 'phrase-row__text_big' : ''}
+        `}>
+          {getTextForLevelEnd(levelData.text)}
         </div> 
         <div className="game-main_author">
               <div>

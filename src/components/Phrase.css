@@ -13,12 +13,14 @@
   padding: 30px 0;
 }
 .phrase-row_overflowHidden{
-     overflow: hidden;
+     /* overflow-x: hidden;
+     overflow-y: auto; */
 }
 
 .phrase-word {
   display: inline-flex;
-  flex-direction: row;
+  flex-flow: row wrap;
+  justify-content: center;
   gap: 1.5px;
   margin: 0 10px 22px 10px;
 }
@@ -436,6 +438,10 @@
      line-height: 2.3rem;
      text-align: center;
      margin-bottom: 40px;
+}
+.phrase-row__text_big{
+     font-size: 1.7rem;
+     line-height: 1.8rem;
 }
 
 

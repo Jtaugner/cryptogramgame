@@ -144,7 +144,7 @@
 }
 .jumping-letter{
   animation: jumpLetter 1.5s ease-in-out infinite;
-  box-shadow: 0 0 4px 1px rgba(255, 255, 255, 0.9);
+  border: 1px solid #4cff01;
 }
 @keyframes jumpLetter {
   0%, 100%{

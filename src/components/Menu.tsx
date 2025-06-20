@@ -4,7 +4,10 @@ import Lottie from 'react-lottie-player'
 import animationPunch1 from '../Hi/Punch00.json'
 import animationPunch2 from '../Hi/Punch01.json'
 import animationPunch3 from '../Hi/Punch03.json'
-import broccoli from '../Hi/All_Broccoli_animations.json'
+import animationPunch4 from '../Hi/Punch_React00.json'
+import animationPunch5 from '../Hi/Punch_React01.json'
+import animationPunch6 from '../Hi/Punch_React03.json'
+import animationPunch7 from '../Hi/Fall.json'
 import Statistics from './modalComponents/Statistics'
 import { TaskObjectProps, UserDataProps } from '../App'
 import Settings from './modalComponents/Settings'
@@ -17,6 +20,8 @@ import { copyObject, getTaskName } from '../tasks'
 import { getMinutesFromSeconds } from '../tasks'
 import ProgressCounter from './ProgressCounter'
 import Timer from './TImer'
+import ClickParticles from './ClickParticles'
+import { NOT_SHOW_ADV } from '../main'
 
 
 
@@ -55,6 +60,12 @@ const getIQcolor = (iq: number) => {
 }
 
 let countOfPunch = 0;
+let countsOfPunch = [
+     25,
+     50,
+     75,
+     100
+]
 
 let taskObjectBefore: TaskObjectProps = null;
 
@@ -67,10 +78,12 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
      const [showStats, setShowStats] = useState(false)
      const [showSettings, setShowSettings] = useState(false)
      const [showRating, setShowRating] = useState(false)
-     const [animationData, setAnimationData] = useState(animationPunch1)
+     const [animationData, setAnimationData] = useState<any>(animationPunch1)
      const [showCollection, setShowCollection] = useState(false)
+     
      const lottieRef = useRef();
      const isFirstRender = useRef(true)
+     const broccoliCanvasRef = useRef<{ handleClick: () => void}>(null)
 
      const addPreviousIQWrapper = () => {
           if(isFirstRender.current){
@@ -79,29 +92,68 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
           addPreviousIQ();
      }
 
+     const resetLottie = () => {
+          try{
+               console.log('reset lottie');
+               if(countsOfPunch.includes(countOfPunch)){
+                    if(lottieRef.current){
+                         console.log('play lottie');
+                         lottieRef.current.play();
+                    }
+               }
+
+          }catch(e){
+
+          }
+
+     }
+
      const playLottie = () => {
           try{
+               if(countsOfPunch.includes(countOfPunch)){
+                    return;
+               }
+               broccoliCanvasRef.current?.handleClick();
                if(lottieRef.current){
                     lottieRef.current.stop();
                     lottieRef.current.play();
-                    countOfPunch += 1;
+                    countOfPunch++;
                }
-               // if(countOfPunch === 5){
-               //      console.log('changeAnimation');
-               //      setAnimationData(animationPunch2);
-               // }
-               // if(countOfPunch === 10 ){
-               //      console.log('changeAnimation 2');
-               //      setAnimationData(animationPunch3);
-               // }
+               setTimeout(() => {
+                    if(countOfPunch === 5 || countOfPunch === countsOfPunch[0] + 5 || countOfPunch === countsOfPunch[1] + 5){
+                         setAnimationData(animationPunch2);
+                    }
+                    if(countOfPunch === 15 || countOfPunch === countsOfPunch[0] + 15 || countOfPunch === countsOfPunch[1] + 15){
+                         setAnimationData(animationPunch3);
+                    }
+                    if(countOfPunch === countsOfPunch[0]){
+                         setAnimationData(animationPunch4);
+                    }
+                    if(countOfPunch === countsOfPunch[1]){
+                         setAnimationData(animationPunch5);
+                    }
+                    if(countOfPunch === countsOfPunch[2]){
+                         setAnimationData(animationPunch6);
+                    }
+                    if(countOfPunch === countsOfPunch[3]){
+                         setAnimationData(animationPunch7);
+                    }
+               }, 200)
           }catch(e){
                console.log('error', e);
           }
      }
      const stopLottie = () => {
           try{
+               if(countOfPunch === countsOfPunch[3]){
+                    return;
+               }
                if(lottieRef.current){
                     lottieRef.current.stop();
+               }
+               if(countsOfPunch.includes(countOfPunch)){
+                    countOfPunch++;
+                    setAnimationData(animationPunch1);
                }
           }catch(e){
                console.log('error', e);
@@ -112,6 +164,8 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
                setPreviousTasksData(copyObject(taskObjectBefore));
                onStart();
           }
+          console.log('play music');
+          // playSound('music');
      }
 
      const getNewTasks = () => {
@@ -134,12 +188,13 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
                 + getMinutesFromSeconds(getGameSeconds());
                console.log('time', time, taskObject.tasks['time'].goal);
                if(!taskObject.tasks['time'].taskCompleted){
-                    taskObject.tasks['time'].now = time;
                     let addIQ = 0;
                     if(time >= taskObject.tasks['time'].goal){
                          addIQ = 1;
                          taskObject.tasks['time'].now = taskObject.tasks['time'].goal;
                          taskObject.tasks['time'].taskCompleted = true;
+                    }else{
+                         taskObject.tasks['time'].now = time;
                     }
                     setUserData(
                          {...userData,
@@ -158,7 +213,7 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
           }else{
                taskObjectBefore = testTasks(previousTasksData, userData.statistics.iq);
           }
-          console.log('userData', userData.lastLevel);
+          countOfPunch = 0;
      }, []);
 
 
@@ -174,7 +229,11 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
                     <div className="modal-shop-row-price-icon">
                     </div>{userData.money}
                </div>
-               <div className="noAds" onClick={() => setShowShopMoney(true)}>
+               <div className="noAds" onClick={() => setShowShopMoney(true)}
+                    style={{
+                         opacity: NOT_SHOW_ADV ? 0 : 1
+                    }}
+                    >
                     <div className="noAds_text">ADS</div>
                     <label className="switch">
                          <input type="checkbox" defaultChecked={true}/>
@@ -254,15 +313,17 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
                     }
                </div>
                
-               <div className="menu-daily-broccoli">
+               <div className="menu-daily-broccoli" onClick={playLottie}>
+                    <ClickParticles
+                    ref={broccoliCanvasRef}
+                     />
                     <Lottie
                          play={false}
-                         loop={false}
+                         loop={countOfPunch === countsOfPunch[3] ? true : false}
                          ref={lottieRef}
-                         onClick={playLottie}
-                         animationData={broccoli}
+                         animationData={animationData}
                          onComplete={stopLottie}
-                         segments={[720,749]}
+                         onLoad={resetLottie}
                          
                     />
                </div>

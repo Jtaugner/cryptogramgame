@@ -127,7 +127,7 @@ export function saveData(newUserData: any) {
         setElementToLocalStorage('gameProgress', newData);
         if (playerGame) {
           const state = {gameProgress: newData};
-          playerGame.setData(state).then((ignored) => {}).catch(()=>{});
+          playerGame.setData(state).then((ignored: any) => {}).catch(()=>{});
         }
     }catch (ignored) {}
 }
@@ -213,7 +213,7 @@ export function makePurchaseSDK(id: string, callback: (purchase: string) => void
     payments.purchase({ id: id})
     .then((purchase: any) => {
         callback(purchase.productID);
-    }).catch(err => {
+    }).catch((err: any) => {
         console.log('err', err);
     });
   }catch(e){}
@@ -222,12 +222,12 @@ export function makePurchaseSDK(id: string, callback: (purchase: string) => void
 export function tryToAddUserToLeaderboard(iq: number){
   try{
     YSDK.leaderboards.getPlayerEntry('iq')
-    .then(res => {
+    .then((res: any) => {
       if(res.score < iq){
         setUserToLeaderboard(iq);
       }
     })
-    .catch(err => {
+    .catch((err: any) => {
       setUserToLeaderboard(iq);
     });
   }catch(e){}
@@ -246,9 +246,18 @@ export function setUserToLeaderboard(iq: number){
 
 export function getLeaderboard(callback: (res: any) => void){
   try{
-    YSDK.leaderboards.getEntries('iq',
-      { quantityTop: 20, includeUser: true, quantityAround: 5 })
-      .then(res => callback(res));
+    YSDK.isAvailableMethod('leaderboards.setScore').then((res: boolean) => {
+      if(res){
+        YSDK.leaderboards.getEntries('iq',
+          { quantityTop: 20, includeUser: true, quantityAround: 5 })
+          .then((res: any) => callback(res));
+      }else{
+        YSDK.leaderboards.getEntries('iq',
+          { quantityTop: 20})
+          .then((res: any) => callback(res));
+      }
+    })
+
   }catch(e){}
   
   
@@ -262,13 +271,14 @@ export function consumePurchase(purchase: any) {
     }catch(e){}
 }
 
-export function initPlayer(ysdk) {
-    ysdk.getPlayer().then(_player => {
+export function initPlayer(ysdk: any) {
+    ysdk.getPlayer({ scopes: true }).then((_player: any) => {
         console.log('INIT PLAYER');
         // Игрок авторизован.
         playerGame = _player;
+        console.log('playerGame', playerGame);
 
-        playerGame.getData(['gameProgress'], false).then((data) => {
+        playerGame.getData(['gameProgress'], false).then((data: any) => {
             let gp = data.gameProgress;
             //Вовзврат прогресса
             console.log('gp', gp);
@@ -316,7 +326,7 @@ export function initPlayer(ysdk) {
                 // Покупки доступны.
                 console.log('покупки доступны');
                 createApp();
-            }).catch(err => {
+            }).catch((err: any) => {
                 console.log(err);
                 createApp();
             });
@@ -333,7 +343,9 @@ export function initPlayer(ysdk) {
 export const appIsReady = () => {
   if(YSDK && YSDK.features && YSDK.features.LoadingAPI) YSDK.features.LoadingAPI.ready();
 }
+// @ts-ignore
 if (window.YaGames) {
+  // @ts-ignore
   window.YaGames.init()
       .then((ysdk: any) => {
           console.log('gt sdk');

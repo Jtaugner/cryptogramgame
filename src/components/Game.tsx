@@ -34,7 +34,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
   const [level, setLevel] = useState(userData.lastLevel)
   const [isLevelCompleted, setIsLevelCompleted] = useState(false)
   const [showConfetti, setShowConfetti] = useState(false)
-  const [diceMode, setDiceMode] = useState(true)
+  const [diceMode, setDiceMode] = useState(false)
   const [isShowSettings, setIsShowSettings] = useState(false)
   const [isTipSelecting, setIsTipSelecting] = useState(false)
   const [showPlayersPassedLevel, setShowPlayersPassedLevel] = useState(false)
@@ -160,16 +160,12 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
 
   const endBlockTime = () => {
     if(blockedTimeRef.current === 0) return;
-    console.log('endBlockTime 2', blockedTimeRef.current, errors);
     setBlockedTime(0)
     timeoutIds.current.push(setTimeout(() => {
       setBlockedTimeTimer(0)
     }, 1000))
     setErrors(0)
     updateLastLevelData({errors: 0, isKeyboardBlocked: false}, false, false)
-    timeoutIds.current.push(setTimeout(() => {
-      console.log('endBlockTime 3', blockedTimeRef.current);
-    }, 1000))
   };
   const cancelBlockedByMoney = () => {
     if(userData.money >= cancelBlockPrice){
@@ -180,7 +176,6 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
   const switchOnBlockedKeyboard = () => {
     showAdv();
     let blockedTime = 30000;
-    console.log('blockedTime', userData.lastLevelData.keyboardBlockedTimes);
     if(userData?.lastLevelData?.keyboardBlockedTimes){
       blockedTime += userData.lastLevelData.keyboardBlockedTimes * 10000;
     }
@@ -256,6 +251,10 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
   }, [phraseData])
 
   const getNextLevel = () => {
+    if(level === levels.length - 1){
+      onMenu();
+      return;
+    }
     setLevel(level + 1)
     setLevelData(levels[level + 1]);
     reset();
@@ -285,7 +284,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
       }
 
       if (!letterMap.has(char)) {
-        // Генерируем случайное число от 1 до 99 для новой буквы
+        // Генерируем случайное число от 1 до 36 для новой буквы
         let randomNum = -1;
         if(level < 3){
           randomNum = getRandomSmallNumber();
@@ -363,7 +362,6 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
   const generateLevel = () => {
     if(levelGenerated.current === level) return;
     console.log("\x1b[34mgenerateLevel\x1b[0m");
-    playSound('gameStart');
     showAdv()
     setIsLevelCompleted(false)
     setErrors(0)
@@ -413,6 +411,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
         setShowPlayersPassedLevel(false);
       }, 5000));
     }
+    initialPhraseData.hiddenIndexes = levelData.hiddenIndexes;
 
     // Проверяем неактивные буквы
     const newInactiveKeys = new Set<string>()
@@ -592,6 +591,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
           setShowConfetti={setShowConfetti}
           diceMode={diceMode}
           playSound={playSound}
+          inactiveKeys={inactiveKeys}
         />
         {isLevelCompleted && (
           <div className="nextLevelButton" onClick={getNextLevel}>
@@ -627,6 +627,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
             }}></div>
         </div>
         <div className={`keyboard-blocked ${blockedTime > 0 ? 'keyboard-blocked_show' : ''}`}>
+            {blockedTime > 0 && (
             <ProgressCircle
                   blockedTime={blockedTime}
                   size={65}
@@ -635,7 +636,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
                   blockedTimeTimer={blockedTimeTimer}
                   setBlockedTimeTimer={setBlockedTimeTimer}
               />
-            
+            )}
 
             <div className="keyboard-blocked-text">
               Вы сделали 3 ошибки, поэтому клавиатура <br></br> заблокирована на <span className="keyboard-blocked-text__time">{blockedTimeTimer} секунд

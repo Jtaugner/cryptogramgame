@@ -1,128 +1,14 @@
+// @ts-ignore
+import {allLevels} from './allLevels.js';
+
 export interface LevelData {
      text: string
      hiddenIndexes: number[]
      name: string
-     desc: string
+     desc?: string
      type: string
 }
-export const levelsData: LevelData[] = [
-     // {
-     //      text: 'МЫ ВСЕ НОСИМ МАСКИ, ПРОСТО ИНОГДА ОНИ КРАСИВЕЕ.',
-     //      hiddenIndexes: [
-     //        0, 1, 3, 4, 5, 7, 8, 9, 10, 12, 13, 14,
-     //        16, 17, 18, 19, 21, 22, 23, 25, 26, 27,
-     //        29, 30, 31, 33, 34, 35, 36, 38, 39, 40,
-     //        41, 43, 44, 45, 46, 48, 49, 50
-     //      ],
-     // quotes: [],
-     // poems: [],
-     // aphorisms: [],
-     // music: [],
-     // cinema: [],
-     // science: []
-     //      name: 'Маска',
-     //      desc: 'Фильм, 1994 год',
-     //      type: 'quotes'
-     //    },
-     {
-      text: 'Жизнь — это не то, что мы получаем, а то, что мы создаем.',
-      hiddenIndexes: [10, 16, 19, 21, 28, 37, 45, 53],
-      name: 'Максим Горький',
-      desc: 'Русский писатель, 1902 год',
-      type: 'quotes'
-    },
-        {
-          text: 'Такой вот парадокс: мы совершаем подвиги для тех, кому до нас уже нет никакого дела, а любят нас те, кому мы нужны и без всяких подвигов...',
-          hiddenIndexes: [3],
-          name: 'Франсуа де Ларошфуко',
-          desc: 'Русский писатель, 1892 год',
-          type: 'cinema'
-        },
-        {
-          text: 'Собака не ест детей по воскресеньям',
-          hiddenIndexes: [3,5],
-          name: 'Аргумий Бронк',
-          desc: 'Гульмонт, сальбадур, археолог, 1924',
-          type: 'quotes'
-        },
-        {
-          text: 'Высший класс — это не то, что вы думаете.',
-          hiddenIndexes: [3,5],
-          name: 'Антон Чехов',
-          desc: 'Русский писатель, 1892 год',
-          type: 'quotes'
-        },
-        {
-          text: 'Рыба совсем не проста.',
-          hiddenIndexes: [3,5],
-          name: 'Что? Где? Когда?',
-          desc: 'Телесериал, 2014',
-          type: 'quotes'
-        },
-        {
-          text: 'Мысли приходят, когда на их приход есть место.',
-          hiddenIndexes: [0, 1, 8, 15, 24, 31, 39, 48],
-          name: 'Максим Горький',
-          desc: 'Русский писатель, 1901 год',
-          type: 'music'
-        },
-        {
-          text: 'Жизнь — это не то, что мы получаем, а то, что мы создаем.',
-          hiddenIndexes: [2, 10, 19, 28, 37, 45, 53],
-          name: 'Максим Горький',
-          desc: 'Русский писатель, 1902 год',
-          type: 'quotes'
-        },
-     {
-          text: 'Пусть лучше будет плохо, но интересно.',
-          hiddenIndexes: [4, 12, 19, 25, 33],
-          name: 'Федор Достоевский',
-          desc: 'Русский писатель, философ',
-          type: 'quotes'
-     },
-     {
-          text: 'Кто не рискует, тот не пьет шампанское.',
-          hiddenIndexes: [1, 5, 12, 19, 27],
-          name: 'Пословица',
-          desc: 'Мудрость народов',
-          type: 'aphorisms'
-     },
-     {
-          text: 'Кто не рискует, тот не пьет шампанское.',
-          hiddenIndexes: [1, 5, 12, 19, 27],
-          name: 'Пословица',
-          desc: 'Мудрость народов',
-          type: 'cinema'
-     },
-     {
-          text: 'Кто не рискует, тот не пьет шампанское.',
-          hiddenIndexes: [1, 5, 12, 19, 27],
-          name: 'Пословица',
-          desc: 'Мудрость народов',
-          type: 'poems'
-     },
-     {
-          text: 'Кто не рискует, тот не пьет шампанское.',
-          hiddenIndexes: [1, 5, 12, 19, 27],
-          name: 'Пословица',
-          desc: 'Мудрость народов',
-          type: 'poems'
-     },
-     {
-          text: 'Кто не рискует, тот не пьет шампанское.',
-          hiddenIndexes: [1, 5, 12, 19, 27],
-          name: 'Пословица',
-          desc: 'Лопська',
-          type: 'science'
-     },
-     {
-          text: 'Кто не рискует, тот не пьет шампанское.',
-          hiddenIndexes: [1, 5, 12, 19, 27],
-          name: 'Байуш ыдячо',
-          desc: 'Аывщ народов, 9081',
-          type: 'science'
-     }
-]
+export const levelsData: LevelData[] = allLevels;
 export const typesOfCategories = ['quotes', 'poems', 'aphorisms', 'music', 'cinema', 'science'];
 export const collectionNames = {
      'quotes': 'Цитаты',

@@ -104,13 +104,20 @@ const NewAudioContext = (function () {
   'goodLetter': new NewAudioContext('./sounds/hit.wav'),
   'changeLetter': new NewAudioContext('./sounds/switch2.wav'),
   'doneLetters': new NewAudioContext('./sounds/doneLetters.wav'),
-  'errorLetter': new NewAudioContext('./sounds/error3.wav'),
+  'errorLetter': new NewAudioContext('./sounds/error-sound.mp3'),
   'win': new NewAudioContext('./sounds/win2.wav'),
-  'gameStart': new NewAudioContext('./sounds/openLevel.wav'),
   'keyboardBlocked': new NewAudioContext('./sounds/keyboardBlocked.wav'),
   'getIQ': new NewAudioContext('./sounds/getIQ.wav'),
+  'changeWindow': new NewAudioContext('./sounds/flip.wav'),
+  'music': new NewAudioContext('./sounds/music.mp3'),
   
  }
+
+ sounds['errorLetter'].setVolume(0.85);
+ sounds['changeLetter'].setVolume(0.2);
+ sounds['keyboardBlocked'].setVolume(0.3);
+ sounds['changeWindow'].setVolume(0.1);
+ sounds['music'].setVolume(0.2);
 
  export const playSound = (soundName: string) => {
   sounds[soundName as keyof typeof sounds].play();

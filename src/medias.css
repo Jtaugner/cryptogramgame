@@ -1,4 +1,8 @@
 @media (min-width: 600px) {
+     .menu__top{
+          max-width: 1000px;
+          margin: 0 auto;
+     }
      .menu-bottom-wrap{
           justify-content: center;
           top: -35px;
@@ -109,6 +113,7 @@
      }
      .game-keyboard{
           max-width: 600px;
+          border-radius: 10px 10px 0 0;
      }
      .game-header-type-icon{
           width: 45px;
@@ -117,4 +122,13 @@
      .modal-rating .modal-wrapper{
           max-height: 475px;
      }
+}
+@media (max-width: 600px) {
+     .game-header-gameName_text{
+          font-size: 1.2rem;
+     }
+     .game-header-type-icon-levelDone {
+          width: 35px;
+          height: 35px;
+      }
 }

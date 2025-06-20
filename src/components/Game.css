@@ -44,6 +44,7 @@
 .blackout-hint{
   pointer-events: all;
   z-index: 3;
+  cursor: pointer;
 }
 .disabledButton{
   opacity: 0;

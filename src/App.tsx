@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Game from './components/Game'
 import Menu from './components/Menu'
+// @ts-ignore
 import { CSSTransition, SwitchTransition } from 'react-transition-group'
 import './AppTransition.css'
 import { usePageActiveTimer } from './components/PageTimer'
@@ -9,6 +10,7 @@ import { copyObject, getTasks } from './tasks'
 import { LevelData } from './levels'
 import Shop from './components/modalComponents/Shop'
 import ShopMoney from './components/modalComponents/ShopMoney'
+// @ts-ignore
 let iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 if(iOS){
   document.documentElement.addEventListener('gesturestart', function (event) {
@@ -124,15 +126,35 @@ const App: React.FC<AppProps> = ({allUserData}) => {
   const copyFunction = (levelData: LevelData) => {
     try{
      let text = levelData.text + '\n' + levelData.name + '\n' + levelData.desc;
-     navigator.clipboard.writeText(text)
-     .then(() => {
-      console.log("Скопировано!")
-      setShowCopied(true)
-      setTimeout(() => {
-        setShowCopied(false)
-      }, 1500)
-     })
-     .catch(err => {console.error("Ошибка копирования:", err)})
+     if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text)
+      .then(() => {
+       console.log("Скопировано!")
+       setShowCopied(true)
+       setTimeout(() => {
+         setShowCopied(false)
+       }, 1500)
+      })
+      .catch(err => {console.error("Ошибка копирования:", err)})
+    }else{
+      // Старый способ (создание временного input)
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed'; // избегаем прокрутки к элементу
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.focus();
+      textarea.select();
+      document.execCommand('copy');
+      try {
+        document.execCommand('copy');
+      } catch (err) {
+        console.error('Ошибка копирования:', err);
+      }
+
+      document.body.removeChild(textarea);
+    } 
+
     }catch(e){}
   }
   const testTasks = (taskObject: any, iq: number) => {
@@ -158,7 +180,8 @@ const App: React.FC<AppProps> = ({allUserData}) => {
     return taskObject;
   }
   useEffect(() => {
-    saveData(userData); 
+    // saveData(userData); 
+    // localStorage.clear();
     console.log('userData change', userData);
   }, [userData])
 
@@ -202,7 +225,10 @@ const App: React.FC<AppProps> = ({allUserData}) => {
           {showCopied && <div className="text-copied">Скопировано</div>}
         {showGame ? (
           <Game
-              onMenu={() => setShowGame(false)}
+              onMenu={() => {
+                setShowGame(false)
+                playSound('changeWindow')
+              }}
               userData={userData}
               setUserData={setUserData}
               getGameSeconds={getGameSeconds}
@@ -212,7 +238,10 @@ const App: React.FC<AppProps> = ({allUserData}) => {
             />
         ) : (
           <Menu
-              onStart={() => setShowGame(true)}
+              onStart={() => {
+                setShowGame(true)
+                playSound('changeWindow')
+              }}
               userData={userData}
               setUserData={setUserData}
               getGameSeconds={getGameSeconds}
