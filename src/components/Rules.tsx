@@ -6,13 +6,14 @@ import { useSwipeable } from 'react-swipeable';
 
 type RulesProps = {
   onClose: () => void
+  diceMode: boolean
 }
 const levelPhraseRules = {
   text:"ИГРА ПРОСТА",
-  numbers:[1,2,7,8,0,9,7,4,5,6,8],
+  numbers:[1,8,7,2,0,9,7,4,5,6,2],
   hiddenIndexes:[3,6],
   filledLetters:{},
-  completedNumbers:new Set([1,2,4,5,6,9])
+  completedNumbers:new Set([1,8,4,5,6,9])
 };
 const levelPhraseRules3 = {
   text:"УГАДАЙ СЛОВО",
@@ -32,7 +33,7 @@ const rulesTexts = [
   {
     id: 'phrase-step-1',
     title: 'Число - это буква',
-    text: <span>Каждое число относится к букве. <br></br>К примеру, <span className="rules-text-important">8</span> - это <span className="rules-text-important">А</span></span>,
+    text: <span>Каждое число относится к букве. <br></br>К примеру, <span className="rules-text-important">2</span> - это <span className="rules-text-important">А</span></span>,
     levelRules: levelPhraseRules
   },
   {
@@ -48,7 +49,31 @@ const rulesTexts = [
     levelRules: levelPhraseRules2
   }
 ]
-const Rules: React.FC<RulesProps> = ({onClose }) => {
+const rulesDicesTexts = [
+  {
+    id: 'phrase-step-1',
+    title: 'Сложный уровень',
+    text: <span>Это <span className="rules-text-important">усложнённый уровень</span> игры.
+       Вместо чисел здесь используются игральные кости</span>,
+    levelRules: levelPhraseRules
+  },
+  {
+    id: 'phrase-step-2',
+    title: 'Цель игры',
+    text: <span>
+      Обращайте внимание на <span className="rules-text-important">количество очков</span> на игральных костях и их
+        <span className="rules-text-important"> цвета</span>.
+    </span>,
+    levelRules: levelPhraseRules3
+  },
+  {
+    id: 'phrase-step-advice',
+    title: 'Совет',
+    text: 'Сначала заполните те клетки, значения которых вы уже знаете',
+    levelRules: levelPhraseRules2
+  }
+]
+const Rules: React.FC<RulesProps> = ({onClose, diceMode = false}) => {
   const [ruleStep, setRuleStep] = useState(0);
 
   const nextStep = () => {
@@ -95,6 +120,7 @@ const Rules: React.FC<RulesProps> = ({onClose }) => {
                             blockedTime={0}
                             isTipSelecting={false}
                             useTip={() => {}}
+                            diceMode={diceMode}
                             isLevelCompleted={false}
                             level={i}
                             isFromRules={true}
@@ -102,7 +128,7 @@ const Rules: React.FC<RulesProps> = ({onClose }) => {
                           />
                       </div>
                       <div className="rules-text">
-                        {rulesText.text}
+                        {diceMode ? rulesDicesTexts[i].text : rulesText.text}
                       </div>
                 </div>
               ))}

@@ -18,6 +18,65 @@ export const collectionNames = {
      'cinema': 'Кино',
      'science': 'Наука'
    }
+
+export const namesDescs = {
+  'Марк Твен': "Американский писатель, журналист, 1835-1910",
+  'Станислав Ежи Лец': "Польский поэт, сатирик, 1909-1966",
+  'Аристотель': "Древнегреческий мыслитель, ученик Платона, 384–323 до н. э",
+  'Валерий Меладзе': "Российский певец и продюсер, 1965",
+  'Омар Хайям': "Персидский и таджикский философ, 1048–1131",
+  'Конфуций': "Мыслитель и философ Китая, 551-479 до н. э",
+  'Ария': "Российская хеви-метал-группа, 1985",
+  'Евгений Онегин': "Российский поэт, 1821-1841",
+  'Алла Пугачева': "Советская и российская эстрадная певица, 1949"
+}
+
+export const percentOfLevels ={
+  4: '94.6%',
+  8: '89.2%',
+  12: '76.1%',
+  17: '67.5%',
+  22: '50.9%',
+  28: '43.3%',
+  32: '37.7%',
+  37: '35.1%',
+  48: '33.5%',
+  58: '27.9%',
+  67: '24.3%',
+  72: '24.7%',
+  78: '24.1%',
+  89: '23.5%',
+  100: '22.9%',
+  111: '21.6%',
+  127: '20.3%',
+  139: '19.7%',
+  148: '19.1%',
+  160: '24.5%',
+  172: '17.9%',
+  180: '21.3%',
+  186: '16.7%',
+  200: '16.1%',
+  209: '15.5%',
+  221: '18.9%',
+  236: '21.3%',
+  249: '17.7%',
+  258: '22.1%',
+  265: '17.5%',
+  279: '19.9%',
+  290: '24.3%',
+  301: '20.7%',
+  312: '17.1%',
+  319: '16.5%',
+  333: '15.9%',
+  
+}
+export const getPercentOfLevels = (type: number) => {
+     let percents = percentOfLevels[type as keyof typeof percentOfLevels];
+     if(percents === undefined){
+          return '90.6%';
+     }
+     return percents;
+}
 export const getCollectionName = (type: string) => {
      return collectionNames[type as keyof typeof collectionNames];
 }
@@ -93,7 +152,6 @@ const levels = levelsData.map(level => {
      level.hiddenIndexes = level.hiddenIndexes.filter(index => /[а-я]/i.test(level.text[index]));
      if(JSON.stringify(test) !== JSON.stringify(level.hiddenIndexes)){
           console.log("fixed");
-          console.log(test, level.hiddenIndexes);
      }
      return level;
 })

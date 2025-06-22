@@ -5,11 +5,12 @@ import Menu from './components/Menu'
 import { CSSTransition, SwitchTransition } from 'react-transition-group'
 import './AppTransition.css'
 import { usePageActiveTimer } from './components/PageTimer'
-import { appIsReady, consumePurchase, getServerTime, makePurchaseSDK, setNotShowAdv, payments, saveData, shopItemCount, shopItems, tryPlaySound, setUserToLeaderboard, tryToAddUserToLeaderboard } from './main'
+import { appIsReady, consumePurchase, getServerTime, makePurchaseSDK, setNotShowAdv, payments, saveData, shopItemCount, shopItems, tryPlaySound, setUserToLeaderboard, tryToAddUserToLeaderboard, params, gameLink } from './main'
 import { copyObject, getTasks } from './tasks'
 import { LevelData } from './levels'
 import Shop from './components/modalComponents/Shop'
 import ShopMoney from './components/modalComponents/ShopMoney'
+import { stopSound, switchOffMainMusic } from './sounds'
 // @ts-ignore
 let iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 if(iOS){
@@ -77,8 +78,10 @@ export type AppProps = {
   allUserData: UserDataProps
 }
 
+let musicStarted = false;
+
 const App: React.FC<AppProps> = ({allUserData}) => {
-  const [showGame, setShowGame] = useState(false)
+  const [showGame, setShowGame] = useState(allUserData.lastLevel === 0)
   const [showCopied, setShowCopied] = useState(false)
   const [showShop, setShowShop] = useState(false)
   const [showShopMoney, setShowShopMoney] = useState(false)
@@ -97,6 +100,8 @@ const App: React.FC<AppProps> = ({allUserData}) => {
 
 
   const addMoney = (id: string) => {
+    playSound('addMoney');
+    params({'makePurchase': id});
     if(id === 'remove_ads'){
       setNotShowAdv();
       return;
@@ -115,8 +120,21 @@ const App: React.FC<AppProps> = ({allUserData}) => {
   }
 
   const playSound = (soundName: string) => {
-    tryPlaySound(soundName);
+    if(soundName === 'music'){
+      if(userData.settings.music){
+        tryPlaySound(soundName);
+      }
+    }else if(userData.settings.sounds){
+      tryPlaySound(soundName);
+    }
   }
+  useEffect(() => {
+    if(userData.settings.music){
+      playSound('music');
+    }else{
+      stopSound('music');
+    }
+  }, [userData.settings.music])
 
   const addPreviousIQ = () => {
     setPreviousIQ((prev) => {
@@ -125,7 +143,7 @@ const App: React.FC<AppProps> = ({allUserData}) => {
   }
   const copyFunction = (levelData: LevelData) => {
     try{
-     let text = levelData.text + '\n' + levelData.name + '\n' + levelData.desc;
+     let text = levelData.text + '\n\n' + levelData.name + ' — ' + levelData.desc + '\n' + gameLink;
      if (navigator.clipboard && window.isSecureContext) {
       navigator.clipboard.writeText(text)
       .then(() => {
@@ -135,25 +153,28 @@ const App: React.FC<AppProps> = ({allUserData}) => {
          setShowCopied(false)
        }, 1500)
       })
-      .catch(err => {console.error("Ошибка копирования:", err)})
+      .catch(err => {oldCopyText()})
     }else{
-      // Старый способ (создание временного input)
-      const textarea = document.createElement('textarea');
-      textarea.value = text;
-      textarea.style.position = 'fixed'; // избегаем прокрутки к элементу
-      textarea.style.opacity = '0';
-      document.body.appendChild(textarea);
-      textarea.focus();
-      textarea.select();
-      document.execCommand('copy');
-      try {
-        document.execCommand('copy');
-      } catch (err) {
-        console.error('Ошибка копирования:', err);
-      }
-
-      document.body.removeChild(textarea);
+      oldCopyText();
     } 
+    function oldCopyText(){
+            // Старый способ (создание временного input)
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed'; // избегаем прокрутки к элементу
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.focus();
+            textarea.select();
+            document.execCommand('copy');
+            try {
+              document.execCommand('copy');
+            } catch (err) {
+              console.error('Ошибка копирования:', err);
+            }
+      
+            document.body.removeChild(textarea);
+    }
 
     }catch(e){}
   }
@@ -180,9 +201,9 @@ const App: React.FC<AppProps> = ({allUserData}) => {
     return taskObject;
   }
   useEffect(() => {
-    // saveData(userData); 
+    saveData(userData); 
     // localStorage.clear();
-    console.log('userData change', userData);
+    console.log('userData change', userData.money);
   }, [userData])
 
   //Добавляем в рейтинг
@@ -209,6 +230,12 @@ const App: React.FC<AppProps> = ({allUserData}) => {
       console.log('set taskObject', previousTasksData);
       setUserData({...userData, taskObject: copyObject(previousTasksData)})
     }
+    window.addEventListener('click', () => {
+      if(userData.settings.music && !musicStarted ){
+        playSound('music');
+        musicStarted = true;
+      }
+    })
   }, [])
   useEffect(() => {
     console.log('previousTasksData change', previousTasksData);
@@ -223,6 +250,16 @@ const App: React.FC<AppProps> = ({allUserData}) => {
       >
         <div style={{height: '100%', width: '100%'}}>
           {showCopied && <div className="text-copied">Скопировано</div>}
+        {(showShop || showShopMoney || !showGame) &&
+          <div
+             className={`moneyCount ${showShop || showShopMoney ? 'moneyCount_big' : ''}`}
+             onClick={() => setShowShopMoney(true)}
+          >
+             <div className="modal-shop-row-price-icon"></div>
+             {userData.money}
+          </div>
+        }
+
         {showGame ? (
           <Game
               onMenu={() => {
@@ -234,6 +271,8 @@ const App: React.FC<AppProps> = ({allUserData}) => {
               getGameSeconds={getGameSeconds}
               copyFunction={copyFunction}
               testTasks={testTasks}
+              setShowShop={setShowShop}
+              setShowShopMoney={setShowShopMoney}
               playSound={playSound}
             />
         ) : (
@@ -266,12 +305,14 @@ const App: React.FC<AppProps> = ({allUserData}) => {
                     setUserData={setUserData}
                     showRewardTimer={showRewardTimer}
                     setShowRewardTimer={setShowRewardTimer}
+                    playSound={playSound}
                />
           )}
           {showShopMoney && (
                <ShopMoney
                     onClose={() => setShowShopMoney(false)}
                     makePurchase={makePurchase}
+                    isShopOpened={showShop}
                />
           )}
         </div>

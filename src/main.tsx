@@ -4,13 +4,13 @@ import './index.css'
 import App from './App.tsx'
 import './medias.css'
 import { getTasks } from './tasks.tsx'
-import { playSound } from './sounds.tsx'
+import { playSound, switchOffMainMusic, switchOnMainMusic } from './sounds.tsx'
 
 //Дефолтное состояние юзера
 const defaultUserData = {
   lastLevel: 0,
   lastLevelData: null,
-  tips: 5,
+  tips: 0,
   statistics: {
     iq: 0,
     levels: 0,
@@ -27,7 +27,7 @@ const defaultUserData = {
     music: true,
     arrowLeft: false
   },
-  money: 582,
+  money: 10,
   taskObject: null
 }
 
@@ -36,6 +36,14 @@ let canPlaySound = true;
 export const tryPlaySound = (soundName: string) => {
   if(!canPlaySound) return;
   playSound(soundName);
+}
+
+export function params(data: any) {
+	try{
+		// eslint-disable-next-line no-undef
+		ym(102631060, 'params', data);
+		// eslint-disable-next-line no-empty
+	}catch(ignored){}
 }
 
 export const getFromLocalStorage = (name: string) => {
@@ -138,6 +146,7 @@ export function showRewarded(callback: () => void){
       callbacks: {
           onOpen: () => {
             canPlaySound = false;
+            switchOffMainMusic();
           },
           onRewarded: () => {
             callback();
@@ -146,6 +155,7 @@ export function showRewarded(callback: () => void){
           },
           onClose: () => {
             canPlaySound = true;
+            switchOnMainMusic();
           },
           onError: () => {
           },
@@ -168,9 +178,11 @@ export function showAdv(){
         callbacks: {
             onOpen: function() {
               canPlaySound = false;
+              switchOffMainMusic();
             },
             onClose: function(wasShown: boolean) {
               canPlaySound = true;
+              switchOnMainMusic();
               // Действие после закрытия рекламы.
             },
             onError: function(error: any) {
@@ -186,25 +198,25 @@ export function showAdv(){
 export const shopItemCount: Record<string, number> = {
   'coins_1': 10,
   'coins_2': 50,
-  'coins_3': 100,
+  'coins_3': 250,
 }
 //Покупки
 export let shopItems = [
   {
     id: 'coins_1',
-    priceValue: 350,
+    priceValue: 9,
   },
   {
     id: 'coins_2',
-    priceValue: 500,
+    priceValue: 29,
   },
   {
     id: 'coins_3',
-    priceValue: 1000,
+    priceValue: 99,
   },
   {
     id: 'remove_ads',
-    priceValue: 800,
+    priceValue: 99,
   },
 ]
 
@@ -270,6 +282,8 @@ export function consumePurchase(purchase: any) {
         payments.consumePurchase(purchase.purchaseToken);
     }catch(e){}
 }
+
+export let gameLink = '';
 
 export function initPlayer(ysdk: any) {
     ysdk.getPlayer({ scopes: true }).then((_player: any) => {
@@ -351,6 +365,14 @@ if (window.YaGames) {
           console.log('gt sdk');
           YSDK = ysdk;
           initPlayer(ysdk);
+            ysdk.features.GamesAPI.getGameByID(435796).then(({isAvailable, game}) => {
+              if (isAvailable) {
+                  gameLink = game.url;
+                  console.log('gameLink', gameLink);
+              }
+          }).catch(err => {
+              // Ошибка при получении данных об игре.
+          })
       });
 } else {
   createApp();

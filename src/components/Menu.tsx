@@ -164,8 +164,6 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
                setPreviousTasksData(copyObject(taskObjectBefore));
                onStart();
           }
-          console.log('play music');
-          // playSound('music');
      }
 
      const getNewTasks = () => {
@@ -222,13 +220,7 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
           {/* Настройки */}
           <div className="menu__top">
                <div className="menu-settings-btn" onClick={() => setShowSettings(true)}></div>
-               <div
-                className={`moneyCount ${showShop || showShopMoney ? 'moneyCount_big' : ''}`}
-                onClick={() => setShowShopMoney(true)}
-                >
-                    <div className="modal-shop-row-price-icon">
-                    </div>{userData.money}
-               </div>
+
                <div className="noAds" onClick={() => setShowShopMoney(true)}
                     style={{
                          opacity: NOT_SHOW_ADV ? 0 : 1

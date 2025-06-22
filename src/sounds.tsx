@@ -57,7 +57,7 @@ const NewAudioContext = (function () {
          }
  
          this.url = url;
-         this.volume = 0.5;
+         this.volume = 0.4;
          window.webAudioAPISoundManager = window.webAudioAPISoundManager || new WebAudioAPISoundManager(window.audioContext);
          this.manager = window.webAudioAPISoundManager;
          this.manager.addSound(this.url);
@@ -109,20 +109,44 @@ const NewAudioContext = (function () {
   'keyboardBlocked': new NewAudioContext('./sounds/keyboardBlocked.wav'),
   'getIQ': new NewAudioContext('./sounds/getIQ.wav'),
   'changeWindow': new NewAudioContext('./sounds/flip.wav'),
-  'music': new NewAudioContext('./sounds/music.mp3'),
+  'music': new NewAudioContext('./sounds/music.mp3', {loop: true}),
+  'addMoney': new NewAudioContext('./sounds/addMoney.wav'),
   
  }
 
- sounds['errorLetter'].setVolume(0.85);
- sounds['changeLetter'].setVolume(0.2);
- sounds['keyboardBlocked'].setVolume(0.3);
+ sounds['errorLetter'].setVolume(0.75);
+ sounds['doneLetters'].setVolume(0.3);
+ sounds['changeLetter'].setVolume(0.15);
+ sounds['keyboardBlocked'].setVolume(0.25);
  sounds['changeWindow'].setVolume(0.1);
- sounds['music'].setVolume(0.2);
+ sounds['music'].setVolume(0.05);
 
- export const playSound = (soundName: string) => {
+export const playSound = (soundName: string) => {
   sounds[soundName as keyof typeof sounds].play();
- }
-
+}
+export const stopSound = (soundName: string) => {
+    sounds[soundName as keyof typeof sounds].stop();
+}
+export function switchOnMainMusic(){
+	try{
+		window.audioContext.resume();
+	}catch(e){}
+}
+export function switchOffMainMusic(){
+	try{
+		window.audioContext.suspend();
+	}catch(e){}
+}
  
+window.addEventListener("visibilitychange", () => {
+	try{
+		if (document.visibilityState === "visible") {
+			switchOnMainMusic()
+		}else{
+			switchOffMainMusic();
+		}
+	}catch(e){console.log(e)}
+
+});
  
  

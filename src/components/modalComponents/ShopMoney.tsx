@@ -7,11 +7,12 @@ import { shopItemCount, shopItems, NOT_SHOW_ADV } from '../../main';
 type ShopProps = {
   onClose: () => void;
   makePurchase: (id: string) => void;
+  isShopOpened: boolean;
 };
 
 
 
-const ShopMoney: React.FC<ShopProps> = ({onClose, makePurchase }) => {
+const ShopMoney: React.FC<ShopProps> = ({onClose, makePurchase, isShopOpened }) => {
 
     const getMoneyIconBackground = () => {
       if(shopItems && shopItems[0].getPriceCurrencyImage){
@@ -29,7 +30,9 @@ const ShopMoney: React.FC<ShopProps> = ({onClose, makePurchase }) => {
     return <Modal
             title="МОНЕТКИ"
             modalClassName="modal-shop-money"
-            onClose={onClose}>
+            onClose={onClose}
+            isShopOpened={isShopOpened}
+            >
               <div className="modal-section">
                 <div className="modal-section-title">Монетки</div>
                 {shopItems.slice(0, shopItems.length - 1).map((item, index) => (

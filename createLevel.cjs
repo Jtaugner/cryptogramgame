@@ -2,7 +2,14 @@ const { promises: fsp } = require('fs');
 var path = require('path');
 var {phrases} = require('./citats');
 const {allLevels} = require('./src/allLevels.js');
-console.log(allLevels[0]);
+
+const allLevelsTexts = [];
+
+allLevels.forEach(level => {
+     allLevelsTexts.push(level.text);
+});
+
+
 
 
 function generateCryptogram(phrase, complexity = 3, fullness = 0.05) {
@@ -141,48 +148,97 @@ function generateCryptogram(phrase, complexity = 3, fullness = 0.05) {
    }
    
    
-   
+function replaceLongDashes(text) {
+     return text.replace(/—/g, '-');
+}   
    
 //Генерация уровней
-const results = [];
-const complexity = 3;
-const fullness = 0.15;
+let allQuotes = [];
+Object.keys(phrases).forEach((key, index) => {
+     allQuotes.push(...phrases[key]);
+});
 
-let quotes = phrases.science;
-// quotes.forEach((quote, index) => {
-//      console.log(index, quote.text);
-// });
-for(let i = 0; i < 10; i++){
-     let index = 36;
-     const phrase = quotes[index];
+const results = [];
+const complexity = 4;
+const fullness = 0.05;
+console.log('allQuotes.length', allQuotes.length);
+
+function shuffleArray(array) {
+     for (let i = array.length - 1; i > 0; i--) {
+       const j = Math.floor(Math.random() * (i + 1));
+       [array[i], array[j]] = [array[j], array[i]];
+     }
+     return array
+}
+
+allQuotes = shuffleArray(allQuotes);
+
+
+let typeBefore = allLevels[allLevels.length - 1].type;
+
+const typesOfCategories = ['quotes', 'poems', 'aphorisms', 'music', 'cinema', 'science'];
+let notUsedTypes = typesOfCategories.slice();
+
+while(allLevels.length !== 390){
+     let index = Math.floor(Math.random() * allQuotes.length);
+     let phrase = allQuotes[index];
      let text = phrase.text;
-     const levelData = {};
-     const level = generateCryptogram(text, complexity, fullness);
+     text = replaceLongDashes(text.replace(/ё/gi, 'е'));
+
+     //Если текст уже есть, то пропускаем
+     if(allLevelsTexts.includes(text)){
+          continue;
+     }
+     //Если тип не новый, то пропускаем
+     if(!notUsedTypes.includes(phrase.type) && Math.random() < 0.92){
+          continue;
+     }
+     let typeIndex = notUsedTypes.indexOf(phrase.type);
+     if(typeIndex !== -1){
+          notUsedTypes.splice(typeIndex, 1);
+          if(notUsedTypes.length === 0){
+               notUsedTypes = typesOfCategories.slice();
+          }
+     }
+
+
+
+     let level = generateCryptogram(text, complexity, fullness);
+     let test = level.hiddenIndexes;
+     level.hiddenIndexes = level.hiddenIndexes.filter(index => /[а-я]/i.test(text[index]));
+     if(JSON.stringify(test) !== JSON.stringify(level.hiddenIndexes)){
+          console.log("fixed");
+          console.log(test, level.hiddenIndexes);
+     }
      text = text.trim();
 
      //Если в конце нет знака препинания, то ставим точку
      if(/[А-Яа-яЁё]/.test(text[text.length-1])){
           text += '.'
      }
+     const levelData = {};
      levelData.text = text;
      levelData.hiddenIndexes = level.hiddenIndexes;
      levelData.name = phrase.name;
      levelData.desc = phrase.desc;
      levelData.type = phrase.type;
 
-     results.push(levelData);
+     allQuotes.splice(index, 1);
 
+     allLevelsTexts.push(text);
+     allLevels.push(levelData);
+     console.log(levelData.type);
 }
+
+
+
+
 
 /*
 Object.keys(phrases).forEach((key, index) => {
      console.log(key,phrases[key].length);
 });
 
-const allQuotes = [];
-Object.keys(phrases).forEach((key, index) => {
-     allQuotes.push(...phrases[key]);
-});
 let maxWord = 0;
 let maxWordName = '';
 let maxWordQuote = '';
@@ -205,8 +261,32 @@ console.log('maxWord', maxWord);
 console.log(maxWordQuote);
 console.log(maxWordName);*/
 
+let allNames = {};
+
+allLevels.forEach(level => {
+     if(!allNames[level.name]){
+          allNames[level.name] = 1;
+     }else{
+          allNames[level.name]++;
+     }
+});
+
+const sorted = Object.fromEntries(
+     Object.entries(allNames).sort(([, v1], [, v2]) => v2 - v1)
+);
+
+console.log(sorted);
+   
+
+
+fsp.writeFile(path.join(__dirname, 'allNames.js'),
+ `const allNames = {${Object.keys(sorted).map(name => `'${name}': ""`).join(',\n')}}`);
+
+
 fsp.writeFile(path.join(__dirname, 'levelsList.js'),
- `${results.map(result => JSON.stringify(result)) + ',\n'}`);
+ `const levels = [
+ ${allLevels.map(result => '\n' + JSON.stringify(result) )}
+ \n]`);
 
 
  

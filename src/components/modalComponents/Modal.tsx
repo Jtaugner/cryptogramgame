@@ -6,15 +6,17 @@ type ModalProps = {
   onClose: () => void;
   title: string;
   modalClassName: string;
+  isShopOpened?: boolean;
 };
 
-const Modal: React.FC<ModalProps> = ({children, onClose, title, modalClassName }) => {
+const Modal: React.FC<ModalProps> = ({children, onClose, title,
+   modalClassName, isShopOpened = false }) => {
   const [isClosing, setIsClosing] = useState(false);
   const closeModal = () => {
     setIsClosing(true);
     //Костыль для анимации параллельно с закрытием модалки
     let m = document.querySelector('.moneyCount');
-    if(m){m.classList.add('moneyCount_small')}
+    if(m && !isShopOpened){m.classList.add('moneyCount_small')}
     setTimeout(() => {
       onClose();
       if(m){m.classList.remove('moneyCount_small')}

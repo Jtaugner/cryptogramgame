@@ -14,6 +14,7 @@ type ShopProps = {
   openShopMoney: () => void;
   showRewardTimer: number;
   setShowRewardTimer: (number: number) => void;
+  playSound: (soundName: string) => void;
 };
 
 type ShopItem = {
@@ -34,19 +35,19 @@ const shopItems = [
     id: 'hint_1',
     name: '5 Подсказок',
     count: 5,
-    price: 100,
+    price: 10,
   },
   {
     id: 'hint_2',
     name: '10 Подсказок',
     count: 10,
-    price: 500,
+    price: 18,
   },
   {
     id: 'hint_3',
     name: '50 Подсказок',
     count: 50,
-    price: 1000,
+    price: 80,
   }
 ]
 
@@ -59,7 +60,7 @@ function countRewardTime(showRewardTimer: number){
 }
 
 const Shop: React.FC<ShopProps> = ({userData, onClose, setUserData,
-   openShopMoney, showRewardTimer, setShowRewardTimer }) => {
+   openShopMoney, showRewardTimer, setShowRewardTimer, playSound }) => {
 
   const [rewardTimer, setRewardTimer] = useState(countRewardTime(showRewardTimer))
 
@@ -77,13 +78,16 @@ const Shop: React.FC<ShopProps> = ({userData, onClose, setUserData,
           let time = getServerTime();
           setShowRewardTimer(time)
           setRewardTimer(countRewardTime(time))
+          playSound('addMoney');
         })
       }else{
+
         setUserData({
           ...userData,
          money: userData.money - item.price,
          tips: userData.tips + item.count
        });
+       playSound('addMoney');
       }
 
     }else{

@@ -9,10 +9,13 @@ type SettingsProps = {
   onClose: () => void;
   setUserData: (userData: UserDataProps) => void;
   onHome?: () => void;
+  diceMode?: boolean;
+  openedFromGame?: boolean;
 };
 
-const Settings: React.FC<SettingsProps> = ({userData, onClose, setUserData, onHome }) => {
-  const [showRules, setShowRules] = useState(false);
+const Settings: React.FC<SettingsProps> = ({userData, onClose, setUserData, onHome,
+   diceMode = false, openedFromGame = false}) => {
+  const [showRules, setShowRules] = useState(openedFromGame);
   const changeSettings = (newSettings: object) => {
     setUserData({
       ...userData,
@@ -74,7 +77,17 @@ const Settings: React.FC<SettingsProps> = ({userData, onClose, setUserData, onHo
                 </div>
               )}
           </Modal>
-    {showRules && <Rules onClose={() => setShowRules(false)}/>}
+    {showRules &&
+     <Rules
+     onClose={() => {
+      if(openedFromGame){
+        onClose();
+      }else{
+        setShowRules(false)
+      }
+    }}
+     diceMode={diceMode}
+     />}
     </>
 }
 

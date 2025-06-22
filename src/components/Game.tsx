@@ -3,14 +3,14 @@ import Keyboard from './Keyboard'
 import Phrase from './Phrase'
 import './Game.css'
 import ProgressCircle from '../ProgressCircle'
-import { countWordsWithHiddenLetters, getCollectionName, getHint, levels } from '../levels'
+import { countWordsWithHiddenLetters, getCollectionName, getHint, levels, percentOfLevels } from '../levels'
 import { usePageActiveTimer } from './PageTimer'
 import { UserDataProps, LevelDataProps } from '../App'
 import { SwitchTransition, CSSTransition } from 'react-transition-group';
 import Settings from './modalComponents/Settings'
 import Tip from './modalComponents/Tip'
 import { LevelData, formatTime} from '../levels'
-import { showAdv } from '../main'
+import { showAdv, params } from '../main'
 import { getMinutesFromSeconds } from '../tasks'
 import Confetti from 'confetti-react';
 
@@ -22,15 +22,19 @@ interface GameProps {
   copyFunction: (levelData: LevelData) => void
   testTasks: (taskObject: any, iq: number) => any
   playSound: (soundName: string) => void
+  setShowShop: (showShop: boolean) => void
+  setShowShopMoney: (showShopMoney: boolean) => void
 }
 
 const cancelBlockPrice = 1;
+const moneyToAdd = 3;
 let realLevelTime = 0;
 
 let timeToAdd = 0;
+let reduceMoney = false;
 
 const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
-   getGameSeconds, copyFunction, testTasks, playSound }) => { 
+   getGameSeconds, copyFunction, testTasks, playSound, setShowShop, setShowShopMoney }) => { 
   const [level, setLevel] = useState(userData.lastLevel)
   const [isLevelCompleted, setIsLevelCompleted] = useState(false)
   const [showConfetti, setShowConfetti] = useState(false)
@@ -41,6 +45,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
   const [errors, setErrors] = useState(0)
   const [blockedTime, setBlockedTime] = useState(0)
   const [notShowKeyboard, setNotShowKeyboard] = useState(false)
+  const [openedFromGame, setOpenedFromGame] = useState(false)
   const [blockedTimeTimer, setBlockedTimeTimer] = useState(0)
   const [selecetedHint, setSelecetedHint] = useState(0)
   const [glowScreenAnimation, setGlowScreenAnimation] = useState(false)
@@ -71,6 +76,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
      addErrors: boolean = false
     ) => {
     if(levelCompleted){
+      params({'levelPassed': level});
       //Для статистики
       const newLetters = levelData ? levelData.hiddenIndexes.length : 0;
       const newWords = levelData ? countWordsWithHiddenLetters(levelData) : 0;
@@ -126,10 +132,17 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
           avgTime: avgTime,
           bestTime: bestTime
         },
-        taskObject: taskObject
+        taskObject: taskObject,
+        money: userData.money + moneyToAdd
       })
     }else{
       console.log('update lastLevelData', newLevelData.time);
+      let money = userData.money;
+      //Вычитаем деньги за разблокировку клавиатуры
+      if(reduceMoney){
+        money = money - cancelBlockPrice;
+        reduceMoney = false;
+      }
       //Если обновляем кол-во ошибок, то записываем в статистику
       setUserData({...userData,
         lastLevelData: {
@@ -140,7 +153,8 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
        statistics: {
         ...userData.statistics,
         errors: addErrors ? userData.statistics.errors + 1 : userData.statistics.errors,
-       }
+       },
+       money: money
      })
     }
   }
@@ -169,8 +183,10 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
   };
   const cancelBlockedByMoney = () => {
     if(userData.money >= cancelBlockPrice){
-      setUserData({...userData, money: userData.money - cancelBlockPrice})
+      reduceMoney = true;
       endBlockTime();
+    }else{
+      setShowShopMoney(true);
     }
   }
   const switchOnBlockedKeyboard = () => {
@@ -212,8 +228,12 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
     
   }
   const switchTipSelecting = () => {
-    if(!isTipSelecting && userData.tips > 0){
-      setIsTipSelecting(true);
+    if(!isTipSelecting){
+      if(userData.tips > 0){
+        setIsTipSelecting(true);
+      }else{
+        setShowShop(true);
+      }
     }else{
       setIsTipSelecting(false);
     }
@@ -255,6 +275,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
       onMenu();
       return;
     }
+    playSound('changeWindow');
     setLevel(level + 1)
     setLevelData(levels[level + 1]);
     reset();
@@ -369,6 +390,11 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
     setNotShowKeyboard(false)
     setBlockedTime(0)
     setBlockedTimeTimer(0)
+    if((level+1) % 10 === 0){
+      setDiceMode(true);
+    }else{
+      setDiceMode(false);
+    }
     // Генерируем числа при первой загрузке уровня
     const text = levelData.text.toUpperCase()
     const numbers = generateNumbersForLetters(text)
@@ -406,12 +432,21 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
       setErrors(initialPhraseData.errors);
     }else{
       //Вызываем подсказку, сколько игроков прошли этот уровень без ошибок
-      setShowPlayersPassedLevel(true);
-      timeoutIds.current.push(setTimeout(() => {
-        setShowPlayersPassedLevel(false);
-      }, 5000));
+      if(percentOfLevels[level as keyof typeof percentOfLevels] !== undefined){
+        setShowPlayersPassedLevel(true);
+        timeoutIds.current.push(setTimeout(() => {
+          setShowPlayersPassedLevel(false);
+        }, 5000));
+      }
     }
     initialPhraseData.hiddenIndexes = levelData.hiddenIndexes;
+
+    //На первом уровне и на 10-ом уровне показываем правила
+    if((level === 0 || level === 9) &&
+     Object.keys(initialPhraseData.filledLetters).length === 0){
+      setIsShowSettings(true);
+      setOpenedFromGame(true);
+    }
 
     // Проверяем неактивные буквы
     const newInactiveKeys = new Set<string>()
@@ -594,10 +629,25 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
           inactiveKeys={inactiveKeys}
         />
         {isLevelCompleted && (
-          <div className="nextLevelButton" onClick={getNextLevel}>
-            <div className="nextLevelButton-text">ДАЛЕЕ</div>
-            <div className="nextLevelButton-level">Уровень {level + 2}</div>
-          </div>
+          <>
+            <div className="addedMoney">
+              <div className="modal-shop-row-price-icon"></div>
+              +{moneyToAdd}
+            </div>
+            <div
+             className="nextLevelButton"
+             onAnimationEnd={(e)=>{
+              if(e.animationName === 'mainOpacityAnimation'){
+                playSound('addMoney');
+              }
+             }}
+             onClick={getNextLevel}
+             
+             >
+              <div className="nextLevelButton-text">ДАЛЕЕ</div>
+              <div className="nextLevelButton-level">Уровень {level + 2}</div>
+            </div>
+          </>
         )}
       </div>
 
@@ -616,16 +666,20 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
           inactiveKeys={inactiveKeys}
           phraseData={phraseData}
         />
-        <div className={`game-keyboard-buttons ${userData.settings.arrowLeft ? 'game-keyboard-buttons_left' : ''}`}>
-          <div className="game-keyboard-moveLeft" onClick={() => {
-            phraseRef.current?.getNextEmptyIndex(true)
-            playSound('changeLetter');
-            }}></div>
-          <div className="game-keyboard-moveRight" onClick={() => {
-            phraseRef.current?.getNextEmptyIndex(false);
-            playSound('changeLetter');
-            }}></div>
-        </div>
+        {
+          !isTipSelecting &&
+          <div className={`game-keyboard-buttons ${userData.settings.arrowLeft ? 'game-keyboard-buttons_left' : ''}`}>
+            <div className="game-keyboard-moveLeft" onClick={() => {
+              phraseRef.current?.getNextEmptyIndex(true)
+              playSound('changeLetter');
+              }}></div>
+            <div className="game-keyboard-moveRight" onClick={() => {
+              phraseRef.current?.getNextEmptyIndex(false);
+              playSound('changeLetter');
+              }}></div>
+          </div>
+        }
+
         <div className={`keyboard-blocked ${blockedTime > 0 ? 'keyboard-blocked_show' : ''}`}>
             {blockedTime > 0 && (
             <ProgressCircle
@@ -661,7 +715,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
            notShow={!showPlayersPassedLevel || isTipSelecting}
            onClick={() => setShowPlayersPassedLevel(false)}
           >
-          Только 95% игроков прошли этот уровень<br></br> без ошибок!
+          Только {percentOfLevels[level as keyof typeof percentOfLevels]} игроков прошли этот уровень<br></br> без ошибок!
         </Tip>
       </div>
       )}
@@ -669,9 +723,14 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
       {isShowSettings && (
           <Settings
             userData={userData}
-            onClose={() => setIsShowSettings(false)}
+            onClose={() => {
+              setIsShowSettings(false);
+              setOpenedFromGame(false);
+            }}
             setUserData={setUserData}
             onHome={saveDataAndGoMenu}
+            diceMode={diceMode}
+            openedFromGame={openedFromGame}
           />
         )}
     </div>

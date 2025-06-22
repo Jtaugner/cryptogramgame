@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './collectionCategory.css';
-import {levelsByCategory, collectionNames, LevelData} from '../../levels';
+import {levelsByCategory, collectionNames, LevelData, namesDescs} from '../../levels';
 import { useSwipeable } from 'react-swipeable';
+import { getTextForLevelEnd } from '../Phrase';
 
 type CollectionCategoryProps = {
   onClose: () => void
@@ -11,14 +12,14 @@ type CollectionCategoryProps = {
 }
 
 const CollectionCategory: React.FC<CollectionCategoryProps> = ({onClose, category, categoryIndex, copyFunction}) => {
-    const [index, setIndex] = useState(categoryIndex);
-    console.log(index);
+    const [index, setIndex] = useState(categoryIndex > 0 ? categoryIndex - 1 : 0);
     const getLeftButton = () => {
       if(index === 0) return;
       setIndex(index - 1);
     }
     const getRightButton = () => {
-      if(index === levelsByCategory[category].length - 1) return;
+      if(categoryIndex === 0 || index === (categoryIndex-1) ||
+        index === levelsByCategory[category].length - 1) return;
       setIndex(index + 1);
     }
     const handlers = useSwipeable({
@@ -53,21 +54,34 @@ const CollectionCategory: React.FC<CollectionCategoryProps> = ({onClose, categor
 
             <div className='rules-track'>
               <div className="slide">
-                  <div className="collection-category-main-quote">
-                  «{levelsByCategory[category][index].text}»  
+                  <div className={`
+                    collection-category-main-quote
+                     ${levelsByCategory[category][index].text.length > 150 ?
+                      'collection-category-main-quote_small' : ''}`}>
+                  {categoryIndex === 0 ?
+                   'Здесь появятся фразы, которые вы разгадаете' :
+                   getTextForLevelEnd(levelsByCategory[category][index].text)}
                   </div>
+                  {categoryIndex !== 0 &&
                   <div className="collection-category-main-bottom">
                     <div className="collection-category-main-count">
                       {index + 1}/{levelsByCategory[category].length}
                     </div>
                     <div className="collection-category-main-author">
-                      <div>
-                        <div className="collection-category-main-author-name">{levelsByCategory[category][index].name}</div>
-                        <div className="collection-category-main-author-desc">{levelsByCategory[category][index].desc}</div>
-                      </div>
+                      
+                        <div>
+                          <div className="collection-category-main-author-name">{levelsByCategory[category][index].name}</div>
+                          <div className="collection-category-main-author-desc">
+                            {namesDescs[levelsByCategory[category][index].name as keyof typeof namesDescs]
+                             || levelsByCategory[category][index].desc}
+                          </div>
+                        </div>
+                      
+
                       <div className="game-main_copyButton" onClick={() => copyFunction(levelsByCategory[category][index])}></div>
                     </div>
                   </div>
+                  }
               </div>
             </div>
           
@@ -81,7 +95,10 @@ const CollectionCategory: React.FC<CollectionCategoryProps> = ({onClose, categor
           >
           </div>
           <div
-            className={`collection-category-buttons-button collection-category-buttons-button_right ${index === levelsByCategory[category].length - 1 ? 'collection-category-buttons-button_disabled' : ''}`}
+            className={`collection-category-buttons-button collection-category-buttons-button_right
+              ${(index === levelsByCategory[category].length - 1) ||
+                (index === (categoryIndex-1)) || categoryIndex === 0
+              ? 'collection-category-buttons-button_disabled' : ''}`}
             onClick={getRightButton}
            >
           </div>

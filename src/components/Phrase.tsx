@@ -1,7 +1,7 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import './Phrase.css'
 import { LevelDataProps } from '../App'
-import {dices, LevelData } from '../levels'
+import {dices, LevelData, namesDescs } from '../levels'
 
 interface PhraseProps {
   data: {
@@ -34,7 +34,7 @@ interface PhraseHandle {
   handleKeyPress: (key: string) => void
 }
 
-function getTextForLevelEnd(text: string){
+export function getTextForLevelEnd(text: string){
   return (<>
     {text.split('\n').map((line, index) => {
       return (
@@ -299,7 +299,11 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
         <div className="game-main_author">
               <div>
                 <div className="game-main_author-name">{levelData.name}</div>
-                <div className="game-main_author-desc">{levelData.desc}</div>
+                <div className="game-main_author-desc">
+                  {namesDescs[levelData.name as keyof typeof namesDescs]
+                    || levelData.desc
+                  }
+                </div>
               </div>
               <div className="game-main_copyButton" onClick={() => copyFunction(levelData)}></div>
           </div>

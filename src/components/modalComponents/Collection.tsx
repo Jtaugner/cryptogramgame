@@ -63,7 +63,7 @@ const Collection: React.FC<CollectionProps> = ({userData, onClose, copyFunction 
             <CollectionCategory
               onClose={() => setShowCollectionCategory(false)}
               category={categoryType}
-              categoryIndex={0}
+              categoryIndex={userTypesCount[categoryType]}
               copyFunction={copyFunction}
             />
           )}
