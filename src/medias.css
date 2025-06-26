@@ -132,3 +132,14 @@
           height: 35px;
       }
 }
+
+@media (max-height: 670px) {
+     .rules-main{
+          height: 250px;
+     }
+}
+@media (max-height: 600px) {
+     .rules-main{
+          height: auto;
+     }
+}

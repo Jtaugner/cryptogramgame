@@ -364,6 +364,8 @@ if (window.YaGames) {
       .then((ysdk: any) => {
           console.log('gt sdk');
           YSDK = ysdk;
+          let lang = ysdk?.environment?.i18n?.lang;
+          console.log('lang: ', lang);
           initPlayer(ysdk);
             ysdk.features.GamesAPI.getGameByID(435796).then(({isAvailable, game}) => {
               if (isAvailable) {

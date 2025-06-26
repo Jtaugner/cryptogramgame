@@ -111,6 +111,7 @@ const NewAudioContext = (function () {
   'changeWindow': new NewAudioContext('./sounds/flip.wav'),
   'music': new NewAudioContext('./sounds/music.mp3', {loop: true}),
   'addMoney': new NewAudioContext('./sounds/addMoney.wav'),
+  'click': new NewAudioContext('./sounds/click.wav'),
   
  }
 
@@ -120,6 +121,7 @@ const NewAudioContext = (function () {
  sounds['keyboardBlocked'].setVolume(0.25);
  sounds['changeWindow'].setVolume(0.1);
  sounds['music'].setVolume(0.05);
+ sounds['click'].setVolume(0.15);
 
 export const playSound = (soundName: string) => {
   sounds[soundName as keyof typeof sounds].play();

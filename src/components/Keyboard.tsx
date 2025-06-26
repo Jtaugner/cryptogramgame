@@ -61,8 +61,8 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress, inactiveKeys = new Set(
               className={`
                 keyboard-key
                 ${usedLetters.has(key) ? 'keyboard-key_used' : ''}
-                ${inactiveKeys.has(key) ? 'keyboard-key_inactive' : ''}`}
-              onClick={() => !inactiveKeys.has(key) && onKeyPress(key)}
+                ${inactiveKeys.has(key.toLowerCase()) ? 'keyboard-key_inactive' : ''}`}
+              onClick={() => !inactiveKeys.has(key.toUpperCase()) && onKeyPress(key)}
             >
               {key}
             </div>

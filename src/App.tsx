@@ -19,6 +19,25 @@ if(iOS){
   }, false);
 }
 
+document.oncontextmenu = function(e){
+  stopEvent(e);
+}
+function stopEvent(event){
+  if(event.preventDefault !== undefined)
+      event.preventDefault();
+  if(event.stopPropagation !== undefined)
+      event.stopPropagation();
+}
+
+
+const clickSoundElements =[
+  'menu-bottom-icon', 'menu-settings-btn', 'blackout',
+  'moneyCount', 'modal-settings-row', 'game-header-type-icon',
+  'modal-collection-book-icon', 'modal-shop-row-price',
+  'collection-category-buttons-button', 'modal-close',
+  'rules-button', 'menu-tips-btn'
+]
+
 
 export type StatisticsProps = {
   iq: number;
@@ -166,9 +185,12 @@ const App: React.FC<AppProps> = ({allUserData}) => {
             document.body.appendChild(textarea);
             textarea.focus();
             textarea.select();
-            document.execCommand('copy');
             try {
               document.execCommand('copy');
+              setShowCopied(true)
+              setTimeout(() => {
+                setShowCopied(false)
+              }, 1500)
             } catch (err) {
               console.error('Ошибка копирования:', err);
             }
@@ -202,7 +224,6 @@ const App: React.FC<AppProps> = ({allUserData}) => {
   }
   useEffect(() => {
     saveData(userData); 
-    // localStorage.clear();
     console.log('userData change', userData.money);
   }, [userData])
 
@@ -230,11 +251,22 @@ const App: React.FC<AppProps> = ({allUserData}) => {
       console.log('set taskObject', previousTasksData);
       setUserData({...userData, taskObject: copyObject(previousTasksData)})
     }
-    window.addEventListener('click', () => {
+    window.addEventListener('click', (e) => {
       if(userData.settings.music && !musicStarted ){
         playSound('music');
         musicStarted = true;
       }
+      try{
+        console.log(e.target.className);
+        for(let i = 0; i < clickSoundElements.length; i++){
+          if(e?.target?.className?.indexOf(clickSoundElements[i]) !== -1){
+            playSound('click');
+          }
+        }
+      }catch(err){
+
+      }
+
     })
   }, [])
   useEffect(() => {
@@ -310,7 +342,7 @@ const App: React.FC<AppProps> = ({allUserData}) => {
           )}
           {showShopMoney && (
                <ShopMoney
-                    onClose={() => setShowShopMoney(false)}
+                    onClose={() => {setShowShopMoney(false)}}
                     makePurchase={makePurchase}
                     isShopOpened={showShop}
                />

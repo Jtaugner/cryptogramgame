@@ -101,45 +101,47 @@ const Rules: React.FC<RulesProps> = ({onClose, diceMode = false}) => {
     <div className={`modal-bg modal-rules`}>
       <div className="blackout" onClick={onClose}></div>
       <div className="rules" {...handlers}>
-            <div
-              className="rules-track"
-              style={{ transform: `translateX(-${ruleStep * 100}%)` }}
-            >
-              {rulesTexts.map((rulesText, i) => (
-                <div className="slide" key={rulesText.id}>
-                      <div className="rules-title">
-                        {rulesText.title}
-                      </div>
-                      <div className="rules-main">
-                        <Phrase 
-                            key={rulesText.id + '-phrase'}
-                            data={rulesText.levelRules}
-                            onError={() => {}}
-                            onLetterFill={() => {}}
-                            onCompleteNumber={() => {}}
-                            blockedTime={0}
-                            isTipSelecting={false}
-                            useTip={() => {}}
-                            diceMode={diceMode}
-                            isLevelCompleted={false}
-                            level={i}
-                            isFromRules={true}
-                            adviceStepFromRules={rulesText.id === 'phrase-step-advice'}
-                          />
-                      </div>
-                      <div className="rules-text">
-                        {diceMode ? rulesDicesTexts[i].text : rulesText.text}
-                      </div>
-                </div>
-              ))}
-            </div>
-        <div className="rules-steps">
-          {[...Array(rulesTexts.length)].map((_, index) => (
-            <div className={`rules-step ${index === ruleStep ? 'rules-step-active' : ''}`} key={index} onClick={() => setRuleStep(index)}></div>
-          ))}
-        </div>
-        <div className="rules-button shiny-button" onClick={nextStep}>
-          {ruleStep === rulesTexts.length - 1 ? 'ИГРАТЬ' : 'ДАЛЕЕ'}
+        <div className="rules-wrap">
+              <div
+                className="rules-track"
+                style={{ transform: `translateX(-${ruleStep * 100}%)` }}
+              >
+                {rulesTexts.map((rulesText, i) => (
+                  <div className="slide" key={rulesText.id}>
+                        <div className="rules-title">
+                          {rulesText.title}
+                        </div>
+                        <div className="rules-main">
+                          <Phrase 
+                              key={rulesText.id + '-phrase'}
+                              data={rulesText.levelRules}
+                              onError={() => {}}
+                              onLetterFill={() => {}}
+                              onCompleteNumber={() => {}}
+                              blockedTime={0}
+                              isTipSelecting={false}
+                              useTip={() => {}}
+                              diceMode={diceMode}
+                              isLevelCompleted={false}
+                              level={i}
+                              isFromRules={true}
+                              adviceStepFromRules={rulesText.id === 'phrase-step-advice'}
+                            />
+                        </div>
+                        <div className="rules-text">
+                          {diceMode ? rulesDicesTexts[i].text : rulesText.text}
+                        </div>
+                  </div>
+                ))}
+              </div>
+          <div className="rules-steps">
+            {[...Array(rulesTexts.length)].map((_, index) => (
+              <div className={`rules-step ${index === ruleStep ? 'rules-step-active' : ''}`} key={index} onClick={() => setRuleStep(index)}></div>
+            ))}
+          </div>
+          <div className="rules-button shiny-button" onClick={nextStep}>
+            {ruleStep === rulesTexts.length - 1 ? 'ИГРАТЬ' : 'ДАЛЕЕ'}
+          </div>
         </div>
       </div>
     </div>

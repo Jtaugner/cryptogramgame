@@ -12,7 +12,7 @@ export const levelsData: LevelData[] = allLevels;
 export const typesOfCategories = ['quotes', 'poems', 'aphorisms', 'music', 'cinema', 'science'];
 export const collectionNames = {
      'quotes': 'Цитаты',
-     'poems': 'Поэзия',
+     'poems': 'Литература',
      'aphorisms': 'Афоризмы',
      'music': 'Музыка',
      'cinema': 'Кино',

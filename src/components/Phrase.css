@@ -13,8 +13,7 @@
   padding: 30px 0;
 }
 .phrase-row_overflowHidden{
-     /* overflow-x: hidden;
-     overflow-y: auto; */
+     /* overflow: hidden; */
 }
 
 .phrase-word {

@@ -21,10 +21,18 @@
   align-items: center;
 
   overflow: hidden;
+  overflow-y: auto;
   /* margin: 0 auto; */
   touch-action: pan-y;
   position: relative;
   animation: modalFadeInCenter 0.35s ease-in-out forwards;
+}
+.rules-wrap{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
 }
 .rules .phrase-row {
   margin: 0;

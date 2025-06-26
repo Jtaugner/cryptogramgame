@@ -244,10 +244,23 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
     getNextEmptyIndex
   }))
 
-  useEffect(() => {
+  const scrollToSelected = () => {
     try{
       let scrollEl = document.querySelector('.selected-glow');
       if(scrollEl) scrollEl.scrollIntoView({behavior: 'smooth', block: "center"});
+    }catch(ignored){}
+  }
+
+  useEffect(() => {
+    try{
+      if(completingNumbers.size > 0){
+        console.log('scrollToSelected');
+        setTimeout(() => {
+          scrollToSelected()
+        }, 1500)
+      }else{
+        scrollToSelected()
+      }
     }catch(ignored){}
   }, [selectedIndex])
 

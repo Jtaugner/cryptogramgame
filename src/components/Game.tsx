@@ -466,7 +466,9 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
     // Проверяем каждое число
     letterPositions.forEach(({ letter, positions }, number) => {
       // Проверяем, все ли позиции этого числа видимы (не скрыты)
-      const allVisible = positions.every(pos => !levelData.hiddenIndexes.includes(pos))
+      const allVisible = positions.every(pos =>
+         (!levelData.hiddenIndexes.includes(pos)
+          || initialPhraseData.filledLetters[pos] !== undefined))
       if (allVisible) {
         newInactiveKeys.add(letter.toLowerCase())
       }
