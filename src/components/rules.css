@@ -26,6 +26,7 @@
   touch-action: pan-y;
   position: relative;
   animation: modalFadeInCenter 0.35s ease-in-out forwards;
+  font-weight: 500;
 }
 .rules-wrap{
   width: 100%;
@@ -161,4 +162,10 @@
   50%{
     transform: translateY(-2px) scale(1.03);
   }
+}
+.rules-keyboard{
+  height: 150px;
+  width: 300px;
+  background: url(../assets/keyboardScreen.png) 0 center no-repeat;
+  background-size: 100%;
 }

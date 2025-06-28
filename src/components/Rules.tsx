@@ -29,7 +29,7 @@ const levelPhraseRules2 = {
   filledLetters:{},
   completedNumbers:new Set([3,5,6,1,5,8])
 };
-const rulesTexts = [
+const mainRulesTexts = [
   {
     id: 'phrase-step-1',
     title: 'Число - это буква',
@@ -40,6 +40,12 @@ const rulesTexts = [
     id: 'phrase-step-2',
     title: 'Цель игры',
     text: 'Ваша задача - заполнить все клетки, чтобы получить исходную фразу.',
+    levelRules: levelPhraseRules3
+  },
+  {
+    id: 'phrase-step-keyboard',
+    title: 'Клавиатура',
+    text: 'Зелёным на клавиатуре подсвечены буквы, чьи числа вы уже разгадали.',
     levelRules: levelPhraseRules3
   },
   {
@@ -75,6 +81,7 @@ const rulesDicesTexts = [
 ]
 const Rules: React.FC<RulesProps> = ({onClose, diceMode = false}) => {
   const [ruleStep, setRuleStep] = useState(0);
+  const [rulesTexts, setRulesTexts] = useState(diceMode ? rulesDicesTexts : mainRulesTexts);
 
   const nextStep = () => {
     if((ruleStep+1) >= rulesTexts.length){
@@ -112,6 +119,9 @@ const Rules: React.FC<RulesProps> = ({onClose, diceMode = false}) => {
                           {rulesText.title}
                         </div>
                         <div className="rules-main">
+                          {rulesText.id === 'phrase-step-keyboard' ?
+                            <div className="rules-keyboard"></div>
+                          :
                           <Phrase 
                               key={rulesText.id + '-phrase'}
                               data={rulesText.levelRules}
@@ -127,6 +137,7 @@ const Rules: React.FC<RulesProps> = ({onClose, diceMode = false}) => {
                               isFromRules={true}
                               adviceStepFromRules={rulesText.id === 'phrase-step-advice'}
                             />
+                          }
                         </div>
                         <div className="rules-text">
                           {diceMode ? rulesDicesTexts[i].text : rulesText.text}

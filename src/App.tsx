@@ -251,6 +251,9 @@ const App: React.FC<AppProps> = ({allUserData}) => {
       console.log('set taskObject', previousTasksData);
       setUserData({...userData, taskObject: copyObject(previousTasksData)})
     }
+    if(userData?.lastLevel === 0){
+      params({'firstStart': 1});
+    }
     window.addEventListener('click', (e) => {
       if(userData.settings.music && !musicStarted ){
         playSound('music');
