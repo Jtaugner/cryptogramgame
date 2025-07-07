@@ -6,6 +6,10 @@ import './medias.css'
 import { getTasks } from './tasks.tsx'
 import { playSound, switchOffMainMusic, switchOnMainMusic } from './sounds.tsx'
 
+
+console.log('__PLATFORM__', __PLATFORM__);
+let wasPurchase = false;
+
 //Дефолтное состояние юзера
 const defaultUserData = {
   lastLevel: 0,
@@ -40,8 +44,10 @@ export const tryPlaySound = (soundName: string) => {
 
 export function params(data: any) {
 	try{
+    let ymID = 102631060;
+    if(__PLATFORM__ === 'gp') ymID = 103175743;
 		// eslint-disable-next-line no-undef
-		ym(102631060, 'params', data);
+		ym(ymID, 'params', data);
 		// eslint-disable-next-line no-empty
 	}catch(ignored){}
 }
@@ -91,7 +97,11 @@ function stringifyJSON(obj: any) {
 export function getServerTime(){
   let dateTime = new Date().getTime();
   try{
-    dateTime = YSDK.serverTime()
+    if(__PLATFORM__ === 'yandex'){
+      dateTime = YSDK.serverTime()
+    }else if(__PLATFORM__ === 'gp'){
+      dateTime = YSDK.serverTime;
+    }
   }catch(e){}
   return dateTime;
 }
@@ -110,40 +120,52 @@ var resetAllData = () => {
 }
 (window as any).resetAllData = resetAllData;
 
-function compareStrings(str1: string, str2: string) {
-  const maxLength = Math.max(str1.length, str2.length);
-
-  for (let i = 0; i < maxLength; i++) {
-    const char1 = str1[i] || "(пусто)";
-    const char2 = str2[i] || "(пусто)";
-
-    if (char1 !== char2) {
-      console.log(`❌ Несовпадение на позиции ${i}: "${char1}" !== "${char2}"`);
-      console.log(str1.slice(i-8, i+8));
-      console.log(str2.slice(i-8, i+8));
-    }
-  }
-}
 
 export function saveData(newUserData: any) {
     try{
         console.log('\x1b[33mTRY: saveData\x1b[0m');
         const newData = stringifyJSON(newUserData);
         if(newData === recentData) return;
+        let lastData = recentData;
         console.log('\x1b[32mDONE: saveData\x1b[0m');
         recentData = newData;
         setElementToLocalStorage('gameProgress', newData);
-        if (playerGame) {
-          const state = {gameProgress: newData};
-          playerGame.setData(state).then((ignored: any) => {}).catch(()=>{});
+
+        if(__PLATFORM__ === 'yandex'){
+          if (playerGame) {
+            const state = {gameProgress: newData};
+            playerGame.setData(state).then((ignored: any) => {}).catch(()=>{});
+          }
+        }else if(__PLATFORM__ === 'gp'){
+            //Сохраняем в gp
+          lastData = JSON.parse(lastData);
+
+          if(newUserData.lastLevel > lastData.lastLevel || wasPurchase){
+            wasPurchase = false;
+            YSDK.player.set(
+                'gameProgress',
+                newData
+            );
+            YSDK.player.set(
+              'iq',
+              newUserData.statistics.iq
+            );
+           // Синхронизовать, возвращает промис ожидания, дождитесь завершения
+            YSDK.player.sync().then(() => {
+              console.log('sync success');
+            }).catch((err: any) => {
+                console.log('sync error', err);
+            });
+          }
         }
     }catch (ignored) {}
 }
 
 export function showRewarded(callback: () => void){
   try{
-    YSDK.adv.showRewardedVideo({
-      callbacks: {
+    if(__PLATFORM__ === 'yandex'){
+      YSDK.adv.showRewardedVideo({
+        callbacks: {
           onOpen: () => {
             canPlaySound = false;
             switchOffMainMusic();
@@ -151,16 +173,22 @@ export function showRewarded(callback: () => void){
           onRewarded: () => {
             callback();
           },
-          onCancel: () => {
-          },
           onClose: () => {
             canPlaySound = true;
             switchOnMainMusic();
-          },
-          onError: () => {
-          },
-      }
-  })
+          }
+        }
+      })
+    }else if(__PLATFORM__ === 'gp'){
+      //Показываем рекламу в gp
+      YSDK.ads.showRewardedVideo().then((success: boolean) => {
+        if(success){
+          callback();
+        }
+      }).catch((err: any) => {
+        console.log('err', err);
+      });
+    }
   }catch(e){}
 }
 
@@ -174,9 +202,10 @@ export function showAdv(){
   if(NOT_SHOW_ADV) return;
   try{
     console.log('showAdv');
-    YSDK.adv.showFullscreenAdv({
-        callbacks: {
-            onOpen: function() {
+    if(__PLATFORM__ === 'yandex'){
+      YSDK.adv.showFullscreenAdv({
+          callbacks: {
+              onOpen: function() {
               canPlaySound = false;
               switchOffMainMusic();
             },
@@ -184,12 +213,13 @@ export function showAdv(){
               canPlaySound = true;
               switchOnMainMusic();
               // Действие после закрытия рекламы.
-            },
-            onError: function(error: any) {
-              // Действие в случае ошибки.
             }
         }
-    })
+      })
+    }else if(__PLATFORM__ === 'gp'){
+      //Показываем рекламу в gp
+      YSDK.ads.showFullscreen();
+    }
   }catch(e){
 
   }
@@ -222,16 +252,28 @@ export let shopItems = [
 
 export function makePurchaseSDK(id: string, callback: (purchase: string) => void) {
   try{
-    payments.purchase({ id: id})
-    .then((purchase: any) => {
-        callback(purchase.productID);
-    }).catch((err: any) => {
+    if(__PLATFORM__ === 'yandex'){
+      payments.purchase({ id: id})
+      .then((purchase: any) => {
+          callback(purchase.productID);
+          wasPurchase = true;
+          consumePurchase(purchase);
+      }).catch((err: any) => {
         console.log('err', err);
-    });
+      });
+    }else if(__PLATFORM__ === 'gp'){
+      YSDK.payments.purchase({ tag: id });
+      YSDK.payments.on('purchase', () => {
+        callback(id);
+        wasPurchase = true;
+        consumePurchase(id);
+      });
+    }
   }catch(e){}
 }
 
 export function tryToAddUserToLeaderboard(iq: number){
+  if(__PLATFORM__ === 'gp') return;
   try{
     YSDK.leaderboards.getPlayerEntry('iq')
     .then((res: any) => {
@@ -246,29 +288,66 @@ export function tryToAddUserToLeaderboard(iq: number){
 }
 
 export function setUserToLeaderboard(iq: number){
+  if(__PLATFORM__ === 'gp') return;
   try{
-    YSDK.isAvailableMethod('leaderboards.setScore').then((res: boolean) => {
-      if(res){
-        console.log('setUserToLeaderboard', iq);
-        YSDK.leaderboards.setScore('iq', iq);
-      }
-    })
+    if(__PLATFORM__ === 'yandex'){
+      YSDK.isAvailableMethod('leaderboards.setScore').then((res: boolean) => {
+        if(res){
+          console.log('setUserToLeaderboard', iq);
+          YSDK.leaderboards.setScore('iq', iq);
+        }
+      })
+    }
   }catch(e){}
 }
 
 export function getLeaderboard(callback: (res: any) => void){
   try{
-    YSDK.isAvailableMethod('leaderboards.setScore').then((res: boolean) => {
-      if(res){
-        YSDK.leaderboards.getEntries('iq',
-          { quantityTop: 20, includeUser: true, quantityAround: 5 })
-          .then((res: any) => callback(res));
-      }else{
-        YSDK.leaderboards.getEntries('iq',
-          { quantityTop: 20})
-          .then((res: any) => callback(res));
-      }
-    })
+
+    if(__PLATFORM__ === 'yandex'){
+      YSDK.isAvailableMethod('leaderboards.setScore').then((res: boolean) => {
+        if(res){
+          YSDK.leaderboards.getEntries('iq',
+            { quantityTop: 20, includeUser: true, quantityAround: 5 })
+            .then((res: any) => callback(res));
+        }else{
+          YSDK.leaderboards.getEntries('iq',
+            { quantityTop: 20})
+            .then((res: any) => callback(res));
+        }
+      })
+    }else if(__PLATFORM__ === 'gp'){
+        YSDK.leaderboard.fetch({
+          orderBy: ['iq'],
+          order: 'DESC',
+          limit: 20,
+          includeFields: ['iq'],
+          withMe: 'last',
+          showNearest: 5,
+      })
+      .then((res: any) => {
+        let rating = {
+          entries: [],
+          userRank: res.player.position
+        };
+        let players = res.players;
+        console.log('players', players);
+        players.forEach((item: any) => {
+          let ratingItem = {
+            rank: item.position,
+            score: item.iq,
+            player: {
+              publicName: item.name,
+              getAvatarSrc: ()=>{
+                return item.avatar;
+              }
+            }
+          };
+          rating.entries.push(ratingItem);
+        });
+        callback(rating);
+      });
+    }
 
   }catch(e){}
   
@@ -277,13 +356,46 @@ export function getLeaderboard(callback: (res: any) => void){
 
 export function consumePurchase(purchase: any) {
     try{
+      if(__PLATFORM__ === 'yandex'){
         console.log('try to consume: ', purchase.productID);
         if(purchase.productID === 'remove_ads') return;
         payments.consumePurchase(purchase.purchaseToken);
+      }else if(__PLATFORM__ === 'gp'){
+        if(purchase === 'remove_ads') return;
+        YSDK.payments.consume({ tag: purchase });
+      }
     }catch(e){}
 }
 
-export let gameLink = '';
+export let gameLink = 'https://yandex.ru/games/app/435796';
+
+
+function chooseLatestData(gp: any){
+  gp = JSON.parse(gp);
+  //Если локальные данные дальше, чем серверные, то используем локальные
+  try{
+    let localStorageUserData = getUserDataFromLocalStorage();
+    if(localStorageUserData.lastLevel > gp.lastLevel){
+        gp = localStorageUserData;
+    }
+    if(localStorageUserData.lastLevel === gp.lastLevel){
+      console.log('lastLevel same', localStorageUserData.lastLevel, gp.lastLevel);
+      //Если оба уровня заполнены, то сравниваем заполненные буквы
+      if(localStorageUserData.lastLevelData && gp.lastLevelData){
+        let filledLetters = Object.keys(localStorageUserData.lastLevelData.filledLetters);
+        let filledLetters2 = Object.keys(gp.lastLevelData.filledLetters);
+        if(filledLetters.length > filledLetters2.length){
+          gp = localStorageUserData;
+        }
+      } //Если локальные данные заполнены, а серверные нет, то используем локальные
+      else if(localStorageUserData.lastLevelData && !gp.lastLevelData){
+        gp = localStorageUserData;
+      }
+    }
+  }catch(e){}
+
+  return gp;
+}
 
 export function initPlayer(ysdk: any) {
     ysdk.getPlayer({ scopes: true }).then((_player: any) => {
@@ -295,16 +407,11 @@ export function initPlayer(ysdk: any) {
         playerGame.getData(['gameProgress'], false).then((data: any) => {
             let gp = data.gameProgress;
             //Вовзврат прогресса
-            console.log('gp', gp);
+            console.log('gameProgress', gp);
             try {
 
                 if(gp){
-                  gp = JSON.parse(gp);
-                  //Если локальные данные дальше, чем серверные, то используем локальные
-                  let localStorageUserData = getUserDataFromLocalStorage();
-                  if(localStorageUserData.lastLevel > gp.lastLevel){
-                      gp = localStorageUserData;
-                  }
+                  gp = chooseLatestData(gp);
                 }
                 
                 //Заменяем данные на нужные нам из payload
@@ -355,10 +462,14 @@ export function initPlayer(ysdk: any) {
 }
 
 export const appIsReady = () => {
-  if(YSDK && YSDK.features && YSDK.features.LoadingAPI) YSDK.features.LoadingAPI.ready();
+  if(__PLATFORM__ === 'yandex'){
+    if(YSDK && YSDK.features && YSDK.features.LoadingAPI) YSDK.features.LoadingAPI.ready();
+  }else if(__PLATFORM__ === 'gp'){
+    if(YSDK && YSDK.gameStart) YSDK.gameStart();
+  }
 }
 // @ts-ignore
-if (window.YaGames) {
+if (__PLATFORM__ === 'yandex' && window.YaGames) {
   // @ts-ignore
   window.YaGames.init()
       .then((ysdk: any) => {
@@ -376,6 +487,114 @@ if (window.YaGames) {
               // Ошибка при получении данных об игре.
           })
       });
+}else if(__PLATFORM__ === 'gp') {
+  // @ts-ignore
+  window.onGPInit = async (gp) => {
+    YSDK = gp;
+    
+    if(gp?.platform?.type === 'VK'){
+      gameLink = 'https://vk.com/app53847636';
+    }
+    // Wait while the player syncs with the server
+    await gp.player.ready;
+
+    gp.player.fetchFields();
+
+    // Поля получены (success === true)
+    gp.player.on('fetchFields', (success) => {
+      if(success && gp.player.has('gameProgress')){
+        console.log('get player success');
+        let newData = gp.player.get('gameProgress');
+        if(newData){
+          newData = chooseLatestData(newData);
+          userData = newData;
+          recentData = stringifyJSON(userData);
+        }
+        console.log('newData', newData);
+        createApp();
+      }else{
+        createApp();
+      }
+    });
+        // Начался показ рекламы
+    gp.ads.on('start', () => {
+      canPlaySound = false;
+      switchOffMainMusic();
+    });
+    // Закончился показ рекламы
+    gp.ads.on('close', (success) => {
+      canPlaySound = true;
+      switchOnMainMusic();
+    });
+    //Покупки
+    payments = gp.payments;
+    let products = gp.payments.products;
+    console.log(products);
+    products = products.map((product: any) => {
+      return {
+        ...product,
+        priceValue: product.price,
+        id: product.tag
+      }
+    });
+    shopItems = products;
+
+
+    //Sticky
+    let platformType = gp.platform.type;
+    console.log('Platform: ', platformType);
+    params({'platform': platformType});
+    try{
+      let bannerDone = false;
+      console.log('SDK');
+      console.log(gp.platform);
+      let sdk = gp.platform.getSDK();
+      console.log(sdk);
+
+      function showBanner(){
+        console.log('show Banner');
+        if(!bannerDone){
+          if(platformType === 'VK') {
+            sdk.bridge.send('VKWebAppShowBannerAd', {
+              banner_location: 'bottom',
+              layout_type: 'resize'
+            })
+              .then((data) => {
+                console.log('show banner: ', data.result)
+                bannerDone = data.result;
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          }
+        }
+      }
+      window.addEventListener("resize", function() {
+        if(window.innerHeight < 600){
+          if(platformType === 'VK') {
+            sdk.bridge.send('VKWebAppHideBannerAd')
+              .then((data) => {
+                bannerDone = !data.result;
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          }
+        }else{
+          showBanner();
+        }
+
+      }, false);
+      if(window.innerHeight >= 600){
+        showBanner();
+      }
+
+    }catch(e){
+      console.log(e);
+    }
+
+    // You can start the game :)
+  };
 } else {
   createApp();
 }

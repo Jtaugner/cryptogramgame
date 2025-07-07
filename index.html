@@ -11,10 +11,18 @@
      <script>
       var YaGames;
       </script>
-    <script src="/sdk.js"></script>
+      <% if (PLATFORM === 'yandex') { %>
+        <script src="/sdk.js"></script>
+      <% } %>
+      
+      <% if (PLATFORM === 'gp') { %>
+        <script src="https://gamepush.com/sdk/gamepush.js?projectId=22609&publicToken=lnYwyPc6QQjxcHdYkNr0BEyOrxhytsye&callback=onGPInit"></script>
+      <% } %>
+    
   </head>
   <body>
       <!-- Yandex.Metrika counter -->
+      <% if (PLATFORM === 'yandex') { %>
       <script type="text/javascript" >
           (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
           m[i].l=1*new Date();
@@ -29,7 +37,23 @@
           });
       </script>
       <noscript><div><img src="https://mc.yandex.ru/watch/102631060" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
-      <!-- /Yandex.Metrika counter -->
+      <% } %>
+      <% if (PLATFORM === 'gp') { %>
+        <script type="text/javascript" >
+          (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+          m[i].l=1*new Date();
+          for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+          k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+          (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+          ym(103175743, "init", {
+              clickmap:true,
+              trackLinks:true,
+              accurateTrackBounce:true
+          });
+        </script>
+        <noscript><div><img src="https://mc.yandex.ru/watch/103175743" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+      <% } %>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

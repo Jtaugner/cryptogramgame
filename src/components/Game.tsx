@@ -77,6 +77,19 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
     ) => {
     if(levelCompleted){
       params({'levelPassed': level});
+      if(level === 10){
+        params({'levels10Tips': userData.tips});
+        params({'levels10Money': userData.money});
+      }else if(level === 20){
+        params({'levels20Tips': userData.tips});
+        params({'levels20Money': userData.money});
+      }else if(level === 50){
+        params({'levels50Tips': userData.tips});
+        params({'levels50Money': userData.money});
+      }else if(level === 100){
+        params({'levels100Tips': userData.tips});
+        params({'levels100Money': userData.money});
+      }
       //Для статистики
       const newLetters = levelData ? levelData.hiddenIndexes.length : 0;
       const newWords = levelData ? countWordsWithHiddenLetters(levelData) : 0;
@@ -189,8 +202,16 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
       setShowShopMoney(true);
     }
   }
+  const showAdvWrapper = () => {
+    if(__PLATFORM__ === 'gp' && level > 2){
+      showAdv();
+    }else if(__PLATFORM__ === 'yandex'){
+      showAdv();
+    }
+  }
+
   const switchOnBlockedKeyboard = () => {
-    showAdv();
+    showAdvWrapper();
     let blockedTime = 30000;
     if(userData?.lastLevelData?.keyboardBlockedTimes){
       blockedTime += userData.lastLevelData.keyboardBlockedTimes * 10000;
@@ -252,8 +273,10 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
     if(phraseData && Object.keys(phraseData.filledLetters).length === phraseData.hiddenIndexes.length){
       timeoutIds.current.push(setTimeout(()=>{
         try{
-          let scrollEl = document.querySelector('.phrase-row');
-          if(scrollEl) scrollEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          if(__PLATFORM__ === 'yandex'){
+            let scrollEl = document.querySelector('.phrase-row');
+            if(scrollEl) scrollEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
         }catch(ignored){}
         timeoutIds.current.push(setTimeout(()=>{
           setIsLevelCompleted(true)
@@ -271,6 +294,9 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
   }, [phraseData])
 
   const getNextLevel = () => {
+    if(__PLATFORM__ === 'gp'){
+      showAdvWrapper()
+    }
     if(level === levels.length - 1){
       onMenu();
       return;
@@ -383,7 +409,9 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
   const generateLevel = () => {
     if(levelGenerated.current === level) return;
     console.log("\x1b[34mgenerateLevel\x1b[0m");
-    showAdv()
+    if(__PLATFORM__ === 'yandex'){
+      showAdvWrapper()
+    }
     setIsLevelCompleted(false)
     setErrors(0)
     setIsTipSelecting(false)
@@ -543,12 +571,24 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
                   <div className={`game-header_sameSize ${isTipSelecting || (selecetedHint !== 0 && selecetedHint !== 1) ? 'disabledButton' : ''}`}>
                     <div className={`game-header-type-icon
                       game-header-type-icon_${levelData.type}`}
-                      onClick={() => setSelecetedHint(1)}
+                      onClick={() => {
+                        if(selecetedHint === 1){
+                          setSelecetedHint(0)
+                        }else{
+                          setSelecetedHint(1)
+                        }
+                      }}
                       >
                       </div>
                   </div>
                   <div className={`text-center ${isTipSelecting || (selecetedHint !== 0 && selecetedHint !== 2) ? 'disabledButton' : ''}`}
-                    onClick={() => setSelecetedHint(2)}
+                    onClick={() => {
+                      if(selecetedHint === 2){
+                        setSelecetedHint(0)
+                      }else{
+                        setSelecetedHint(2)
+                      }
+                    }}
                   >
                       <div>Ошибки</div>
                       <div className="flex mt-1 justify-center">

@@ -40,3 +40,9 @@
   font-size: 0.9rem;
   line-height: 0.9rem;
 }
+
+.modal-shop-money .modal-shop-row-price_money_gp{
+  margin-left: 5px;
+  font-size: 1.1rem;
+  color: white;
+}

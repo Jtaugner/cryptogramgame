@@ -161,6 +161,7 @@ const App: React.FC<AppProps> = ({allUserData}) => {
     });
   }
   const copyFunction = (levelData: LevelData) => {
+    params({'copyQuote': 1});
     try{
      let text = levelData.text + '\n\n' + levelData.name + ' — ' + levelData.desc + '\n' + gameLink;
      if (navigator.clipboard && window.isSecureContext) {
@@ -236,16 +237,27 @@ const App: React.FC<AppProps> = ({allUserData}) => {
   useEffect(() => {
     appIsReady();
     if(payments){
-      payments.getPurchases().then((purchases: any) => 
-        purchases.forEach((purchase: any)=>{
-          if(purchase.productID === 'remove_ads'){
+      if(__PLATFORM__ === 'yandex'){
+        payments.getPurchases().then((purchases: any) => 
+          purchases.forEach((purchase: any)=>{
+            if(purchase.productID === 'remove_ads'){
+              setNotShowAdv()
+            }else{
+              addMoney(purchase.productID);
+              consumePurchase(purchase);
+            }
+      }));
+      }else if(__PLATFORM__ === 'gp'){
+        payments.purchases.forEach((purchase: any)=>{
+          console.log('last purchase', purchase);
+          if(purchase.tag === 'remove_ads'){
             setNotShowAdv()
           }else{
-            addMoney(purchase.productID);
-            consumePurchase(purchase);
+            addMoney(purchase.tag);
+            consumePurchase(purchase.tag);
           }
-          
-      }));
+        });
+      }
     }
     if(!userData.taskObject){
       console.log('set taskObject', previousTasksData);
@@ -260,7 +272,6 @@ const App: React.FC<AppProps> = ({allUserData}) => {
         musicStarted = true;
       }
       try{
-        console.log(e.target.className);
         for(let i = 0; i < clickSoundElements.length; i++){
           if(e?.target?.className?.indexOf(clickSoundElements[i]) !== -1){
             playSound('click');

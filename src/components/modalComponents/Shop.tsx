@@ -59,6 +59,19 @@ function countRewardTime(showRewardTimer: number){
   return time;
 }
 
+function pluralizeHint(count: number) {
+  const mod10 = count % 10;
+  const mod100 = count % 100;
+
+  if (mod10 === 1 && mod100 !== 11) {
+    return `подсказка`;
+  } else if ([2, 3, 4].includes(mod10) && ![12, 13, 14].includes(mod100)) {
+    return `подсказки`;
+  } else {
+    return `подсказок`;
+  }
+}
+
 const Shop: React.FC<ShopProps> = ({userData, onClose, setUserData,
    openShopMoney, showRewardTimer, setShowRewardTimer, playSound }) => {
 
@@ -126,7 +139,7 @@ const Shop: React.FC<ShopProps> = ({userData, onClose, setUserData,
                                     classNameCounter="modal-section-tips-count"
                                     
                                 /> 
-                 подсказок
+                 {pluralizeHint(userData.tips)}
               </div>
               {/* <div className="modal-section-title">Подсказки</div> */}
               {shopItems.map((item, index) => (
