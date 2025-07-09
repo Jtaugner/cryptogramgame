@@ -34,19 +34,20 @@ function minutesToMs(minutes: number) {
 
 function getTimeUntillNextTask(iq: number) {
   if(iq < 5){
-   return minutesToMs(15);
+   return minutesToMs(10);
   }else if(iq < 10){
-   return minutesToMs(30);
+   return minutesToMs(20);
   }else if(iq < 20){
-   return minutesToMs(60);
-  }else if(iq < 30){
-   return minutesToMs(120);
-  }else if(iq < 50){
-   return minutesToMs(360);
-  }else if(iq < 70){
-   return minutesToMs(720);
+   return minutesToMs(30);
   }
-  return minutesToMs(1440);
+  //else if(iq < 30){
+  //  return minutesToMs(120);
+  // }else if(iq < 50){
+  //  return minutesToMs(360);
+  // }else if(iq < 70){
+  //  return minutesToMs(720);
+  // }
+  return minutesToMs(60);
 }
 function getTask(type: string, iq: number) {
   if(type === 'levels'){

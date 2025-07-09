@@ -1,6 +1,7 @@
 const { promises: fsp } = require('fs');
 var path = require('path');
-var {phrases} = require('./citats');
+// var {phrases} = require('./citats');
+var {phrases} = require('./newCitats');
 const {allLevels} = require('./src/allLevels.js');
 
 const allLevelsTexts = [];
@@ -153,10 +154,12 @@ function replaceLongDashes(text) {
 }   
    
 //Генерация уровней
-let allQuotes = [];
-Object.keys(phrases).forEach((key, index) => {
-     allQuotes.push(...phrases[key]);
-});
+// let allQuotes = [];
+// Object.keys(phrases).forEach((key, index) => {
+//      allQuotes.push(...phrases[key]);
+// });
+
+let allQuotes = phrases;
 
 const results = [];
 const complexity = 4;
@@ -179,16 +182,30 @@ let typeBefore = allLevels[allLevels.length - 1].type;
 const typesOfCategories = ['quotes', 'poems', 'aphorisms', 'music', 'cinema', 'science'];
 let notUsedTypes = typesOfCategories.slice();
 
-while(allLevels.length !== 390){
+console.log(allLevels.length);
+
+let allNamesWithoutDescs = new Set;
+allLevels.forEach(level => {
+     if(level.desc === ''){
+          allNamesWithoutDescs.add(level.name);
+     }
+     if(level.name.length > 25){
+          console.log(level.name);
+     }
+});
+
+console.log(allNamesWithoutDescs);
+
+while(allLevels.length !== 600){
      let index = Math.floor(Math.random() * allQuotes.length);
      let phrase = allQuotes[index];
      let text = phrase.text;
+     console.log(phrase);
      text = replaceLongDashes(text.replace(/ё/gi, 'е'));
-
-     //Если текст уже есть, то пропускаем
-     if(allLevelsTexts.includes(text)){
+     if(/[a-z]/ig.test(text) || text.length < 100 || text.length > 250){
           continue;
      }
+
      //Если тип не новый, то пропускаем
      if(!notUsedTypes.includes(phrase.type) && Math.random() < 0.92){
           continue;
@@ -216,6 +233,10 @@ while(allLevels.length !== 390){
      if(/[А-Яа-яЁё]/.test(text[text.length-1])){
           text += '.'
      }
+          //Если текст уже есть, то пропускаем
+     if(allLevelsTexts.includes(text)){
+          continue;
+     }
      const levelData = {};
      levelData.text = text;
      levelData.hiddenIndexes = level.hiddenIndexes;
@@ -227,10 +248,11 @@ while(allLevels.length !== 390){
 
      allLevelsTexts.push(text);
      allLevels.push(levelData);
-     console.log(levelData.type);
+     // console.log(levelData.type);
 }
 
 
+console.log(allLevels.length);
 
 
 
@@ -275,7 +297,7 @@ const sorted = Object.fromEntries(
      Object.entries(allNames).sort(([, v1], [, v2]) => v2 - v1)
 );
 
-console.log(sorted);
+// console.log(sorted);
    
 
 

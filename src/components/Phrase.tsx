@@ -254,10 +254,9 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
   useEffect(() => {
     try{
       if(completingNumbers.size > 0){
-        console.log('scrollToSelected');
-        setTimeout(() => {
+        timeoutIds.current.push(setTimeout(() => {
           scrollToSelected()
-        }, 1500)
+        }, 1500))
       }else{
         scrollToSelected()
       }
