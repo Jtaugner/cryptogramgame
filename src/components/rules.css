@@ -151,6 +151,9 @@
 .changeLetterForRules2.phrase-cell_notFilled .phrase-cell-letter{
   animation-delay: 3s;
 }
+.changeLetterForRules3.phrase-cell_notFilled .phrase-cell-letter{
+  animation-delay: 4.5s;
+}
 .jumping-letter{
   animation: jumpLetter 1.5s ease-in-out infinite;
   border: 1px solid #4cff01;
@@ -167,5 +170,9 @@
   height: 150px;
   width: 300px;
   background: url(../assets/keyboardScreen.png) 0 center no-repeat;
+  background-size: 100%;
+}
+.rules-keyboard_en{
+  background: url(../assets/keyboardScreen-en.png) 0 center no-repeat;
   background-size: 100%;
 }

@@ -3,85 +3,87 @@ import './rules.css';
 import Phrase from './Phrase';
 import { LevelDataProps } from '../App';
 import { useSwipeable } from 'react-swipeable';
+import { useTranslation } from 'react-i18next';
+import {levelPhraseRules} from './rulesPhrases'
 
 type RulesProps = {
   onClose: () => void
   diceMode: boolean
+  gameLanguage: string
 }
-const levelPhraseRules = {
-  text:"ИГРА ПРОСТА",
-  numbers:[1,8,7,2,0,9,7,4,5,6,2],
-  hiddenIndexes:[3,6],
-  filledLetters:{},
-  completedNumbers:new Set([1,8,4,5,6,9])
-};
-const levelPhraseRules3 = {
-  text:"УГАДАЙ СЛОВО",
-  numbers:[1,2,3,4,3,5,0,6,7,8,9,8],
-  hiddenIndexes:[2,4,8,9,11],
-  filledLetters:{},
-  completedNumbers:new Set([1,2,4,5,6,9])
-};
-const levelPhraseRules2 = {
-  text:"ШИНШИЛЛА ПИЩИТ",
-  numbers:[6,4,3,6,4,1,1,5,0,8,4,5,4,9],
-  hiddenIndexes:[1,4,10,13],
-  filledLetters:{},
-  completedNumbers:new Set([3,5,6,1,5,8])
-};
-const mainRulesTexts = [
+
+const mainRulesTextIDs = [0, 1, 1, 2];
+const rulesDicesTextIDs = [0, 1, 2];
+
+let mainRulesTexts = [
   {
     id: 'phrase-step-1',
-    title: 'Число - это буква',
-    text: <span>Каждое число относится к букве. <br></br>К примеру, <span className="rules-text-important">2</span> - это <span className="rules-text-important">А</span></span>,
-    levelRules: levelPhraseRules
+    title: 'rules-step-1',
+    text: 'rules-step-1-text',
+    levelRules: levelPhraseRules.ru[mainRulesTextIDs[0]]
   },
   {
     id: 'phrase-step-2',
-    title: 'Цель игры',
-    text: 'Ваша задача - заполнить все клетки, чтобы получить исходную фразу.',
-    levelRules: levelPhraseRules3
+    title: 'rules-step-2',
+    text: 'rules-step-2-text',
+    levelRules: levelPhraseRules.ru[mainRulesTextIDs[1]]
   },
   {
     id: 'phrase-step-keyboard',
-    title: 'Клавиатура',
-    text: 'Зелёным на клавиатуре подсвечены буквы, чьи числа вы уже разгадали.',
-    levelRules: levelPhraseRules3
+    title: 'rules-step-3',
+    text: 'rules-step-3-text',
+    levelRules: levelPhraseRules.ru[mainRulesTextIDs[2]]
   },
   {
     id: 'phrase-step-advice',
-    title: 'Совет',
-    text: 'Сначала заполните те клетки, числа которых вы уже знаете',
-    levelRules: levelPhraseRules2
+    title: 'rules-step-4',
+    text: 'rules-step-4-text',
+    levelRules: levelPhraseRules.ru[mainRulesTextIDs[3]]
   }
 ]
-const rulesDicesTexts = [
+let rulesDicesTexts = [
   {
     id: 'phrase-step-1',
-    title: 'Сложный уровень',
-    text: <span>Это <span className="rules-text-important">усложнённый уровень</span> игры.
-       Вместо чисел здесь используются игральные кости</span>,
-    levelRules: levelPhraseRules
+    title: 'rulesDice-step-1',
+    text: 'rulesDice-step-1-text',
+    levelRules: levelPhraseRules.ru[rulesDicesTextIDs[0]]
   },
   {
     id: 'phrase-step-2',
-    title: 'Цель игры',
-    text: <span>
-      Обращайте внимание на <span className="rules-text-important">количество очков</span> на игральных костях и их
-        <span className="rules-text-important"> цвета</span>.
-    </span>,
-    levelRules: levelPhraseRules3
+    title: 'rulesDice-step-2',
+    text: 'rulesDice-step-2-text',
+    levelRules: levelPhraseRules.ru[rulesDicesTextIDs[1]]
   },
   {
     id: 'phrase-step-advice',
-    title: 'Совет',
-    text: 'Сначала заполните те клетки, значения которых вы уже знаете',
-    levelRules: levelPhraseRules2
+    title: 'rulesDice-step-3',
+    text: 'rulesDice-step-3-text',
+    levelRules: levelPhraseRules.ru[rulesDicesTextIDs[2]]
   }
 ]
-const Rules: React.FC<RulesProps> = ({onClose, diceMode = false}) => {
+const Rules: React.FC<RulesProps> = ({onClose, diceMode = false, gameLanguage}) => {
   const [ruleStep, setRuleStep] = useState(0);
-  const [rulesTexts, setRulesTexts] = useState(diceMode ? rulesDicesTexts : mainRulesTexts);
+  const { t } = useTranslation();
+  const [rulesTexts, setRulesTexts] = useState(null);
+
+  useEffect(() => {
+    let newRulesText;
+    if(diceMode){
+      newRulesText = rulesDicesTexts.map((rule, index) => {
+        rule.levelRules = levelPhraseRules[gameLanguage as keyof typeof levelPhraseRules][rulesDicesTextIDs[index]];
+        return rule;
+      });
+    }else{
+      newRulesText = mainRulesTexts.map((rule, index) => {
+        rule.levelRules = levelPhraseRules[gameLanguage as keyof typeof levelPhraseRules][mainRulesTextIDs[index]];
+        return rule;
+      });
+    }
+
+
+
+    setRulesTexts(newRulesText);
+  }, []);
 
   const nextStep = () => {
     if((ruleStep+1) >= rulesTexts.length){
@@ -108,7 +110,9 @@ const Rules: React.FC<RulesProps> = ({onClose, diceMode = false}) => {
     <div className={`modal-bg modal-rules`}>
       <div className="blackout" onClick={onClose}></div>
       <div className="rules" {...handlers}>
-        <div className="rules-wrap">
+        {
+           rulesTexts && 
+           <div className="rules-wrap">
               <div
                 className="rules-track"
                 style={{ transform: `translateX(-${ruleStep * 100}%)` }}
@@ -116,11 +120,11 @@ const Rules: React.FC<RulesProps> = ({onClose, diceMode = false}) => {
                 {rulesTexts.map((rulesText, i) => (
                   <div className="slide" key={rulesText.id}>
                         <div className="rules-title">
-                          {rulesText.title}
+                          {t(rulesText.title)}
                         </div>
                         <div className="rules-main">
                           {rulesText.id === 'phrase-step-keyboard' ?
-                            <div className="rules-keyboard"></div>
+                            <div className={`rules-keyboard rules-keyboard_${gameLanguage}`}></div>
                           :
                           <Phrase 
                               key={rulesText.id + '-phrase'}
@@ -136,11 +140,12 @@ const Rules: React.FC<RulesProps> = ({onClose, diceMode = false}) => {
                               level={i}
                               isFromRules={true}
                               adviceStepFromRules={rulesText.id === 'phrase-step-advice'}
+                              gameLanguage={gameLanguage}
                             />
                           }
                         </div>
-                        <div className="rules-text">
-                          {diceMode ? rulesDicesTexts[i].text : rulesText.text}
+                        <div className="rules-text"
+                         dangerouslySetInnerHTML={{ __html: t(rulesText.text) }}>
                         </div>
                   </div>
                 ))}
@@ -151,9 +156,11 @@ const Rules: React.FC<RulesProps> = ({onClose, diceMode = false}) => {
             ))}
           </div>
           <div className="rules-button shiny-button" onClick={nextStep}>
-            {ruleStep === rulesTexts.length - 1 ? 'ИГРАТЬ' : 'ДАЛЕЕ'}
+            {ruleStep === rulesTexts.length - 1 ? t('play') : t('next')}
           </div>
         </div>
+        }
+        
       </div>
     </div>
   );

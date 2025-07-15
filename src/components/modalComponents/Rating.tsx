@@ -3,7 +3,7 @@ import './rating.css';
 import {UserDataProps } from '../../App';
 import Modal from './Modal';
 import { getLeaderboard, setUserToLeaderboard } from '../../main';
-
+import { useTranslation } from 'react-i18next';
 type RatingProps = {
   userData: UserDataProps,
   onClose: () => void;
@@ -24,6 +24,8 @@ const ratingTest = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 const Rating: React.FC<RatingProps> = ({userData, onClose }) => {
   const [rating, setRating] = useState<RatingItem[] | null>(null);
   const [userRank, setUserRank] = useState<number>(-1);
+  const { t } = useTranslation();
+
   useEffect(() => {
     getLeaderboard((res: any) => {
       setRating(res.entries);
@@ -50,7 +52,7 @@ const Rating: React.FC<RatingProps> = ({userData, onClose }) => {
     })
   }, [])
   return <Modal
-   title="РЕЙТИНГ IQ"
+   title={t('rating') + ' IQ'}
    modalClassName="modal-rating"
    onClose={onClose}>
         <div className="modal-section">

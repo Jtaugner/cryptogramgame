@@ -3,6 +3,7 @@ import './shopMoney.css';
 import { UserDataProps } from '../../App';
 import Modal from './Modal';
 import { shopItemCount, shopItems, NOT_SHOW_ADV } from '../../main';
+import { useTranslation } from 'react-i18next';
 
 type ShopProps = {
   onClose: () => void;
@@ -13,7 +14,7 @@ type ShopProps = {
 
 
 const ShopMoney: React.FC<ShopProps> = ({onClose, makePurchase, isShopOpened }) => {
-
+    const { t } = useTranslation();
     const getMoneyIconBackground = () => {
       if(__PLATFORM__ === 'yandex'){
         if(shopItems && shopItems[0].getPriceCurrencyImage){
@@ -43,20 +44,20 @@ const ShopMoney: React.FC<ShopProps> = ({onClose, makePurchase, isShopOpened }) 
       return 'YAN';
     }
     return <Modal
-            title="МОНЕТКИ"
+            title={t('coins')}
             modalClassName="modal-shop-money"
             onClose={onClose}
             isShopOpened={isShopOpened}
             >
               <div className="modal-section">
-                <div className="modal-section-title">Монетки</div>
+                <div className="modal-section-title">{t('coins')}</div>
                 {shopItems.slice(0, shopItems.length - 1).map((item, index) => (
                   <div className="modal-shop-row" key={'shop-money-item-' + index}>
                     <div className={`modal-shop-row-icon-coin modal-shop-row-icon-coin_${index}`}>
                     </div>
                     <div className="modal-shop-row-name">
                       <span className="modal-shop-row-name-count">{shopItemCount[item.id]} </span>
-                      Монет
+                      {t('coinsCount')}
                       </div>
                     <div
                       className={`modal-shop-row-price`}
@@ -78,12 +79,12 @@ const ShopMoney: React.FC<ShopProps> = ({onClose, makePurchase, isShopOpened }) 
                 
                 {!NOT_SHOW_ADV && (
                   <>
-                  <div className="modal-section-title">Реклама</div>
+                  <div className="modal-section-title">{t('advert')}</div>
                   <div className="modal-shop-row">
                     <div className={`modal-shop-row-icon-coin modal-shop-row-icon-coin_ad`}>
                     </div>
                     <div className="modal-shop-row-name">
-                    Отключение рекламы  
+                    {t('removeAds')}
                     </div>
                     <div
                       className={`modal-shop-row-price`}

@@ -3,7 +3,7 @@ import './collectionCategory.css';
 import {levelsByCategory, collectionNames, LevelData, namesDescs} from '../../levels';
 import { useSwipeable } from 'react-swipeable';
 import { getTextForLevelEnd } from '../Phrase';
-
+import { useTranslation } from 'react-i18next';
 type CollectionCategoryProps = {
   onClose: () => void
   category: string
@@ -13,6 +13,8 @@ type CollectionCategoryProps = {
 
 const CollectionCategory: React.FC<CollectionCategoryProps> = ({onClose, category, categoryIndex, copyFunction}) => {
     const [index, setIndex] = useState(categoryIndex > 0 ? categoryIndex - 1 : 0);
+    const { t } = useTranslation();
+
     const getLeftButton = () => {
       if(index === 0) return;
       setIndex(index - 1);
@@ -46,7 +48,7 @@ const CollectionCategory: React.FC<CollectionCategoryProps> = ({onClose, categor
             <div className="collection-category-main-title-center">
               <div className={`collection-category-main-title-icon collection-category-main-title-icon_${category}`}></div>
               <div className="collection-category-main-title-text">
-                {collectionNames[category as keyof typeof collectionNames]}
+                {t(category)}
               </div>
             </div>
             <div className="modal-close" onClick={closeModal}></div>
@@ -59,7 +61,7 @@ const CollectionCategory: React.FC<CollectionCategoryProps> = ({onClose, categor
                      ${levelsByCategory[category][index].text.length > 150 ?
                       'collection-category-main-quote_small' : ''}`}>
                   {categoryIndex === 0 ?
-                   'Здесь появятся фразы, которые вы разгадаете' :
+                   t('collection-category-text') :
                    getTextForLevelEnd(levelsByCategory[category][index].text)}
                   </div>
                   {categoryIndex !== 0 &&

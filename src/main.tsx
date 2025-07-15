@@ -3,18 +3,34 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 import './medias.css'
+import './i18n'
 import { getTasks } from './tasks.tsx'
 import { playSound, switchOffMainMusic, switchOnMainMusic } from './sounds.tsx'
-
+import { initLevels } from './levels.tsx'
+import { main } from 'framer-motion/client'
+// @ts-ignore
+// import {allLevels} from './allLevels.js';
 
 console.log('__PLATFORM__', __PLATFORM__);
 let wasPurchase = false;
+let ruLangs = ['ru', 'be', 'kk', 'uk', 'uz', 'kz'];
+
+export let mainLanguage = 'ru';
+let anotherLangDataForYandex = {};
+
+function getGameProgressName(){
+  if(mainLanguage === 'ru'){
+    return 'gameProgress';
+  }else{
+    return 'gameProgress-' + mainLanguage;
+  }
+}
 
 //Дефолтное состояние юзера
 const defaultUserData = {
   lastLevel: 0,
   lastLevelData: null,
-  tips: 0,
+  tips: 10,
   statistics: {
     iq: 0,
     levels: 0,
@@ -46,6 +62,13 @@ export function params(data: any) {
 	try{
     let ymID = 102631060;
     if(__PLATFORM__ === 'gp') ymID = 103175743;
+    if(mainLanguage !== 'ru'){
+      let keys = Object.keys(data);
+      keys.forEach(key => {
+        data[key + '_en'] = data[key];
+        delete data[key];
+      });
+    }
 		// eslint-disable-next-line no-undef
 		ym(ymID, 'params', data);
 		// eslint-disable-next-line no-empty
@@ -67,17 +90,28 @@ export const setElementToLocalStorage = (name: string, val: any) => {
 }
 
 export const getUserDataFromLocalStorage = () => {
-  let localStorageUserData = getFromLocalStorage("gameProgress");
+  let localStorageUserData = getFromLocalStorage(getGameProgressName());
   if(localStorageUserData) return JSON.parse(localStorageUserData);
   return defaultUserData;
 }
 
 let userData = getUserDataFromLocalStorage();
+let appCreated = false;
 
-function createApp(){
+async function createApp(){
+  if(appCreated) return;
+  appCreated = true;
+  let module;
+  if(mainLanguage === 'ru'){
+    module = await import(`./allLevels.js`);
+  }else{
+    module = await import(`./allLevels-en.js`);
+  }
+  const allLevels = module.default;
+  initLevels(allLevels, mainLanguage);
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
-      <App allUserData={userData} />
+      <App allUserData={userData} mainLanguage={mainLanguage} />
     </StrictMode>
 
   )
@@ -129,11 +163,14 @@ export function saveData(newUserData: any) {
         let lastData = recentData;
         console.log('\x1b[32mDONE: saveData\x1b[0m');
         recentData = newData;
-        setElementToLocalStorage('gameProgress', newData);
+        setElementToLocalStorage(getGameProgressName(), newData);
 
         if(__PLATFORM__ === 'yandex'){
           if (playerGame) {
-            const state = {gameProgress: newData};
+            const state = {
+              [getGameProgressName()]: newData,
+              ...anotherLangDataForYandex
+            };
             playerGame.setData(state).then((ignored: any) => {}).catch(()=>{});
           }
         }else if(__PLATFORM__ === 'gp'){
@@ -143,7 +180,7 @@ export function saveData(newUserData: any) {
           if(newUserData.lastLevel > lastData.lastLevel || wasPurchase){
             wasPurchase = false;
             YSDK.player.set(
-                'gameProgress',
+                getGameProgressName(),
                 newData
             );
             YSDK.player.set(
@@ -403,11 +440,18 @@ export function initPlayer(ysdk: any) {
         // Игрок авторизован.
         playerGame = _player;
         console.log('playerGame', playerGame);
+        console.log(getGameProgressName());
 
-        playerGame.getData(['gameProgress'], false).then((data: any) => {
-            let gp = data.gameProgress;
+        playerGame.getData(['gameProgress', 'gameProgress-en'], false).then((data: any) => {
+            let gp = data[getGameProgressName()];
+            if(getGameProgressName() === 'gameProgress-en'){
+              anotherLangDataForYandex = {['gameProgress']: data['gameProgress']};
+            }else{
+              anotherLangDataForYandex = {['gameProgress-en']: data['gameProgress-en']};
+            }
             //Вовзврат прогресса
-            console.log('gameProgress', gp);
+            console.log(getGameProgressName());
+            console.log(data);
             try {
 
                 if(gp){
@@ -433,6 +477,9 @@ export function initPlayer(ysdk: any) {
                 if(gp){
                   //Заменяем данные
                   userData = gp;
+                  recentData = stringifyJSON(userData);
+                }else{
+                  userData = getUserDataFromLocalStorage();
                   recentData = stringifyJSON(userData);
                 }
             } catch (d) {
@@ -476,7 +523,12 @@ if (__PLATFORM__ === 'yandex' && window.YaGames) {
           console.log('gt sdk');
           YSDK = ysdk;
           let lang = ysdk?.environment?.i18n?.lang;
-          console.log('lang: ', lang);
+          if(ruLangs.includes(lang)){
+            mainLanguage = 'ru';
+          }else{
+            mainLanguage = 'en';
+          }
+          console.log('lang', lang, mainLanguage);
           initPlayer(ysdk);
             ysdk.features.GamesAPI.getGameByID(435796).then(({isAvailable, game}) => {
               if (isAvailable) {
@@ -502,9 +554,9 @@ if (__PLATFORM__ === 'yandex' && window.YaGames) {
 
     // Поля получены (success === true)
     gp.player.on('fetchFields', (success) => {
-      if(success && gp.player.has('gameProgress')){
+      if(success && gp.player.has(getGameProgressName())){
         console.log('get player success');
-        let newData = gp.player.get('gameProgress');
+        let newData = gp.player.get(getGameProgressName());
         if(newData){
           newData = chooseLatestData(newData);
           userData = newData;

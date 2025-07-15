@@ -369,6 +369,8 @@ color: var(--textColor);
   cursor: pointer;
   position: relative;
   padding-left: 20px;
+
+  text-transform: uppercase;
 }
 .menu-continue-btn-category{
   position: absolute;

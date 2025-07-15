@@ -16,12 +16,13 @@ import ShopMoney from './modalComponents/ShopMoney'
 import Rating from './modalComponents/Rating'
 import Collection from './modalComponents/Collection'
 import { LevelData, levels, msToTime } from '../levels'
-import { copyObject, getTaskName } from '../tasks'
+import { copyObject,  } from '../tasks'
 import { getMinutesFromSeconds } from '../tasks'
 import ProgressCounter from './ProgressCounter'
 import Timer from './TImer'
 import ClickParticles from './ClickParticles'
 import { NOT_SHOW_ADV } from '../main'
+import { useTranslation } from 'react-i18next'
 
 
 
@@ -43,6 +44,7 @@ interface MenuProps {
   setShowShop: (showShop: boolean) => void
   setShowShopMoney: (showShopMoney: boolean) => void
   playSound: (soundName: string) => void
+  gameLanguage: string
 }
 const getIQcolor = (iq: number) => {
      if (iq <= 10) return '#e28f2e';
@@ -72,7 +74,9 @@ let taskObjectBefore: TaskObjectProps = null;
 const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeconds,
       previousTasksData, setPreviousTasksData, previousIQ, addPreviousIQ,
        copyFunction, testTasks, showShop, showShopMoney, setShowShop,
-        setShowShopMoney, playSound }) => {
+        setShowShopMoney, playSound, gameLanguage }) => {
+
+     const { t } = useTranslation();
 
 
      const [showStats, setShowStats] = useState(false)
@@ -230,7 +234,7 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
                     <label className="switch">
                          <input type="checkbox" defaultChecked={true}/>
                          <span className="slider">
-                              <span className="label on">ВКЛ</span>
+                              <span className="label on">{t('on')}</span>
                               <span className="circle"></span>
                          </span>
                     </label>
@@ -267,7 +271,7 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
           <div className="menu__centerBlock">
           <div className="menu-daily">
           <div className="menu-daily-title-block">
-               <span className="menu-daily-title">ЗАДАНИЯ</span>
+               <span className="menu-daily-title">{t('tasks')}</span>
                <span className="menu-daily-iq">IQ 
                     <span
                          className={`
@@ -290,7 +294,7 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
                           Object.keys(userData.taskObject.tasks).map((task, index) => (
                               <div className="menu-daily-row" key={'task_' + index}>
                                    <span className="menu-daily-label">
-                                        {getTaskName(task)}
+                                        {t('task-' +task)}
                                    </span>
                                    <ProgressCounter
                                         key={'task_' + task + '_' + previousTasksData?.tasks[task].now + '_' + userData.taskObject?.tasks[task].now}
@@ -325,8 +329,8 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
                     {
                          userData.taskObject &&
                          userData.taskObject.dateToGetNewTask > 0 ?
-                         'До следующего задания:' : 
-                         'Выполняйте ежедневные задания:'
+                         t('untillNextTask') : 
+                         t('dailyTasks')
                     }
 
                </div>
@@ -371,12 +375,12 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
                                className={`menu-continue-btn-category
                                 ${'menu-continue-btn-category_' + levels[userData.lastLevel].type}`}>
                               </div>       
-                              <span>ПРОДОЛЖИТЬ</span>
-                              <span className="menu-continue-btn__level">УРОВЕНЬ {userData.lastLevel+1}</span>
+                              <span>{t('continue')}</span>
+                              <span className="menu-continue-btn__level">{t('level')} {userData.lastLevel+1}</span>
                               </> :
                               <>
-                              <span>УРОВНЕЙ НЕТ</span>
-                              <span className="menu-continue-btn__level">Они скоро появятся</span>
+                              <span>{t('noLevels')}</span>
+                              <span className="menu-continue-btn__level">{t('levelsWillAppear')}</span>
                               </>
                               
                          }
@@ -389,16 +393,16 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
           <div className="menu-bottom">
                <div className="menu-bottom-wrap">
                     <div className="menu-bottom-icon icon-shop" onClick={() => setShowShop(true)}>
-                         <span className="menu-bottom-label">Магазин</span>
+                         <span className="menu-bottom-label">{t('shop')}</span>
                     </div>
                     <div className="menu-bottom-icon icon-rating" onClick={() => setShowRating(true)}>
-                         <span className="menu-bottom-label">Рейтинг</span>
+                         <span className="menu-bottom-label">{t('rating')}</span>
                     </div>
                     <div className="menu-bottom-icon icon-stat" onClick={() => setShowStats(true)}>
-                         <span className="menu-bottom-label">Статистика</span>
+                         <span className="menu-bottom-label">{t('statistics')}</span>
                     </div>
                     <div className="menu-bottom-icon icon-collection" onClick={() => setShowCollection(true)}>
-                         <span className="menu-bottom-label">Коллекция</span>
+                         <span className="menu-bottom-label">{t('collection')}</span>
                     </div>     
                </div>
           
@@ -414,6 +418,7 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
                     userData={userData}
                     onClose={() => setShowSettings(false)}
                     setUserData={setUserData}
+                    gameLanguage={gameLanguage}
                />
           )}
           {showRating && (

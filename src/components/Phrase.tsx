@@ -1,7 +1,7 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import './Phrase.css'
 import { LevelDataProps } from '../App'
-import {dices, LevelData, namesDescs } from '../levels'
+import {dices, LevelData, namesDescs, testLetterForNotAlphabet } from '../levels'
 
 interface PhraseProps {
   data: {
@@ -27,7 +27,8 @@ interface PhraseProps {
   setShowConfetti: (show: boolean) => void
   diceMode: boolean
   playSound: (soundName: string) => void
-  inactiveKeys: Set<string>
+  inactiveKeys: Set<string>,
+  gameLanguage: string
 }
 
 interface PhraseHandle {
@@ -53,7 +54,7 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
      blockedTime, isTipSelecting, useTip, isLevelCompleted, level,
       isFromRules, adviceStepFromRules,
       switchOnGlowScreen, levelData, copyFunction, setShowConfetti,
-      diceMode, playSound, inactiveKeys }, ref) => {
+      diceMode, playSound, inactiveKeys, gameLanguage }, ref) => {
       
   const letters = data.text.split('')
   const [selectedIndex, setSelectedIndex] = useState<number | null>(-1);
@@ -80,11 +81,6 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
     setNumberCompleted(new Set());
   }
   // Буквы, разрешённые для игрового ввода
-  const allowedKeys = [
-    'Й','Ц','У','К','Е','Н','Г','Ш','Щ','З','Х',
-    'Ф','Ы','В','А','П','Р','О','Л','Д','Ж','Э',
-    'Я','Ч','С','М','И','Т','Ь','Ъ','Б','Ю'
-  ]
 
   const handleLetterClick = (index: number) => {
     if(isFromRules) return;
@@ -228,8 +224,8 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
       if (Object.keys(wrongLetters).length > 0) return
       let key = e.key.toUpperCase()
       if (key === 'Ё') key = 'Е'
-      if (/[^А-ЯЁ]/.test(key)) return
-      if (!allowedKeys.includes(key)) return
+      if (testLetterForNotAlphabet(key, gameLanguage)) return
+      console.log(key, gameLanguage);
       handleKeyPress(key)
     }
     window.addEventListener('keydown', handlePhysicalKey)
@@ -266,7 +262,11 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
   useEffect(() => {
     getNextEmptyIndex(false, data.filledLetters);
     if(adviceStepFromRules){
-      setSelectedIndex(12);
+      if(gameLanguage === 'ru'){
+        setSelectedIndex(12);
+      }else{
+        setSelectedIndex(6);
+      }
       setAdviceLetterForRules(true);
     }
 
@@ -344,7 +344,7 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
               const index = startIdx + i;
               const isHidden = data.hiddenIndexes.includes(index)
               const number = data.numbers[index]
-              const isLetter = /[А-ЯЁ]/.test(letter)
+              const isLetter = !testLetterForNotAlphabet(letter, gameLanguage)
               const isSelected = selectedIndex === index
               const isCorrect = correctLetters[index]
               const wrongLetter = wrongLetters[index]
@@ -354,18 +354,18 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
               let changeLetterForRules = false;
               let changeLetterForRulesNumber = 0;
               let jumpingLetter = false;
-              if(adviceLetterForRules && number === 4){
+              if(adviceLetterForRules && number === 4 && isHidden){
                 changeLetterForRules = true;
                 let indexes = [];
                 for(let i = 0; i < data.numbers.length; i++){
-                  if(data.numbers[i] === 4){
+                  if(data.numbers[i] === 4 && data.hiddenIndexes.includes(i)){
                     indexes.push(i);
                   }
                 }
                 changeLetterForRulesNumber = indexes.indexOf(index);
               }
               if(isFromRules){
-                if(number === 8 && index === 10){
+                if((number === 2 && index === 10) || (number === 8 && index === 8)){
                   jumpingLetter = true;
                 }
               }
@@ -404,7 +404,10 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
                       <span
                        className={`phrase-cell-letter`}
                        onAnimationEnd={() => {
-                        if(changeLetterForRules && changeLetterForRulesNumber === 2){
+                        if(changeLetterForRules &&
+                           ((gameLanguage === 'ru' && changeLetterForRulesNumber === 2) ||
+                            (gameLanguage === 'en' && changeLetterForRulesNumber === 3)
+                           )){
                           setAdviceLetterForRules(false);
                           timeoutIds.current.push(setTimeout(() => {
                             setAdviceLetterForRules(true);

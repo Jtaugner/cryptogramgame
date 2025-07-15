@@ -6,7 +6,7 @@ import Counter from '../Counter/Counter';
 import { makePlacesForCounter } from '../ProgressCounter';
 import { getServerTime, showRewarded } from '../../main';
 import { formatTime } from '../../levels';
-
+import { useTranslation } from 'react-i18next';
 type ShopProps = {
   userData: UserDataProps,
   onClose: () => void;
@@ -27,25 +27,21 @@ type ShopItem = {
 const shopItems = [
   {
     id: 'hint_1',
-    name: '1 Подсказка',
     count: 1,
     price: 0,
   },
   {
     id: 'hint_1',
-    name: '5 Подсказок',
     count: 5,
     price: 10,
   },
   {
     id: 'hint_2',
-    name: '10 Подсказок',
     count: 10,
     price: 18,
   },
   {
     id: 'hint_3',
-    name: '50 Подсказок',
     count: 50,
     price: 80,
   }
@@ -59,22 +55,10 @@ function countRewardTime(showRewardTimer: number){
   return time;
 }
 
-function pluralizeHint(count: number) {
-  const mod10 = count % 10;
-  const mod100 = count % 100;
-
-  if (mod10 === 1 && mod100 !== 11) {
-    return `подсказка`;
-  } else if ([2, 3, 4].includes(mod10) && ![12, 13, 14].includes(mod100)) {
-    return `подсказки`;
-  } else {
-    return `подсказок`;
-  }
-}
 
 const Shop: React.FC<ShopProps> = ({userData, onClose, setUserData,
    openShopMoney, showRewardTimer, setShowRewardTimer, playSound }) => {
-
+  const { t } = useTranslation();
   const [rewardTimer, setRewardTimer] = useState(countRewardTime(showRewardTimer))
 
   const buyItem = (item: ShopItem) => {
@@ -125,11 +109,11 @@ const Shop: React.FC<ShopProps> = ({userData, onClose, setUserData,
     return () => clearInterval(interval)
   }, [showRewardTimer])
   return <Modal
-          title="МАГАЗИН"
+          title={t('shop')}
           modalClassName="modal-shop"
           onClose={onClose}>
             <div className="modal-section">
-              <div className="modal-section-tips">У вас
+              <div className="modal-section-tips">{t('youHave')}:
               <Counter
                                     value={userData.tips}
                                     fontSize={20}
@@ -139,7 +123,7 @@ const Shop: React.FC<ShopProps> = ({userData, onClose, setUserData,
                                     classNameCounter="modal-section-tips-count"
                                     
                                 /> 
-                 {pluralizeHint(userData.tips)}
+                 {t('hint', {count: userData.tips})}
               </div>
               {/* <div className="modal-section-title">Подсказки</div> */}
               {shopItems.map((item, index) => (
@@ -150,7 +134,7 @@ const Shop: React.FC<ShopProps> = ({userData, onClose, setUserData,
                   <div className="modal-shop-row-icon">
                     <div className="modal-shop-row-icon-count">{item.count}</div>
                   </div>
-                  <div className="modal-shop-row-name">{item.name}</div>
+                  <div className="modal-shop-row-name">{item.count} {t('hint', {count: item.count})}</div>
                   <div
                     className={`modal-shop-row-price
                     ${userData.money <= item.price ? 'modal-shop-row-price_disabled' : ''}

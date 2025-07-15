@@ -476,6 +476,7 @@
     cursor: pointer;
     margin-top: auto;
     margin-bottom: 10vh;
+    text-transform: uppercase;
 }
 .nextLevelButton:active{
   box-shadow: none;
@@ -491,7 +492,6 @@
     font-size: 1.1rem;
     font-weight: bold;
     color: #BED6F4;
-    text-transform: uppercase;
 }
 .game-header-gameName{
   display: flex;

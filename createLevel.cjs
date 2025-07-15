@@ -2,7 +2,8 @@ const { promises: fsp } = require('fs');
 var path = require('path');
 // var {phrases} = require('./citats');
 var {phrases} = require('./newCitats');
-const {allLevels} = require('./src/allLevels.js');
+let allLevels = require('./src/allLevels.js');
+allLevels = allLevels.default;
 
 const allLevelsTexts = [];
 
@@ -196,7 +197,7 @@ allLevels.forEach(level => {
 
 console.log(allNamesWithoutDescs);
 
-while(allLevels.length !== 600){
+while(allLevels.length !== 800){
      let index = Math.floor(Math.random() * allQuotes.length);
      let phrase = allQuotes[index];
      let text = phrase.text;
@@ -218,6 +219,12 @@ while(allLevels.length !== 600){
           }
      }
 
+     text = text.trim();
+
+     //Если в конце нет знака препинания, то ставим точку
+     if(/[А-Яа-яЁё]/.test(text[text.length-1])){
+          text += '.'
+     }
 
 
      let level = generateCryptogram(text, complexity, fullness);
@@ -227,13 +234,8 @@ while(allLevels.length !== 600){
           console.log("fixed");
           console.log(test, level.hiddenIndexes);
      }
-     text = text.trim();
 
-     //Если в конце нет знака препинания, то ставим точку
-     if(/[А-Яа-яЁё]/.test(text[text.length-1])){
-          text += '.'
-     }
-          //Если текст уже есть, то пропускаем
+     //Если текст уже есть, то пропускаем
      if(allLevelsTexts.includes(text)){
           continue;
      }

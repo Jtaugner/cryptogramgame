@@ -7,10 +7,11 @@ import './AppTransition.css'
 import { usePageActiveTimer } from './components/PageTimer'
 import { appIsReady, consumePurchase, getServerTime, makePurchaseSDK, setNotShowAdv, payments, saveData, shopItemCount, shopItems, tryPlaySound, setUserToLeaderboard, tryToAddUserToLeaderboard, params, gameLink } from './main'
 import { copyObject, getTasks } from './tasks'
-import { LevelData } from './levels'
+import { LevelData, namesDescs } from './levels'
 import Shop from './components/modalComponents/Shop'
 import ShopMoney from './components/modalComponents/ShopMoney'
 import { stopSound, switchOffMainMusic } from './sounds'
+import { changeLanguage } from './i18n'
 // @ts-ignore
 let iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 if(iOS){
@@ -94,16 +95,18 @@ export type UserDataProps = {
 
 
 export type AppProps = {
-  allUserData: UserDataProps
+  allUserData: UserDataProps,
+  mainLanguage: string
 }
 
 let musicStarted = false;
 
-const App: React.FC<AppProps> = ({allUserData}) => {
+const App: React.FC<AppProps> = ({allUserData, mainLanguage}) => {
   const [showGame, setShowGame] = useState(allUserData.lastLevel === 0)
   const [showCopied, setShowCopied] = useState(false)
   const [showShop, setShowShop] = useState(false)
   const [showShopMoney, setShowShopMoney] = useState(false)
+  const [gameLanguage, setGameLanguage] = useState(mainLanguage)
 
   const [showRewardTimer, setShowRewardTimer] = useState(0)
 
@@ -163,7 +166,8 @@ const App: React.FC<AppProps> = ({allUserData}) => {
   const copyFunction = (levelData: LevelData) => {
     params({'copyQuote': 1});
     try{
-     let text = levelData.text + '\n\n' + levelData.name + ' — ' + levelData.desc + '\n' + gameLink;
+      let desc = namesDescs[levelData.name as keyof typeof namesDescs] || levelData.desc;
+     let text = levelData.text + '\n\n' + levelData.name + ' — ' + desc + '\n' + gameLink;
      if (navigator.clipboard && window.isSecureContext) {
       navigator.clipboard.writeText(text)
       .then(() => {
@@ -282,6 +286,12 @@ const App: React.FC<AppProps> = ({allUserData}) => {
       }
 
     })
+
+    try{
+      changeLanguage(mainLanguage);
+    }catch(e){
+      console.log('error changeLanguage', e);
+    }
   }, [])
   useEffect(() => {
     console.log('previousTasksData change', previousTasksData);
@@ -320,6 +330,7 @@ const App: React.FC<AppProps> = ({allUserData}) => {
               setShowShop={setShowShop}
               setShowShopMoney={setShowShopMoney}
               playSound={playSound}
+              gameLanguage={gameLanguage}
             />
         ) : (
           <Menu
@@ -341,6 +352,7 @@ const App: React.FC<AppProps> = ({allUserData}) => {
               setShowShop={setShowShop}
               setShowShopMoney={setShowShopMoney}
               playSound={playSound}
+              gameLanguage={gameLanguage}
              />
         )}
           {showShop && (

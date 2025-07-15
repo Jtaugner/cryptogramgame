@@ -4,6 +4,7 @@ import { UserDataProps } from '../../App';
 import Modal from './Modal';
 import { typesOfCategories, levels, levelsByCategory, collectionNames, LevelData} from '../../levels';
 import CollectionCategory from './CollectionCategory';
+import { useTranslation } from 'react-i18next';
 
 type CollectionProps = {
   userData: UserDataProps,
@@ -31,6 +32,8 @@ const Collection: React.FC<CollectionProps> = ({userData, onClose, copyFunction 
   const [showCollectionCategory, setShowCollectionCategory] = useState(false);
   const [categoryType, setCategoryType] = useState('quotes');
 
+  const { t } = useTranslation();
+
   const openCollectionCategory = (type: string) => {
     setCategoryType(type);
     setShowCollectionCategory(true);
@@ -39,7 +42,7 @@ const Collection: React.FC<CollectionProps> = ({userData, onClose, copyFunction 
   return (
     <>
         <Modal
-          title="КОЛЛЕКЦИЯ"
+          title={t('collection')}
           modalClassName="modal-collection"
           onClose={onClose}>
             <div className="modal-section">
@@ -47,7 +50,7 @@ const Collection: React.FC<CollectionProps> = ({userData, onClose, copyFunction 
                 <div className="modal-shop-row" key={'shop-item-' + index}>
                   <div className={`modal-collection-icon modal-collection-icon_${item}`}>
                   </div>
-                  <div className="modal-shop-row-name">{collectionNames[item as keyof typeof collectionNames]}</div>
+                  <div className="modal-shop-row-name">{t(item)}</div>
                   <div
                     className={`modal-shop-row-price`}
                     onClick={() => openCollectionCategory(item)}

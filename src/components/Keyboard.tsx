@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import './Keyboard.css'
+import { keyboardRows } from '../levels'
 
 interface KeyboardProps {
   onKeyPress: (key: string) => void
@@ -10,18 +11,14 @@ interface KeyboardProps {
     hiddenIndexes: number[]
     filledLetters: Record<number, string>
   }
+  gameLanguage: string
 }
 
-const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress, inactiveKeys = new Set(), phraseData }) => {
-  const rows = [
-    ['й', 'ц', 'у', 'к', 'е', 'н', 'г', 'ш', 'щ', 'з', 'х'],
-    ['ф', 'ы', 'в', 'а', 'п', 'р', 'о', 'л', 'д', 'ж', 'э'],
-    ['я', 'ч', 'с', 'м', 'и', 'т', 'ь', 'ъ', 'б', 'ю']
-  ]
+const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress, inactiveKeys = new Set(), phraseData, gameLanguage }) => {
+  const [rows, setRows] = useState<string[][]>(keyboardRows[gameLanguage as keyof typeof keyboardRows]);
   const [usedLetters, setUsedLetters] = useState<Set<string>>(new Set());
 
   useEffect(() => {
-    console.log('dasds');
     if(!phraseData) return;
     let usedLetters = new Set<string>();
     const letterPositions = new Map<number, { letter: string, positions: number[] }>()

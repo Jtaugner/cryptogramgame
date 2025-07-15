@@ -3,7 +3,7 @@ import Keyboard from './Keyboard'
 import Phrase from './Phrase'
 import './Game.css'
 import ProgressCircle from '../ProgressCircle'
-import { countWordsWithHiddenLetters, getCollectionName, getHint, levels, percentOfLevels } from '../levels'
+import { countWordsWithHiddenLetters, levels, percentOfLevels, testLetterForNotAlphabet } from '../levels'
 import { usePageActiveTimer } from './PageTimer'
 import { UserDataProps, LevelDataProps } from '../App'
 import { SwitchTransition, CSSTransition } from 'react-transition-group';
@@ -13,6 +13,7 @@ import { LevelData, formatTime} from '../levels'
 import { showAdv, params } from '../main'
 import { getMinutesFromSeconds } from '../tasks'
 import Confetti from 'confetti-react';
+import { useTranslation } from 'react-i18next'
 
 interface GameProps {
   onMenu: () => void
@@ -24,6 +25,7 @@ interface GameProps {
   playSound: (soundName: string) => void
   setShowShop: (showShop: boolean) => void
   setShowShopMoney: (showShopMoney: boolean) => void
+  gameLanguage: string
 }
 
 const cancelBlockPrice = 1;
@@ -34,7 +36,7 @@ let timeToAdd = 0;
 let reduceMoney = false;
 
 const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
-   getGameSeconds, copyFunction, testTasks, playSound, setShowShop, setShowShopMoney }) => { 
+   getGameSeconds, copyFunction, testTasks, playSound, setShowShop, setShowShopMoney, gameLanguage }) => { 
   const [level, setLevel] = useState(userData.lastLevel)
   const [isLevelCompleted, setIsLevelCompleted] = useState(false)
   const [showConfetti, setShowConfetti] = useState(false)
@@ -53,6 +55,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
   const [phraseData, setPhraseData] = useState<LevelDataProps>()
   const [inactiveKeys, setInactiveKeys] = useState<Set<string>>(new Set())
   const [levelData, setLevelData] = useState<LevelData>(levels[level]);
+  const { t } = useTranslation();
 
   const phraseRef = useRef<{ handleKeyPress: (key: string) => void, updatePhrase: (data: LevelDataProps) => void, getNextEmptyIndex: (getPrevious: boolean) => void }>(null)
   const timeoutIds = useRef<number[]>([]);
@@ -92,7 +95,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
       }
       //Для статистики
       const newLetters = levelData ? levelData.hiddenIndexes.length : 0;
-      const newWords = levelData ? countWordsWithHiddenLetters(levelData) : 0;
+      const newWords = levelData ? countWordsWithHiddenLetters(levelData, gameLanguage) : 0;
       const levelWithoutMistake = userData.lastLevelData ? !userData.lastLevelData.atLeastOneError : false;
       const passedLevels = userData.statistics.levels + 1;
       const avgTime = (userData.statistics.avgTime * userData.statistics.levels + realLevelTime) / (passedLevels);
@@ -325,7 +328,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
 
     text.split('').forEach((char) => {
       // Пропускаем знаки препинания и пробелы
-      if (/[^А-Я]/.test(char)) {
+      if (testLetterForNotAlphabet(char, gameLanguage)) {
         numbers.push(0) // 0 для не-букв
         return
       }
@@ -555,7 +558,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
                   <div className="game-header-gameName">
                     <div className={`game-header-type-icon-levelDone
                       game-header-type-icon-levelDone_${levelData.type}`}></div>
-                    <span className='game-header-gameName_text'>{getCollectionName(levelData.type)}</span>
+                    <span className='game-header-gameName_text'>{t(levelData.type)}</span>
                  </div>
                  <div className='game-header-time'>
                   <div className="game-header-time-icon"></div>
@@ -590,7 +593,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
                       }
                     }}
                   >
-                      <div>Ошибки</div>
+                      <div>{t('mistakesGame')}</div>
                       <div className="flex mt-1 justify-center">
                         {[...Array(3)].map((_, i) => (
                           <div 
@@ -603,7 +606,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
                   </div>
                   <div className={`game-header_sameSize
                      ${isTipSelecting || (selecetedHint !== 0) ? 'disabledButton' : ''}`}>
-                    Ур. {level+1}
+                    {t('smallLevel')} {level+1}
                     </div>
                   <div className={`
                         menu-tips-btn
@@ -627,8 +630,8 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
       {
         selecetedHint !== 0 &&
         <div className="game-hint" onClick={switchOffHint}>
-          <div className="game-hint-title">{selecetedHint === 1 ? getCollectionName(levelData.type) : getHint(selecetedHint).title}</div>
-          <div className="game-hint-text">{getHint(selecetedHint).text}</div>
+          <div className="game-hint-title">{selecetedHint === 1 ? t(levelData.type) : t('game_hintTitle_' + selecetedHint)}</div>
+          <div className="game-hint-text">{t('game_hintText_' + selecetedHint)}</div>
         </div>
       }
 
@@ -669,6 +672,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
           diceMode={diceMode}
           playSound={playSound}
           inactiveKeys={inactiveKeys}
+          gameLanguage={gameLanguage}
         />
         {isLevelCompleted && (
           <>
@@ -686,8 +690,8 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
              onClick={getNextLevel}
              
              >
-              <div className="nextLevelButton-text">ДАЛЕЕ</div>
-              <div className="nextLevelButton-level">Уровень {level + 2}</div>
+              <div className="nextLevelButton-text">{t('next')}</div>
+              <div className="nextLevelButton-level">{t('level')} {level + 2}</div>
             </div>
           </>
         )}
@@ -707,6 +711,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
           onKeyPress={(key) => phraseRef.current?.handleKeyPress(key)} 
           inactiveKeys={inactiveKeys}
           phraseData={phraseData}
+          gameLanguage={gameLanguage}
         />
         {
           !isTipSelecting &&
@@ -735,7 +740,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
             )}
 
             <div className="keyboard-blocked-text">
-              Вы сделали 3 ошибки, поэтому клавиатура <br></br> заблокирована на <span className="keyboard-blocked-text__time">{blockedTimeTimer} секунд
+              {t('youMadeMistakes')} <br></br> {t('keyboardBlocked')} <span className="keyboard-blocked-text__time">{blockedTimeTimer} {t('seconds')}
               </span>
             </div>
             <div className="cancelBlocked" onClick={cancelBlockedByMoney}>
@@ -743,12 +748,12 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
                     <div className="modal-shop-row-price-icon">
                     </div>{cancelBlockPrice}
                </div>
-              <div className="cancelBlocked-text">ОТМЕНИТЬ</div>
+              <div className="cancelBlocked-text">{t('cancel')}</div>
             </div>
         </div>
         {isTipSelecting && (
           <Tip character="nerd">
-            Выберите ячейку<br></br> для открытия
+            {t('game_tip_1')}<br></br>{t('game_tip_2')}
           </Tip>
         )}
         <Tip
@@ -757,7 +762,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
            notShow={!showPlayersPassedLevel || isTipSelecting}
            onClick={() => setShowPlayersPassedLevel(false)}
           >
-          Только {percentOfLevels[level as keyof typeof percentOfLevels]} игроков прошли этот уровень<br></br> без ошибок!
+          {t('only')} {percentOfLevels[level as keyof typeof percentOfLevels]} {t('playersPassedLevel')} <br></br> {t('withoutMistakes')}!
         </Tip>
       </div>
       )}
@@ -773,6 +778,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
             onHome={saveDataAndGoMenu}
             diceMode={diceMode}
             openedFromGame={openedFromGame}
+            gameLanguage={gameLanguage}
           />
         )}
     </div>
