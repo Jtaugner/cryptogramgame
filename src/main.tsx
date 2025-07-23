@@ -65,7 +65,7 @@ export function params(data: any) {
     if(mainLanguage !== 'ru'){
       let keys = Object.keys(data);
       keys.forEach(key => {
-        data[key + '_en'] = data[key];
+        data['en_' + key] = data[key];
         delete data[key];
       });
     }

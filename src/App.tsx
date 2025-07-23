@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Game from './components/Game'
 import Menu from './components/Menu'
 // @ts-ignore
@@ -115,10 +115,13 @@ const App: React.FC<AppProps> = ({allUserData, mainLanguage}) => {
   const [previousTasksData, setPreviousTasksData] =
   useState<TaskObjectProps>(userData.taskObject ? copyObject(userData.taskObject) : getTasks(userData.statistics.iq))
   const [previousIQ, setPreviousIQ] = useState<number>(userData.statistics.iq)
+  const soundsRef = useRef(userData.settings.sounds);
 
   const getGameSeconds = () => {
     return getSeconds(true);
   }
+
+
 
 
   const addMoney = (id: string) => {
@@ -141,12 +144,12 @@ const App: React.FC<AppProps> = ({allUserData, mainLanguage}) => {
     makePurchaseSDK(id, addMoney);
   }
 
-  const playSound = (soundName: string) => {
+  const playSound = (soundName: string, cantPlaySound?: boolean) => {
     if(soundName === 'music'){
       if(userData.settings.music){
         tryPlaySound(soundName);
       }
-    }else if(userData.settings.sounds){
+    }else if(userData.settings.sounds && !cantPlaySound){
       tryPlaySound(soundName);
     }
   }
@@ -229,8 +232,10 @@ const App: React.FC<AppProps> = ({allUserData, mainLanguage}) => {
   }
   useEffect(() => {
     saveData(userData); 
-    console.log('userData change', userData.money);
   }, [userData])
+  useEffect(() => {
+    soundsRef.current = userData.settings.sounds;
+  }, [userData.settings.sounds])
 
   //Добавляем в рейтинг
   useEffect(() => {
@@ -278,7 +283,7 @@ const App: React.FC<AppProps> = ({allUserData, mainLanguage}) => {
       try{
         for(let i = 0; i < clickSoundElements.length; i++){
           if(e?.target?.className?.indexOf(clickSoundElements[i]) !== -1){
-            playSound('click');
+            playSound('click', !soundsRef.current);
           }
         }
       }catch(err){
