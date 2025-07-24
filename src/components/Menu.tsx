@@ -23,6 +23,7 @@ import Timer from './TImer'
 import ClickParticles from './ClickParticles'
 import { NOT_SHOW_ADV } from '../main'
 import { useTranslation } from 'react-i18next'
+import Modes from './Modes/Modes'
 
 
 
@@ -241,32 +242,7 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
                </div>
           </div>
           {/* Карточки режимов */}
-          {/* <div className="menu-modes">
-          <div className="menu-mode-card">
-               <div className="flex justify-between items-center mb-2">
-               <span className="menu-mode-title">Игра разума</span>
-               <span className="menu-mode-iq">+IQ 1</span>
-               </div>
-               <div className="menu-mode-progress">
-               Прогресс <span className="ml-auto text-red-500 font-bold">0/5</span>
-               </div>
-               <div onClick={onStart} className="menu-mode-play">ИГРАТЬ</div>
-          </div>
-          <div className="menu-mode-card locked">
-               <div className="flex justify-between items-center mb-2">
-               <span className="menu-mode-title">Криптологика</span>
-               <span className="menu-mode-iq">+IQ 1</span>
-               </div>
-               <div className="flex flex-col items-center justify-center h-12">
-               <svg width="32" height="32" fill="none" stroke="#3b3e7e" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-               <span className="text-xs text-[#3b3e7e] mt-1">Пройти уровней 0/19</span>
-               </div>
-               <div disabled className="menu-mode-play">ИГРАТЬ</div>
-               <div className="absolute inset-0 flex items-center justify-center">
-               <svg width="40" height="40" fill="none" stroke="#3b3e7e" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 12l2 2 4-4"/></svg>
-               </div>
-          </div>
-          </div> */}
+          <Modes />
           {/* Дневной результат */}
           <div className="menu__centerBlock">
           <div className="menu-daily">

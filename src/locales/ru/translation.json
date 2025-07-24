@@ -75,7 +75,7 @@
      "rulesDice-step-1": "Сложный уровень",
      "rulesDice-step-2": "Цель игры",
      "rulesDice-step-3": "Совет",
-     "rulesDice-step-1-text": "<span>Это <span class='rules-text-important'>усложнённый уровень</span> игры. Вместо чисел здесь используются игральные кости</span>",
-     "rulesDice-step-2-text": "<span> Обращайте внимание на <span class='rules-text-important'>количество очков</span> на игральных костях и их <span class='rules-text-important'> цвета</span>.</span>",
+     "rulesDice-step-1-text": "<span>Это <span class='rules-text-important'>усложнённый уровень</span> игры. Вместо чисел здесь используются игральные кубики</span>",
+     "rulesDice-step-2-text": "<span> Обращайте внимание на <span class='rules-text-important'>количество очков</span> на игральных кубиках и их <span class='rules-text-important'> цвета</span>.</span>",
      "rulesDice-step-3-text": "Сначала заполните те клетки, значения которых вы уже знаете"
 }

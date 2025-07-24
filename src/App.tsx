@@ -149,9 +149,16 @@ const App: React.FC<AppProps> = ({allUserData, mainLanguage}) => {
       if(userData.settings.music){
         tryPlaySound(soundName);
       }
-    }else if(userData.settings.sounds && !cantPlaySound){
+    }
+    if(cantPlaySound !== undefined){
+      if(!cantPlaySound){
+        tryPlaySound(soundName);
+      }
+    }else if(userData.settings.sounds){
       tryPlaySound(soundName);
     }
+    
+
   }
   useEffect(() => {
     if(userData.settings.music){
@@ -283,6 +290,7 @@ const App: React.FC<AppProps> = ({allUserData, mainLanguage}) => {
       try{
         for(let i = 0; i < clickSoundElements.length; i++){
           if(e?.target?.className?.indexOf(clickSoundElements[i]) !== -1){
+            console.log('clickSoundElements', soundsRef.current);
             playSound('click', !soundsRef.current);
           }
         }
