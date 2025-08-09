@@ -55,10 +55,10 @@ const ProgressCounter: React.FC<ProgressCounterProps> = ({ previousTarget, targe
                isFirstRender.current = false;
           }
           setTimeout(() => {
-               playSound('getIQ');
+               // playSound('getIQ');
                setTimeout(() => {
                     addPreviousIQ();
-               }, 200)
+               }, 150)
           }, 1400)
      }
   }, [current])

@@ -2,6 +2,7 @@ const { promises: fsp } = require('fs');
 var path = require('path');
 // var {phrases} = require('./citats');
 var {phrases} = require('./newCitats');
+var {dailyLevels} = require('./dailyLevelsTexts');
 let allLevels = require('./src/allLevels.js');
 allLevels = allLevels.default;
 
@@ -197,13 +198,13 @@ allLevels.forEach(level => {
 
 console.log(allNamesWithoutDescs);
 
-while(allLevels.length !== 1000){
+while(allLevels.length !== 1200){
      let index = Math.floor(Math.random() * allQuotes.length);
      let phrase = allQuotes[index];
      let text = phrase.text;
      console.log(phrase);
      text = replaceLongDashes(text.replace(/ё/gi, 'е'));
-     if(/[a-z]/ig.test(text) || text.length < 100 || text.length > 250){
+     if(/[a-z]/ig.test(text) || text.length < 150 || text.length > 250){
           continue;
      }
 
@@ -256,6 +257,33 @@ while(allLevels.length !== 1000){
 
 console.log(allLevels.length);
 
+let newDailyLevels = [];
+
+dailyLevels.forEach(text => {
+     text = replaceLongDashes(text.replace(/ё/gi, 'е'));
+     if(/[a-z]/ig.test(text)){
+          return;
+     }
+     text = text.trim();
+     //Если в конце нет знака препинания, то ставим точку
+     if(/[А-Яа-яЁё]/.test(text[text.length-1])){
+          text += '.'
+     }
+     let level = generateCryptogram(text, complexity, fullness);
+     let test = level.hiddenIndexes;
+     level.hiddenIndexes = level.hiddenIndexes.filter(index => /[а-я]/i.test(text[index]));
+     if(JSON.stringify(test) !== JSON.stringify(level.hiddenIndexes)){
+          console.log("fixed");
+          console.log(test, level.hiddenIndexes);
+     }
+     const levelData = {};
+     levelData.text = text;
+     levelData.hiddenIndexes = level.hiddenIndexes;
+     levelData.name = 'Определения и понятия'
+     levelData.desc = '';
+     levelData.type = 'quotes';
+     newDailyLevels.push(levelData);
+});
 
 
 /*
@@ -305,11 +333,17 @@ const sorted = Object.fromEntries(
 
 fsp.writeFile(path.join(__dirname, 'allNames.js'),
  `const allNames = {${Object.keys(sorted).map(name => `'${name}': ""`).join(',\n')}}`);
+ 
 
 
 fsp.writeFile(path.join(__dirname, 'levelsList.js'),
  `const levels = [
  ${allLevels.map(result => '\n' + JSON.stringify(result) )}
+ \n]`);
+
+ fsp.writeFile(path.join(__dirname, 'dailyLevelsList.js'),
+ `const dailyLevels = [
+ ${newDailyLevels.map(result => '\n' + JSON.stringify(result) )}
  \n]`);
 
 

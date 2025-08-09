@@ -6,7 +6,7 @@ import './medias.css'
 import './i18n'
 import { getTasks } from './tasks.tsx'
 import { playSound, switchOffMainMusic, switchOnMainMusic } from './sounds.tsx'
-import { initLevels } from './levels.tsx'
+import { initDailyLevels, initLevels } from './levels.tsx'
 import { main } from 'framer-motion/client'
 // @ts-ignore
 // import {allLevels} from './allLevels.js';
@@ -27,7 +27,8 @@ function getGameProgressName(){
 }
 
 //Дефолтное состояние юзера
-const defaultUserData = {
+const locationsNames = ['dailyLevel'];
+let defaultUserData = {
   lastLevel: 0,
   lastLevelData: null,
   tips: 10,
@@ -45,11 +46,21 @@ const defaultUserData = {
   settings: {
     sounds: true,
     music: true,
-    arrowLeft: false
+    arrowLeft: false,
+    autoScroll: true
   },
   money: 10,
-  taskObject: null
+  taskObject: null,
+  locations: {}
 }
+locationsNames.forEach(name => {
+  defaultUserData.locations[name] = {
+    level: -1,
+    data: null,
+    currentDate: '',
+    doneForToday: false
+  }
+})
 
 let canPlaySound = true;
 
@@ -98,20 +109,37 @@ export const getUserDataFromLocalStorage = () => {
 let userData = getUserDataFromLocalStorage();
 let appCreated = false;
 
+function fixUserData(userData: any){
+  if(!userData.locations) userData.locations = {};
+  locationsNames.forEach(name => {
+    if(!userData.locations[name]){
+      userData.locations[name] = defaultUserData.locations[name];
+    }
+  })
+
+  if(userData.settings.autoScroll === undefined) userData.settings.autoScroll = defaultUserData.settings.autoScroll;
+  return userData;
+}
+
 async function createApp(){
   if(appCreated) return;
   appCreated = true;
   let module;
+  let dailyModule = null;
   if(mainLanguage === 'ru'){
     module = await import(`./allLevels.js`);
+    dailyModule = await import(`./dailyLevels.js`);
   }else{
     module = await import(`./allLevels-en.js`);
   }
   const allLevels = module.default;
   initLevels(allLevels, mainLanguage);
+  if(dailyModule){
+    initDailyLevels(dailyModule.default, mainLanguage);
+  }  
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
-      <App allUserData={userData} mainLanguage={mainLanguage} />
+      <App allUserData={fixUserData(userData)} mainLanguage={mainLanguage} />
     </StrictMode>
 
   )
@@ -139,7 +167,27 @@ export function getServerTime(){
   }catch(e){}
   return dateTime;
 }
+export function getTimeLeftInDay() {
+  const now = getServerTime();
+  const endOfDay = new Date(now);
+  endOfDay.setHours(23, 59, 59, 999);
+  const endOfDayTime = endOfDay.getTime();
+  const diffMs = endOfDayTime - now;
 
+  const hours = Math.floor(diffMs / (1000 * 60 * 60));
+  const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((diffMs % (1000 * 60)) / 1000);
+
+  return { hours, minutes, seconds, milliseconds: diffMs };
+}
+export function getCurrentDateFormatted() {
+  const now = new Date(getServerTime());
+  const day = String(now.getDate()).padStart(2, '0');
+  const month = String(now.getMonth() + 1).padStart(2, '0'); // месяцы с 0
+  const year = now.getFullYear();
+
+  return `${day}-${month}-${year}`;
+}
 
 var playerGame: any;
 export var payments: any;

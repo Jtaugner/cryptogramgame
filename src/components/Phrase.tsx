@@ -1,6 +1,6 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import './Phrase.css'
-import { LevelDataProps } from '../App'
+import { LevelDataProps, UserData } from '../App'
 import {dices, LevelData, namesDescs, testLetterForNotAlphabet } from '../levels'
 
 interface PhraseProps {
@@ -28,7 +28,8 @@ interface PhraseProps {
   diceMode: boolean
   playSound: (soundName: string) => void
   inactiveKeys: Set<string>,
-  gameLanguage: string
+  gameLanguage: string,
+  userData: UserData
 }
 
 interface PhraseHandle {
@@ -54,7 +55,7 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
      blockedTime, isTipSelecting, useTip, isLevelCompleted, level,
       isFromRules, adviceStepFromRules,
       switchOnGlowScreen, levelData, copyFunction, setShowConfetti,
-      diceMode, playSound, inactiveKeys, gameLanguage }, ref) => {
+      diceMode, playSound, inactiveKeys, gameLanguage, userData }, ref) => {
       
   const letters = data.text.split('')
   const [selectedIndex, setSelectedIndex] = useState<number | null>(-1);
@@ -241,6 +242,7 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
   }))
 
   const scrollToSelected = () => {
+    if(!userData.settings.autoScroll) return;
     try{
       let scrollEl = document.querySelector('.selected-glow');
       if(scrollEl) scrollEl.scrollIntoView({behavior: 'smooth', block: "center"});

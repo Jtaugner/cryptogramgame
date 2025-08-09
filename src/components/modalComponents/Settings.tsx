@@ -14,11 +14,16 @@ type SettingsProps = {
   gameLanguage: string;
 };
 
+const settingsRows: Array<keyof UserDataProps['settings']> = [
+  'sounds', 'music', 'arrowLeft', 'autoScroll'
+]
+
 const Settings: React.FC<SettingsProps> = ({userData, onClose, setUserData, onHome,
    diceMode = false, openedFromGame = false, gameLanguage}) => {
   const [showRules, setShowRules] = useState(openedFromGame);
   const { t } = useTranslation();
   const changeSettings = (newSettings: object) => {
+    console.log(newSettings);
     setUserData({
       ...userData,
       settings: {
@@ -33,39 +38,21 @@ const Settings: React.FC<SettingsProps> = ({userData, onClose, setUserData, onHo
             modalClassName="modal-settings"
             onClose={onClose}
             >
-              <div className="modal-settings-row">
-                <span className="modal-settings-row-text">{t('sounds')}</span>
-                <label className="switch">
-                  <input type="checkbox" checked={userData.settings.sounds} onChange={() => changeSettings({sounds: !userData.settings.sounds})}/>
-                  <span className="slider">
-                    <span className="label off">{t('off')}</span>
-                    <span className="label on">{t('on')}</span>
-                    <span className="circle"></span>
-                  </span>
-                </label>
-              </div>
-              <div className="modal-settings-row">
-                <span className="modal-settings-row-text">{t('music')}</span>
-                <label className="switch">
-                  <input type="checkbox" checked={userData.settings.music} onChange={() => changeSettings({music: !userData.settings.music})}/>
-                  <span className="slider">
-                    <span className="label off">{t('off')}</span>
-                    <span className="label on">{t('on')}</span>
-                    <span className="circle"></span>
-                  </span>
-                </label>
-              </div>
-              <div className="modal-settings-row">
-                <span className="modal-settings-row-text">{t('arrowLeft')}</span>
-                <label className="switch">
-                  <input type="checkbox" checked={userData.settings.arrowLeft} onChange={() => changeSettings({arrowLeft: !userData.settings.arrowLeft})}/>
-                  <span className="slider">
-                    <span className="label off">{t('off')}</span>
-                    <span className="label on">{t('on')}</span>
-                    <span className="circle"></span>
-                  </span>
-                </label>
-              </div>
+              {
+                settingsRows.map(row => (
+                  <div className="modal-settings-row" key={row}>
+                    <span className="modal-settings-row-text">{t(row)}</span>
+                    <label className="switch">
+                      <input type="checkbox" checked={userData.settings[row]} onChange={() => changeSettings({[row]: !userData.settings[row]})}/>
+                      <span className="slider">
+                        <span className="label off">{t('off')}</span>
+                        <span className="label on">{t('on')}</span>
+                        <span className="circle"></span>
+                      </span>
+                    </label>
+                  </div>
+                ))
+              }
               <div className="modal-settings-row modal-settings-row_rules" onClick={() => setShowRules(true)}>
                 <span className="modal-settings-row-text">{t('howToPlay')}</span>
                 <div className='modal-settings-row-icon'></div>

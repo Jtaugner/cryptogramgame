@@ -102,6 +102,9 @@
   background: rgba(255,255,255,0.2);
   border-radius: 9999px;
 }
+.menu__centerBlock{
+  margin-bottom: 20px;
+}
 .menu-modes {
   display: flex;
   justify-content: center;

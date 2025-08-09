@@ -46,6 +46,9 @@ interface MenuProps {
   setShowShopMoney: (showShopMoney: boolean) => void
   playSound: (soundName: string) => void
   gameLanguage: string
+  setGameLocation: (gameLocation: string) => void
+  dailyDone: boolean
+  setDailyDone: (dailyDone: boolean) => void
 }
 const getIQcolor = (iq: number) => {
      if (iq <= 10) return '#e28f2e';
@@ -71,11 +74,12 @@ let countsOfPunch = [
 ]
 
 let taskObjectBefore: TaskObjectProps = null;
+let dailyAdded = false;
 
 const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeconds,
       previousTasksData, setPreviousTasksData, previousIQ, addPreviousIQ,
        copyFunction, testTasks, showShop, showShopMoney, setShowShop,
-        setShowShopMoney, playSound, gameLanguage }) => {
+        setShowShopMoney, playSound, gameLanguage, setGameLocation, dailyDone, setDailyDone }) => {
 
      const { t } = useTranslation();
 
@@ -85,6 +89,7 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
      const [showRating, setShowRating] = useState(false)
      const [animationData, setAnimationData] = useState<any>(animationPunch1)
      const [showCollection, setShowCollection] = useState(false)
+     const [dailyAnimation, setDailyAnimation] = useState(false)
      
      const lottieRef = useRef();
      const isFirstRender = useRef(true)
@@ -96,6 +101,7 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
           }
           addPreviousIQ();
      }
+     
 
      const resetLottie = () => {
           try{
@@ -183,6 +189,11 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
           }
      }
 
+     const openDailyLevel = () => {
+          setGameLocation('dailyLevel');
+          startGame();
+     }
+
      
      useEffect(() => {
           const taskObject = userData.taskObject;
@@ -217,6 +228,19 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
                taskObjectBefore = testTasks(previousTasksData, userData.statistics.iq);
           }
           countOfPunch = 0;
+          setGameLocation('main');
+
+          if(dailyDone){
+               setDailyDone(false);
+               if(!dailyAdded){
+                    dailyAdded = true;
+                    setTimeout(() => {
+                         addPreviousIQ();
+                         setDailyAnimation(true);
+                    }, 200);
+               }
+               
+          }
      }, []);
 
 
@@ -242,9 +266,12 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
                </div>
           </div>
           {/* Карточки режимов */}
-          <Modes />
+
           {/* Дневной результат */}
           <div className="menu__centerBlock">
+          {gameLanguage === 'ru' &&
+               <Modes openDailyLevel={openDailyLevel} userData={userData} setUserData={setUserData} dailyAnimation={dailyAnimation}/>
+          }
           <div className="menu-daily">
           <div className="menu-daily-title-block">
                <span className="menu-daily-title">{t('tasks')}</span>

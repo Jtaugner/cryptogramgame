@@ -157,7 +157,10 @@
      );
      transform: skewX(-20deg);
      animation: shineButton 4s infinite;
-   }
+}
 
+.shiny-button-anotherTiming::before{
+  animation: shineButton 6s infinite;
+}
 
 

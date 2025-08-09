@@ -200,6 +200,9 @@
   background-color: #28d730;
   
 }
+.smallTips{
+  font-size: 0.5rem;
+}
 .menu-tips-btn_close{
   background: url('../assets/close.svg') center center no-repeat, rgb(221, 220, 225);
   background-size: 45%;

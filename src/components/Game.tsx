@@ -3,14 +3,14 @@ import Keyboard from './Keyboard'
 import Phrase from './Phrase'
 import './Game.css'
 import ProgressCircle from '../ProgressCircle'
-import { countWordsWithHiddenLetters, levels, percentOfLevels, testLetterForNotAlphabet } from '../levels'
+import { countWordsWithHiddenLetters, levels, percentOfLevels, testLetterForNotAlphabet, dailyLevels } from '../levels'
 import { usePageActiveTimer } from './PageTimer'
 import { UserDataProps, LevelDataProps } from '../App'
 import { SwitchTransition, CSSTransition } from 'react-transition-group';
 import Settings from './modalComponents/Settings'
 import Tip from './modalComponents/Tip'
 import { LevelData, formatTime} from '../levels'
-import { showAdv, params } from '../main'
+import { showAdv, params, getCurrentDateFormatted } from '../main'
 import { getMinutesFromSeconds } from '../tasks'
 import Confetti from 'confetti-react';
 import { useTranslation } from 'react-i18next'
@@ -25,7 +25,9 @@ interface GameProps {
   playSound: (soundName: string) => void
   setShowShop: (showShop: boolean) => void
   setShowShopMoney: (showShopMoney: boolean) => void
-  gameLanguage: string
+  gameLanguage: string,
+  gameLocation: string,
+  setDailyDone: (dailyDone: boolean) => void
 }
 
 const cancelBlockPrice = 1;
@@ -35,8 +37,19 @@ let realLevelTime = 0;
 let timeToAdd = 0;
 let reduceMoney = false;
 
+function chooseLevelData(gameLocation: string, userData: any){
+    if(gameLocation === 'main'){
+      return levels[userData.lastLevel]
+    }else{
+      let lvl = userData.locations[gameLocation].level;
+      console.log('lvl', lvl);
+      if(lvl < 0) lvl = 0;
+      return dailyLevels[lvl];
+    }
+}
+
 const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
-   getGameSeconds, copyFunction, testTasks, playSound, setShowShop, setShowShopMoney, gameLanguage }) => { 
+   getGameSeconds, copyFunction, testTasks, playSound, setShowShop, setShowShopMoney, gameLanguage, gameLocation, setDailyDone }) => { 
   const [level, setLevel] = useState(userData.lastLevel)
   const [isLevelCompleted, setIsLevelCompleted] = useState(false)
   const [showConfetti, setShowConfetti] = useState(false)
@@ -54,7 +67,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
   const [errorScreenAnimation, setErrorScreenAnimation] = useState(false)
   const [phraseData, setPhraseData] = useState<LevelDataProps>()
   const [inactiveKeys, setInactiveKeys] = useState<Set<string>>(new Set())
-  const [levelData, setLevelData] = useState<LevelData>(levels[level]);
+  const [levelData, setLevelData] = useState<LevelData>(chooseLevelData(gameLocation, userData));
   const { t } = useTranslation();
 
   const phraseRef = useRef<{ handleKeyPress: (key: string) => void, updatePhrase: (data: LevelDataProps) => void, getNextEmptyIndex: (getPrevious: boolean) => void }>(null)
@@ -79,20 +92,26 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
      addErrors: boolean = false
     ) => {
     if(levelCompleted){
-      params({'levelPassed': level});
-      if(level === 10){
-        params({'levels10Tips': userData.tips});
-        params({'levels10Money': userData.money});
-      }else if(level === 20){
-        params({'levels20Tips': userData.tips});
-        params({'levels20Money': userData.money});
-      }else if(level === 50){
-        params({'levels50Tips': userData.tips});
-        params({'levels50Money': userData.money});
-      }else if(level === 100){
-        params({'levels100Tips': userData.tips});
-        params({'levels100Money': userData.money});
+      if(gameLocation === 'main'){
+          params({'levelPassed': level});
+          if(level === 10){
+            params({'levels10Tips': userData.tips});
+            params({'levels10Money': userData.money});
+          }else if(level === 20){
+            params({'levels20Tips': userData.tips});
+            params({'levels20Money': userData.money});
+          }else if(level === 50){
+            params({'levels50Tips': userData.tips});
+            params({'levels50Money': userData.money});
+          }else if(level === 100){
+            params({'levels100Tips': userData.tips});
+            params({'levels100Money': userData.money});
+          }
+      }else if(gameLocation === 'dailyLevel'){
+          params({'dailyLevel': 1});
+          setDailyDone(true);
       }
+      
       //Для статистики
       const newLetters = levelData ? levelData.hiddenIndexes.length : 0;
       const newWords = levelData ? countWordsWithHiddenLetters(levelData, gameLanguage) : 0;
@@ -134,10 +153,33 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
         }
         taskObject = testTasks(taskObject, iq);
       }
+
+      let lastLevelData = {
+        ...userData.lastLevelData
+      }
+      let locationsData = {
+        ...userData.locations
+      }
+
+      let lastLevel = level;
+      if(gameLocation === 'main'){
+        lastLevelData = null;
+        lastLevel = level + 1;
+      }else{
+        locationsData[gameLocation].data = null;
+        if(getCurrentDateFormatted() === userData.locations[gameLocation].currentDate){
+          locationsData[gameLocation].doneForToday = true;
+        }
+
+        if(gameLocation === 'dailyLevel'){
+          iq = iq + 1;
+        }
+      }
+
       setUserData({
         ...userData,
-        lastLevel: level + 1,
-        lastLevelData: null,
+        lastLevel: lastLevel,
+        lastLevelData: lastLevelData,
         statistics: {
           ...userData.statistics,
           iq: iq,
@@ -149,7 +191,8 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
           bestTime: bestTime
         },
         taskObject: taskObject,
-        money: userData.money + moneyToAdd
+        money: userData.money + moneyToAdd,
+        locations: locationsData
       })
     }else{
       console.log('update lastLevelData', newLevelData.time);
@@ -159,18 +202,34 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
         money = money - cancelBlockPrice;
         reduceMoney = false;
       }
+      let lastLevelData = {
+        ...userData.lastLevelData
+      }
+      let locationsData = {
+        ...userData.locations
+      }
+      if(gameLocation === 'main'){
+        lastLevelData = {
+          ...userData.lastLevelData,
+          ...newLevelData,
+          time: getLevelTime()
+        }
+      }else{
+        locationsData[gameLocation].data = {
+          ...locationsData[gameLocation].data,
+          ...newLevelData,
+          time: getLevelTime()
+        }
+      }
       //Если обновляем кол-во ошибок, то записываем в статистику
       setUserData({...userData,
-        lastLevelData: {
-         ...userData.lastLevelData,
-         ...newLevelData,
-         time: getLevelTime()
-       },
+        lastLevelData: lastLevelData,
        statistics: {
         ...userData.statistics,
         errors: addErrors ? userData.statistics.errors + 1 : userData.statistics.errors,
        },
-       money: money
+       money: money,
+       locations: locationsData
      })
     }
   }
@@ -300,7 +359,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
     if(__PLATFORM__ === 'gp'){
       showAdvWrapper()
     }
-    if(level === levels.length - 1){
+    if(level === levels.length - 1 || gameLocation === 'dailyLevel'){
       onMenu();
       return;
     }
@@ -421,7 +480,8 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
     setNotShowKeyboard(false)
     setBlockedTime(0)
     setBlockedTimeTimer(0)
-    if((level+1) % 10 === 0){
+
+    if((level+1) % 10 === 0 && gameLocation === 'main'){
       setDiceMode(true);
     }else{
       setDiceMode(false);
@@ -454,14 +514,21 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
     initialPhraseData.completedNumbers = initialCompletedNumbers
 
     //Если игрок проходил этот уровень ранее, то загружаем данные из последнего уровня
-    if(userData.lastLevelData && userData.lastLevelData.text === initialPhraseData.text){
+    let lastLevelData = null;
+    if(gameLocation === 'main'){
+      lastLevelData = userData.lastLevelData;
+    }else{
+      lastLevelData = userData.locations[gameLocation].data;
+    }
+    
+    if(lastLevelData && lastLevelData.text === initialPhraseData.text){
       console.log('user has lastLevel data'); 
-      initialPhraseData = userData.lastLevelData;
+      initialPhraseData = lastLevelData;
       if(initialPhraseData.isKeyboardBlocked){
         switchOnBlockedKeyboard();
       }
       setErrors(initialPhraseData.errors);
-    }else{
+    }else if(gameLocation === 'main'){
       //Вызываем подсказку, сколько игроков прошли этот уровень без ошибок
       if(percentOfLevels[level as keyof typeof percentOfLevels] !== undefined){
         setShowPlayersPassedLevel(true);
@@ -473,7 +540,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
     initialPhraseData.hiddenIndexes = levelData.hiddenIndexes;
 
     //На первом уровне и на 10-ом уровне показываем правила
-    if((level === 0 || level === 9) &&
+    if(gameLocation === 'main' && (level === 0 || level === 9) &&
      Object.keys(initialPhraseData.filledLetters).length === 0){
       setIsShowSettings(true);
       setOpenedFromGame(true);
@@ -606,7 +673,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
                   </div>
                   <div className={`game-header_sameSize
                      ${isTipSelecting || (selecetedHint !== 0) ? 'disabledButton' : ''}`}>
-                    {t('smallLevel')} {level+1}
+                    {t('smallLevel')} {gameLocation === 'dailyLevel' ? '' : level+1}
                     </div>
                   <div className={`
                         menu-tips-btn
@@ -614,7 +681,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
                         ${selecetedHint !== 0 ? 'disabledButton' : ''}`
                       }
                       onClick={switchTipSelecting}>
-                      <div className="menu-tips-btn__count"
+                      <div className={`menu-tips-btn__count ${userData.tips > 99 ? 'smallTips' : ''}`}
                        style={{opacity: isTipSelecting ? 0 : 1}}>
                         {userData.tips}
                         </div>
@@ -673,6 +740,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
           playSound={playSound}
           inactiveKeys={inactiveKeys}
           gameLanguage={gameLanguage}
+          userData={userData}
         />
         {isLevelCompleted && (
           <>
@@ -691,7 +759,9 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
              
              >
               <div className="nextLevelButton-text">{t('next')}</div>
-              <div className="nextLevelButton-level">{t('level')} {level + 2}</div>
+              {gameLocation !== 'dailyLevel' &&
+                <div className="nextLevelButton-level">{t('level')} {level + 2}</div>
+              }
             </div>
           </>
         )}

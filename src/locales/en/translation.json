@@ -75,5 +75,11 @@
      "rulesDice-step-3": "Tip",
      "rulesDice-step-1-text": "<span>This is a <span class='rules-text-important'>hard level</span> of the game. Dice are used instead of numbers</span>",
      "rulesDice-step-2-text": "<span> Pay attention to the <span class='rules-text-important'>number of dots</span> on the dice and their <span class='rules-text-important'>colors</span>.</span>",
-     "rulesDice-step-3-text": "Start by filling in the cells with values you already know"
+     "rulesDice-step-3-text": "Start by filling in the cells with values you already know",
+     "hours-mini": "h",
+     "minutes-mini": "m",
+     "dailyTask": "Daily task",
+     "newTask": "New task",
+     "dailyBlocked": "Open {{level}} level to get access",
+     "autoScroll": "Auto scroll"
    }

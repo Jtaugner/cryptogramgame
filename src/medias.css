@@ -143,3 +143,90 @@
           height: auto;
      }
 }
+@media (min-height: 800px){
+     .menu__centerBlock{
+          margin-bottom: 100px;
+     }
+
+}
+
+@media (max-height: 700px){
+      .menu-daily-row{
+          height: 25px;
+      }
+      .menu-daily-label {
+          font-size: 0.85rem;
+      }
+      .menu-daily-broccoli{
+          height: 94px;
+      }
+      .menu-daily-row-block{
+          margin: 10px 0;
+      }
+      .menu-daily-value-text{
+          font-size: 0.85rem;
+      }
+      .menu-daily-value-done {
+          width: 18px;
+          height: 16px;
+      }
+      .menu-continue-btn{
+          font-size: 1.2rem;
+          line-height: 1.2rem;
+          max-width: 270px;
+      }
+      .menu-continue-btn__level{
+          font-size: 0.9rem;
+          line-height: 0.9rem;
+      }
+      .menu-continue-btn-category{
+          height: 33px;
+          width: 33px;
+      }
+      .menu-continue{
+          margin-top: 2rem;
+      }
+      .menu-bottom-icon{
+          width: 3.5rem;
+          height: 3.5rem;
+      }
+      .menu-bottom-label{
+          font-size: 0.9rem;
+      }
+      .menu-bottom{
+          height: 4.5rem;
+      }
+      .menu-daily-title{
+          font-size: 1rem;
+      }
+      .menu-daily-title-block .menu-daily-iq{
+          font-size: 1.2rem;
+          line-height: 1.2rem;
+      }
+      .menu-daily-iq-number{
+          margin-left: 0;
+      }
+      .menu-daily-bottom{
+          font-size: 0.75rem;
+      }
+
+}
+
+@media (max-height: 700px) and (min-width: 600px){
+     .menu-bottom-icon {
+          width: 3.7rem;
+          height: 3.7rem;
+     }
+     .menu-bottom-wrap {
+          top: -17px;
+      }
+      .menu-daily-row{
+          height: 24px;
+      }
+      .menu-daily-label, .menu-daily-value-text{
+          font-size: 0.9rem;
+      }
+      .menu-daily-broccoli{
+          width: 104px;
+      }
+}

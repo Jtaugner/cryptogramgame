@@ -227,6 +227,8 @@ export const percentOfLevels ={
   333: '15.9%',
   
 }
+export const levelToOpenDaily = 19;
+
 export const getPercentOfLevels = (type: number) => {
      let percents = percentOfLevels[type as keyof typeof percentOfLevels];
      if(percents === undefined){
@@ -291,15 +293,25 @@ export const formatTime = (seconds: number) => {
      }
      return `${mins}:${secs}`;
 }
+export const formatSmallTime = (time: number) => {
+  let newTime = time.toString();
+  if(newTime.length === 1){
+    newTime = '0' + newTime;
+  }
+  return newTime;
+}
+
 //Обработка уровней и проверка на ошибки
 const regexForDifferentLanguages = {
      'ru': /[а-я]/i,
      'en': /[a-z]/i
 }
 export let levels: LevelData[] = [];
+export let dailyLevels: LevelData[] = [];
 
-export function initLevels(allLevels: LevelData[], language: string){
-  levels = allLevels.map((level: LevelData) => {
+
+function fixLevels(allLevels: LevelData[], language: string){
+  const levels = allLevels.map((level: LevelData) => {
       levelsByCategory[level.type as keyof typeof levelsByCategory].push({...level});
       level.text = replaceLongDashes(level.text.replace(/ё/gi, 'е'));
       let test = level.hiddenIndexes;
@@ -312,6 +324,15 @@ export function initLevels(allLevels: LevelData[], language: string){
       }
       return level;
   })
+  return levels;
+}
+
+export function initLevels(allLevels: LevelData[], language: string){
+  levels = fixLevels(allLevels, language);
+}
+
+export function initDailyLevels(allLevels: LevelData[], language: string){
+  dailyLevels = fixLevels(allLevels, language);
 }
 
 export const testLetterForNotAlphabet = (char: string, language: string) => {

@@ -54,7 +54,8 @@ export type StatisticsProps = {
 export type SettingsProps = {
   sounds: boolean,
   music: boolean,
-  arrowLeft: boolean
+  arrowLeft: boolean,
+  autoScroll: boolean
 };
 
 export type LevelDataProps = {
@@ -89,7 +90,15 @@ export type UserDataProps = {
   statistics: StatisticsProps,
   settings: SettingsProps,
   money: number,
-  taskObject: TaskObjectProps
+  taskObject: TaskObjectProps,
+  locations: {
+    [key: string]: {
+      level: number,
+      data: LevelDataProps | null,
+      currentDate: string,
+      doneForToday: boolean
+    }
+  }
 }
 
 
@@ -107,8 +116,10 @@ const App: React.FC<AppProps> = ({allUserData, mainLanguage}) => {
   const [showShop, setShowShop] = useState(false)
   const [showShopMoney, setShowShopMoney] = useState(false)
   const [gameLanguage, setGameLanguage] = useState(mainLanguage)
+  const [gameLocation, setGameLocation] = useState('main')
 
   const [showRewardTimer, setShowRewardTimer] = useState(0)
+  const [dailyDone, setDailyDone] = useState(false)
 
   const { getSeconds } = usePageActiveTimer()
   const [userData, setUserData] = useState<UserDataProps>(allUserData)
@@ -151,7 +162,7 @@ const App: React.FC<AppProps> = ({allUserData, mainLanguage}) => {
       }
     }
     if(cantPlaySound !== undefined){
-      if(!cantPlaySound){
+      if(!cantPlaySound){ 
         tryPlaySound(soundName);
       }
     }else if(userData.settings.sounds){
@@ -169,6 +180,7 @@ const App: React.FC<AppProps> = ({allUserData, mainLanguage}) => {
   }, [userData.settings.music])
 
   const addPreviousIQ = () => {
+    playSound('getIQ');
     setPreviousIQ((prev) => {
       return prev + 1;
     });
@@ -290,7 +302,7 @@ const App: React.FC<AppProps> = ({allUserData, mainLanguage}) => {
       try{
         for(let i = 0; i < clickSoundElements.length; i++){
           if(e?.target?.className?.indexOf(clickSoundElements[i]) !== -1){
-            console.log('clickSoundElements', soundsRef.current);
+            // console.log('clickSoundElements', soundsRef.current);
             playSound('click', !soundsRef.current);
           }
         }
@@ -344,6 +356,8 @@ const App: React.FC<AppProps> = ({allUserData, mainLanguage}) => {
               setShowShopMoney={setShowShopMoney}
               playSound={playSound}
               gameLanguage={gameLanguage}
+              gameLocation={gameLocation}
+              setDailyDone={setDailyDone}
             />
         ) : (
           <Menu
@@ -366,6 +380,9 @@ const App: React.FC<AppProps> = ({allUserData, mainLanguage}) => {
               setShowShopMoney={setShowShopMoney}
               playSound={playSound}
               gameLanguage={gameLanguage}
+              setGameLocation={setGameLocation}
+              dailyDone={dailyDone}
+              setDailyDone={setDailyDone}
              />
         )}
           {showShop && (
