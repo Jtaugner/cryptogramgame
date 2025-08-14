@@ -90,7 +90,10 @@ const Modes: React.FC<ModesProps> = ({openDailyLevel, userData, setUserData, dai
                          </>
                          :
                          <>
-                              <div className="menu__mode-card__iq">
+                              <div className="menu__mode-card__iq"
+                              style={{
+                                   opacity: userData.lastLevel >= levelToOpenDaily ? 1 : 0
+                              }}>
                                    + IQ
                                    <div className="menu__mode-card__iq-number"> 1</div>
                               </div>

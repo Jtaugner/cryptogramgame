@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import Keyboard from './Keyboard'
 import Phrase from './Phrase'
 import './Game.css'
+import './designs.css'
 import ProgressCircle from '../ProgressCircle'
 import { countWordsWithHiddenLetters, levels, percentOfLevels, testLetterForNotAlphabet, dailyLevels } from '../levels'
 import { usePageActiveTimer } from './PageTimer'
@@ -48,12 +49,20 @@ function chooseLevelData(gameLocation: string, userData: any){
     }
 }
 
+function chooseDesignByLoction(gameLocation: string){
+  if(gameLocation === 'dailyLevel'){
+    return 'greenDesign'
+  }else{
+    return 'defaultDesign'
+  }
+}
+
 const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
    getGameSeconds, copyFunction, testTasks, playSound, setShowShop, setShowShopMoney, gameLanguage, gameLocation, setDailyDone }) => { 
   const [level, setLevel] = useState(userData.lastLevel)
   const [isLevelCompleted, setIsLevelCompleted] = useState(false)
   const [showConfetti, setShowConfetti] = useState(false)
-  const [diceMode, setDiceMode] = useState(false)
+  const [gameMode, setGameMode] = useState('default')
   const [isShowSettings, setIsShowSettings] = useState(false)
   const [isTipSelecting, setIsTipSelecting] = useState(false)
   const [showPlayersPassedLevel, setShowPlayersPassedLevel] = useState(false)
@@ -482,9 +491,11 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
     setBlockedTimeTimer(0)
 
     if((level+1) % 10 === 0 && gameLocation === 'main'){
-      setDiceMode(true);
+      setGameMode('dice');
+    }else if(gameLocation === 'dailyLevel'){
+      setGameMode('glagolitic');
     }else{
-      setDiceMode(false);
+      setGameMode('default');
     }
     // Генерируем числа при первой загрузке уровня
     const text = levelData.text.toUpperCase()
@@ -540,7 +551,12 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
     initialPhraseData.hiddenIndexes = levelData.hiddenIndexes;
 
     //На первом уровне и на 10-ом уровне показываем правила
-    if(gameLocation === 'main' && (level === 0 || level === 9) &&
+    if(
+      (
+        (gameLocation === 'main' && (level === 0 || level === 9))
+         ||
+          (gameLocation === 'dailyLevel' && userData?.locations?.dailyLevel?.level <= 0)
+      ) &&
      Object.keys(initialPhraseData.filledLetters).length === 0){
       setIsShowSettings(true);
       setOpenedFromGame(true);
@@ -597,7 +613,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
   if (!phraseData) return null
 
   return (
-    <div className={`game-bg ${isLevelCompleted ? 'game-bg_levelCompleted' : ''}`}>
+    <div className={`game-bg ${isLevelCompleted ? 'game-bg_levelCompleted' : ''} ${chooseDesignByLoction(gameLocation)}`}>
       {isTipSelecting  && <div className="game-bg-blackout"></div>}
       {selecetedHint !== 0 && <div className="game-bg-blackout blackout-hint" onClick={switchOffHint}></div>}
       {showPlayersPassedLevel && <div className="game-bg-blackout game-bg-blackout_playersPassed" onClick={() => setShowPlayersPassedLevel(false)}></div>}
@@ -697,8 +713,8 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
       {
         selecetedHint !== 0 &&
         <div className="game-hint" onClick={switchOffHint}>
-          <div className="game-hint-title">{selecetedHint === 1 ? t(levelData.type) : t('game_hintTitle_' + selecetedHint)}</div>
-          <div className="game-hint-text">{t('game_hintText_' + selecetedHint)}</div>
+          <div className="game-hint-title">{gameLocation === 'dailyLevel' ? t('dailyTask') : selecetedHint === 1 ? t(levelData.type) : t('game_hintTitle_' + selecetedHint)}</div>
+          <div className="game-hint-text">{gameLocation === 'dailyLevel' ? t('game_hintText_dailyLevel') : t('game_hintText_' + selecetedHint)}</div>
         </div>
       }
 
@@ -736,7 +752,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
           levelData={levelData}
           copyFunction={copyFunction}
           setShowConfetti={setShowConfetti}
-          diceMode={diceMode}
+          gameMode={gameMode}
           playSound={playSound}
           inactiveKeys={inactiveKeys}
           gameLanguage={gameLanguage}
@@ -846,7 +862,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
             }}
             setUserData={setUserData}
             onHome={saveDataAndGoMenu}
-            diceMode={diceMode}
+            gameMode={gameMode}
             openedFromGame={openedFromGame}
             gameLanguage={gameLanguage}
           />

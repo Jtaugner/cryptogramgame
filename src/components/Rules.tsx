@@ -8,7 +8,7 @@ import {levelPhraseRules} from './rulesPhrases'
 
 type RulesProps = {
   onClose: () => void
-  diceMode: boolean
+  gameMode?: string
   gameLanguage: string
 }
 
@@ -61,16 +61,29 @@ let rulesDicesTexts = [
     levelRules: levelPhraseRules.ru[rulesDicesTextIDs[2]]
   }
 ]
-const Rules: React.FC<RulesProps> = ({onClose, diceMode = false, gameLanguage}) => {
+let dailyRulesTexts = [
+  {
+    id: 'phrase-step-1',
+    title: 'dailyTask',
+    text: 'daily-rules-step-1-text',
+    levelRules: levelPhraseRules.ru[mainRulesTextIDs[0]]
+  }
+]
+const Rules: React.FC<RulesProps> = ({onClose, gameMode = 'default', gameLanguage}) => {
   const [ruleStep, setRuleStep] = useState(0);
   const { t } = useTranslation();
   const [rulesTexts, setRulesTexts] = useState(null);
 
   useEffect(() => {
     let newRulesText;
-    if(diceMode){
+    if(gameMode === 'dice'){
       newRulesText = rulesDicesTexts.map((rule, index) => {
         rule.levelRules = levelPhraseRules[gameLanguage as keyof typeof levelPhraseRules][rulesDicesTextIDs[index]];
+        return rule;
+      });
+    }else if(gameMode === 'glagolitic'){
+      newRulesText = dailyRulesTexts.map((rule, index) => {
+        rule.levelRules = levelPhraseRules[gameLanguage as keyof typeof levelPhraseRules][mainRulesTextIDs[index]];
         return rule;
       });
     }else{
@@ -135,7 +148,7 @@ const Rules: React.FC<RulesProps> = ({onClose, diceMode = false, gameLanguage}) 
                               blockedTime={0}
                               isTipSelecting={false}
                               useTip={() => {}}
-                              diceMode={diceMode}
+                              gameMode={gameMode}
                               isLevelCompleted={false}
                               level={i}
                               isFromRules={true}

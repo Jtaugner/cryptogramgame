@@ -9,7 +9,7 @@ type SettingsProps = {
   onClose: () => void;
   setUserData: (userData: UserDataProps) => void;
   onHome?: () => void;
-  diceMode?: boolean;
+  gameMode?: string;
   openedFromGame?: boolean;
   gameLanguage: string;
 };
@@ -19,7 +19,7 @@ const settingsRows: Array<keyof UserDataProps['settings']> = [
 ]
 
 const Settings: React.FC<SettingsProps> = ({userData, onClose, setUserData, onHome,
-   diceMode = false, openedFromGame = false, gameLanguage}) => {
+   gameMode = 'default', openedFromGame = false, gameLanguage}) => {
   const [showRules, setShowRules] = useState(openedFromGame);
   const { t } = useTranslation();
   const changeSettings = (newSettings: object) => {
@@ -77,7 +77,7 @@ const Settings: React.FC<SettingsProps> = ({userData, onClose, setUserData, onHo
         setShowRules(false)
       }
     }}
-     diceMode={diceMode}
+    gameMode={gameMode}
      />}
     </>
 }

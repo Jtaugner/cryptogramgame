@@ -115,6 +115,14 @@
           max-width: 600px;
           border-radius: 10px 10px 0 0;
      }
+     .game-keyboard-buttons{
+          right: 9px;
+          
+        }
+     .game-keyboard-buttons_left{
+          left: 9px;
+          right: auto;
+     }
      .game-header-type-icon{
           width: 45px;
           height: 45px;

@@ -1,0 +1,100 @@
+.greenDesign.game-bg, .greenDesign .rules-main{
+    background: url(../assets/backgrounds/green/bg.png) center center no-repeat;
+    background-size: cover;
+}
+
+.greenDesign .phrase-cell, .greenDesign .phrase-cell_done .phrase-cell-inner{
+    border-color: #55ba61;
+}
+.greenDesign .phrase-cell, .greenDesign .phrase-cell_done .phrase-cell-inner{
+    background-color: #55ba61;
+}
+.greenDesign .phrase-cell_notFilled .phrase-cell-number{
+     color: #44a350;
+}
+.greenDesign .phrase-cell_notFilled .border-white{
+     border-color: #44a350;
+}
+
+@keyframes waveGreen {
+     0%, 100% {
+       box-shadow:
+          inset 0 0 0 1px #fff74e,
+         -1px -1px 0 0 rgba(221, 224, 38, 0.3),
+          1px -1px 0 0 rgba(221, 224, 38, 0.3),
+          1px  1px 0 0 rgba(221, 224, 38, 0.3),
+         -1px  1px 0 0 rgba(221, 224, 38, 0.3);
+     }
+     50% {
+       /* тени расходятся и плавно исчезают */
+       box-shadow:
+          inset 0 0 0 1px #fff74e,
+         -1px -1px 0 3px rgba(221, 224, 38, 0),
+          1px -1px 0 3px rgba(221, 224, 38, 0),
+          1px  1px 0 3px rgba(221, 224, 38, 0),
+         -1px  1px 0 3px rgba(221, 224, 38, 0);
+     }
+   }
+.greenDesign .selected-glow {
+     animation: waveGreen 3s infinite ease-out;
+     border-color:#fff74e !important;
+} 
+.greenDesign .selected-glow:before{
+     box-shadow: inset 0 0 0 1px #fff74e, inset 0 0 2px 1px #2f7538;
+}
+.greenDesign .selected-glow .phrase-cell-number{
+     color: #2f7538;
+}
+.greenDesign .selected-glow .border-white{
+     border-color: #2f7538;
+}
+
+.greenDesign .game-keyboard {
+     background-color: #31883b;
+}
+.greenDesign .keyboard-key_inactive{
+     color: #62a276 !important;
+     background-color: #73b587;
+}
+.greenDesign .keyboard-key_used{
+     color: #fa9713;
+}
+.greenDesign .game-keyboard-buttons{
+     background-color: rgba(49, 136, 59, 0.89);
+     border-color: rgb(57, 140, 71);
+        
+}
+.greenDesign .game-keyboard-moveLeft, .greenDesign .game-keyboard-moveRight{
+     border-color: #27622f;
+     background: url('../assets/backgrounds/green/arrow.svg') center center no-repeat;
+     background-size: 42%;
+}
+.greenDesign .game-keyboard-buttons:after{
+     background-color: #27622f;
+}
+.greenDesign .tip-text, .greenDesign .game-hint{
+     background-color: #3bc634;
+}
+.greenDesign .menu-tips-btn {
+     background: url(../assets/backgrounds/green/tip.svg) center center no-repeat, rgb(221, 220, 225);
+     background-size: 40%;
+ }
+.greenDesign .menu-tips-btn_close {
+     background: url(../assets/backgrounds/green/close.svg) center center no-repeat, rgb(221, 220, 225);
+     background-size: 45%;
+}
+.greenDesign .complete-number .phrase-cell-number{
+     background-color: #55ba61;
+}
+.greenDesign .keyboard-blocked{
+     background-color: rgba(12, 34, 37, 0.98);
+}
+.greenDesign .nextLevelButton{
+     background-color: #55ba61;
+}
+.greenDesign .rules-text{
+     color: #27622f;
+}
+.greenDesign .rules-steps{
+display: none;
+}

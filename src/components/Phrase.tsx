@@ -3,6 +3,10 @@ import './Phrase.css'
 import { LevelDataProps, UserData } from '../App'
 import {dices, LevelData, namesDescs, testLetterForNotAlphabet } from '../levels'
 
+const gameModes = {
+  glagolitic: ['Ⱝ', 'Ⰰ', 'Ⰱ', 'Ⰲ', 'Ⰳ', 'Ⰴ', 'Ⰵ', 'Ⰶ', 'Ⰷ', 'Ⰸ', 'Ⰹ', 'Ⰺ', 'Ⰻ', 'Ⰼ', 'Ⰽ', 'Ⰾ', 'Ⰿ', 'Ⱀ', 'Ⱁ', 'Ⱂ', 'Ⱃ', 'Ⱄ', 'Ⱅ', 'Ⱆ', 'Ⱇ', 'Ⱈ', 'Ⱉ', 'Ⱊ', 'Ⱋ', 'Ⱌ', 'Ⱍ', 'Ⱎ', 'Ⱏ', 'Ⱐ', 'Ⱑ', 'Ⱒ', 'Ⱓ', 'Ⱔ', 'Ⱕ', 'Ⱖ', 'Ⱚ', 'Ⱛ', 'Ⱜ', 'Ⱞ',]
+};
+
 interface PhraseProps {
   data: {
     text: string
@@ -25,7 +29,7 @@ interface PhraseProps {
   levelData: LevelData
   copyFunction: (levelData: LevelData) => void
   setShowConfetti: (show: boolean) => void
-  diceMode: boolean
+  gameMode: string
   playSound: (soundName: string) => void
   inactiveKeys: Set<string>,
   gameLanguage: string,
@@ -55,7 +59,7 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
      blockedTime, isTipSelecting, useTip, isLevelCompleted, level,
       isFromRules, adviceStepFromRules,
       switchOnGlowScreen, levelData, copyFunction, setShowConfetti,
-      diceMode, playSound, inactiveKeys, gameLanguage, userData }, ref) => {
+      gameMode, playSound, inactiveKeys, gameLanguage, userData }, ref) => {
       
   const letters = data.text.split('')
   const [selectedIndex, setSelectedIndex] = useState<number | null>(-1);
@@ -398,7 +402,7 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
                   <div 
                     className={`phrase-cell-inner
                     
-                      ${isLetter && number > 0 && !shouldShowNumber ? 'bg-[#6C72F0] border border-[#7277ec] border-[1px] shadow-[0_0_0.5px_0.5px_rgba(0,0,0,0.1)]' : ''}
+                      ${isLetter && number > 0 && !shouldShowNumber ? 'border border-[#7277ec] border-[1px] shadow-[0_0_0.5px_0.5px_rgba(0,0,0,0.1)]' : ''}
                       ${isLetter && number > 0 ? 'text-white' : !isLetter ? 'text-white' : letter !== '.' ? 'text-[#4a2b2b]' : 'text-gray-600'}
                     `}
                   >
@@ -459,7 +463,7 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
                      }}
                     >
                       {
-                        diceMode ?
+                        gameMode === 'dice' ?
                         <div className='dice-cell'>
                           {
                             dices[number - 1].split('').map((dice: string, i: number) => {
@@ -478,7 +482,7 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
                         </div>  :
                           <span
                            className={`${numberCompleted.has(number) ? 'zeroOpacity' : ''}`}>
-                            {number}
+                            {gameMode === 'default' ? number : gameModes[gameMode as keyof typeof gameModes][number]}
                           </span>
                       }
                       

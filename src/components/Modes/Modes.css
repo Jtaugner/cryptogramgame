@@ -11,7 +11,7 @@
      background: url(../../assets/modes//everyDay.png) center center no-repeat, #e8e9ff;
      background-size: 88%;
      border-radius: 10px;
-     box-shadow: 0px 1px 0px 2px rgba(10, 10, 10, 0.33),0px 1px 0px 3px rgba(10, 10, 10, 0.14), inset 0 0 0 3px white; 
+     box-shadow: 0px 1px 0px 1px rgba(10, 10, 10, 0.33),0px 1px 0px 2px rgba(10, 10, 10, 0.14), inset 0 0 0 3px white; 
      padding: 4px 20px 6px 20px;  
      cursor: pointer;
      position: relative;
@@ -121,20 +121,20 @@
    opacity: 0.9;        
    z-index: 2;
    border-radius: 10px;
+   box-shadow: inset 0 0 0 3px rgba(255,255,255,0.5);
 }
 .closedMode__text{
      position: absolute;
-     top: 0;
+     top: 21px;
      left: 0;
      width: 100%;
-     height: 100%;
      display: flex;
      justify-content: center;
      align-items: center;
      text-align: center;
      color:  #6769bd;;
      font-size: 0.9rem;
-     line-height: 1.2rem;
+     line-height: 0.9rem;
      z-index: 2;
 }
 
@@ -218,7 +218,8 @@
      }
      .closedMode__text{
           font-size: 1.05rem;
-          line-height: 1.2rem;
+          line-height: 1.05rem;
+          top: 30px;
      }
 }
 

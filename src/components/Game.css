@@ -267,17 +267,18 @@
   width: 50%;
   height: 100%;
   background: url('../assets/arrow1.svg') center center no-repeat;
-  background-size: 40%;
-  border-right: 1px solid #282b65;
+  background-size: 42%;
+  border-left: 1px solid #282b65;
   cursor: pointer;
+  /* transform: rotate(180deg); */
 }
 .game-keyboard-moveLeft:active, .game-keyboard-moveRight:active{
   background-color: #282b65;
 }
-.game-keyboard-moveRight{
+.game-keyboard-moveLeft{
   transform: rotate(180deg);
   border-left: none;
-  border-left: 1px solid #282b65;
+  /* border-left: 1px solid #282b65; */
 }
 @keyframes fadeAnimation {
   from {
