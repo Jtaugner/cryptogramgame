@@ -25,7 +25,7 @@ interface GameProps {
   testTasks: (taskObject: any, iq: number) => any
   playSound: (soundName: string) => void
   setShowShop: (showShop: boolean) => void
-  setShowShopMoney: (showShopMoney: boolean) => void
+  openShopMoney: () => void
   gameLanguage: string,
   gameLocation: string,
   setDailyDone: (dailyDone: boolean) => void
@@ -58,7 +58,7 @@ function chooseDesignByLoction(gameLocation: string){
 }
 
 const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
-   getGameSeconds, copyFunction, testTasks, playSound, setShowShop, setShowShopMoney, gameLanguage, gameLocation, setDailyDone }) => { 
+   getGameSeconds, copyFunction, testTasks, playSound, setShowShop, openShopMoney, gameLanguage, gameLocation, setDailyDone }) => { 
   const [level, setLevel] = useState(userData.lastLevel)
   const [isLevelCompleted, setIsLevelCompleted] = useState(false)
   const [showConfetti, setShowConfetti] = useState(false)
@@ -270,13 +270,13 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
       reduceMoney = true;
       endBlockTime();
     }else{
-      setShowShopMoney(true);
+      openShopMoney();
     }
   }
   const showAdvWrapper = () => {
     if(__PLATFORM__ === 'gp' && level > 2){
       showAdv();
-    }else if(__PLATFORM__ === 'yandex'){
+    }else{
       showAdv();
     }
   }

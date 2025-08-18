@@ -43,7 +43,7 @@ interface MenuProps {
   showShop: boolean
   showShopMoney: boolean
   setShowShop: (showShop: boolean) => void
-  setShowShopMoney: (showShopMoney: boolean) => void
+  openShopMoney: () => void
   playSound: (soundName: string) => void
   gameLanguage: string
   setGameLocation: (gameLocation: string) => void
@@ -79,7 +79,7 @@ let dailyAdded = false;
 const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeconds,
       previousTasksData, setPreviousTasksData, previousIQ, addPreviousIQ,
        copyFunction, testTasks, showShop, showShopMoney, setShowShop,
-        setShowShopMoney, playSound, gameLanguage, setGameLocation, dailyDone, setDailyDone }) => {
+       openShopMoney, playSound, gameLanguage, setGameLocation, dailyDone, setDailyDone }) => {
 
      const { t } = useTranslation();
 
@@ -250,7 +250,7 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
           <div className="menu__top">
                <div className="menu-settings-btn" onClick={() => setShowSettings(true)}></div>
 
-               <div className="noAds" onClick={() => setShowShopMoney(true)}
+               <div className="noAds" onClick={openShopMoney}
                     style={{
                          opacity: NOT_SHOW_ADV ? 0 : 1
                     }}

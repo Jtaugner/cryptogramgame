@@ -132,6 +132,14 @@ const App: React.FC<AppProps> = ({allUserData, mainLanguage}) => {
     return getSeconds(true);
   }
 
+  const openShopMoney = () => {
+    if(__PLATFORM__ === 'gd'){
+      return;
+    }
+    setShowShopMoney(true);
+  }
+  
+
 
 
 
@@ -334,7 +342,7 @@ const App: React.FC<AppProps> = ({allUserData, mainLanguage}) => {
         {(showShop || showShopMoney || !showGame) &&
           <div
              className={`moneyCount ${showShop || showShopMoney ? 'moneyCount_big' : ''}`}
-             onClick={() => setShowShopMoney(true)}
+             onClick={openShopMoney}
           >
              <div className="modal-shop-row-price-icon"></div>
              {userData.money}
@@ -353,7 +361,7 @@ const App: React.FC<AppProps> = ({allUserData, mainLanguage}) => {
               copyFunction={copyFunction}
               testTasks={testTasks}
               setShowShop={setShowShop}
-              setShowShopMoney={setShowShopMoney}
+              openShopMoney={openShopMoney}
               playSound={playSound}
               gameLanguage={gameLanguage}
               gameLocation={gameLocation}
@@ -377,7 +385,7 @@ const App: React.FC<AppProps> = ({allUserData, mainLanguage}) => {
               showShop={showShop}
               showShopMoney={showShopMoney}
               setShowShop={setShowShop}
-              setShowShopMoney={setShowShopMoney}
+              openShopMoney={openShopMoney}
               playSound={playSound}
               gameLanguage={gameLanguage}
               setGameLocation={setGameLocation}
@@ -389,7 +397,7 @@ const App: React.FC<AppProps> = ({allUserData, mainLanguage}) => {
                <Shop
                     userData={userData}
                     onClose={() => setShowShop(false)}
-                    openShopMoney={() => setShowShopMoney(true)}
+                    openShopMoney={openShopMoney}
                     setUserData={setUserData}
                     showRewardTimer={showRewardTimer}
                     setShowRewardTimer={setShowRewardTimer}

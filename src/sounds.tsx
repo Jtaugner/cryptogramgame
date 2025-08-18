@@ -129,6 +129,7 @@ export const playSound = (soundName: string) => {
 export const stopSound = (soundName: string) => {
     sounds[soundName as keyof typeof sounds].stop();
 }
+
 export function switchOnMainMusic(){
 	try{
 		window.audioContext.resume();
@@ -142,7 +143,7 @@ export function switchOffMainMusic(){
  
 window.addEventListener("visibilitychange", () => {
 	try{
-		if (document.visibilityState === "visible") {
+		if (document.visibilityState === "visible" && !musicStoppedByAdv) {
 			switchOnMainMusic()
 		}else{
 			switchOffMainMusic();

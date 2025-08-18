@@ -15,7 +15,12 @@ console.log('__PLATFORM__', __PLATFORM__);
 let wasPurchase = false;
 let ruLangs = ['ru', 'be', 'kk', 'uk', 'uz', 'kz'];
 
-export let mainLanguage = 'ru';
+export let mainLanguage = 'en';
+
+if(__PLATFORM__ === 'gd'){
+  mainLanguage = 'en';
+}
+
 let anotherLangDataForYandex = {};
 
 function getGameProgressName(){
@@ -254,6 +259,7 @@ export function showRewarded(callback: () => void){
           onOpen: () => {
             canPlaySound = false;
             switchOffMainMusic();
+            musicStoppedByAdv = true;
           },
           onRewarded: () => {
             callback();
@@ -261,6 +267,7 @@ export function showRewarded(callback: () => void){
           onClose: () => {
             canPlaySound = true;
             switchOnMainMusic();
+            musicStoppedByAdv = false;
           }
         }
       })
@@ -273,6 +280,28 @@ export function showRewarded(callback: () => void){
       }).catch((err: any) => {
         console.log('err', err);
       });
+    }else if(__PLATFORM__ === 'gd'){
+      if (gdsdk !== 'undefined' && gdsdk.preloadAd !== 'undefined') {
+        gdsdk.preloadAd('rewarded')
+          .then(response => {
+            console.log('preload rewarded')
+          })
+          .catch(error => {
+            console.log('cant preload rewarded')
+          });
+      }
+      if (gdsdk !== 'undefined' && gdsdk.showAd !== 'undefined') {
+        gdsdk.showAd('rewarded')
+          .then(response => {
+            if(rewardedVideoDone){
+              console.log('close adv reward');
+              callback();
+            }
+          })
+          .catch(error => {
+            console.log(error)
+          });
+      }
     }
   }catch(e){}
 }
@@ -304,6 +333,10 @@ export function showAdv(){
     }else if(__PLATFORM__ === 'gp'){
       //Показываем рекламу в gp
       YSDK.ads.showFullscreen();
+    }else if(__PLATFORM__ === 'gd'){
+      if (gdsdk && gdsdk.showAd !== 'undefined') {
+        gdsdk.showAd();
+      }
     }
   }catch(e){
 
@@ -619,11 +652,13 @@ if (__PLATFORM__ === 'yandex' && window.YaGames) {
         // Начался показ рекламы
     gp.ads.on('start', () => {
       canPlaySound = false;
+      musicStoppedByAdv = true;
       switchOffMainMusic();
     });
     // Закончился показ рекламы
     gp.ads.on('close', (success) => {
       canPlaySound = true;
+      musicStoppedByAdv = false;
       switchOnMainMusic();
     });
     //Покупки

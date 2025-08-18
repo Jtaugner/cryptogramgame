@@ -3,10 +3,24 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="description" content="Криптограмма - игра на логику и внимательность">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
-    <title>Криптограмма</title>
+
+    <% if (PLATFORM === 'gd') { %>
+      <meta name="description" content="Cryptogram - a game on logic and attention">
+    <% } else { %>
+      <meta name="description" content="Криптограмма - игра на логику и внимательность">
+    <% } %>
+
+    <% if (PLATFORM === 'gd') { %>
+      <title>Cryptogram</title>
+    <% } else { %>
+      <title>Криптограмма</title> 
+    <% } %>
     <link rel="stylesheet" href="newReset.css" />
+
+    <script>
+        var musicStoppedByAdv = false;
+    </script>
     <!-- Yandex Games SDK -->
      <script>
       var YaGames;
@@ -18,6 +32,65 @@
       <% if (PLATFORM === 'gp') { %>
         <script src="https://gamepush.com/sdk/gamepush.js?projectId=22609&publicToken=lnYwyPc6QQjxcHdYkNr0BEyOrxhytsye&callback=onGPInit"></script>
       <% } %>
+
+      <% if (PLATFORM === 'gd') { %>
+        <script>
+          function switchOffMainMusic(){
+              try{
+                  window.audioContext.suspend();
+              }catch(e){}
+          }
+          var gdsdk;
+          var rewardedVideoDone = false;
+          window["GD_OPTIONS"] = {
+              "gameId": "b42420ae0c3640cf9a113e40e9e4390a",
+              "onEvent": function(event) {
+                  switch (event.name) {
+                      case "SDK_GAME_START":
+                          console.log('game start');
+                          break;
+                      case "SDK_GAME_PAUSE":
+                          console.log('bbb');
+                          switchOffMainMusic();
+                          musicStoppedByAdv = true;
+                          break;
+                      case "SDK_GDPR_TRACKING":
+                          break;
+                      case "SDK_GDPR_TARGETING":
+                          break;
+                      case "SDK_REWARDED_WATCH_COMPLETE":
+                          console.log('rewarded true');
+                          rewardedVideoDone = true;
+                          break;
+                  }
+              },
+          };
+          (function(d, s, id) {
+              var js, fjs = d.getElementsByTagName(s)[0];
+              if (d.getElementById(id)) return;
+              js = d.createElement(s);
+              js.id = id;
+              js.src = 'https://html5.api.gamedistribution.com/main.min.js';
+              fjs.parentNode.insertBefore(js, fjs);
+              if ('serviceWorker' in navigator && !isNativeCache) {
+                  window.onload = function(){
+                      navigator.serviceWorker
+                          .register('sw.js')
+                          .then(function(reg) {
+                              console.log('Registration succeeded. Scope is ' + reg.scope);
+                          })
+                          .catch(function(error) {
+                              console.error('Trouble with sw: ', error);
+                          });
+                  };
+              }
+          }(document, 'script', 'gamedistribution-jssdk'));
+      </script>
+      <% } %>
+
+
+
+      
     
   </head>
   <body>
