@@ -343,12 +343,6 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
   useEffect(() => {
     if(phraseData && Object.keys(phraseData.filledLetters).length === phraseData.hiddenIndexes.length){
       timeoutIds.current.push(setTimeout(()=>{
-        // try{
-        //   if(__PLATFORM__ === 'yandex'){
-        //     // let scrollEl = document.querySelector('.phrase-row');
-        //     // if(scrollEl) scrollEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        //   }
-        // }catch(ignored){}
         timeoutIds.current.push(setTimeout(()=>{
           setIsLevelCompleted(true)
           playSound('win');
@@ -365,7 +359,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
   }, [phraseData])
 
   const getNextLevel = () => {
-    if(__PLATFORM__ === 'gp'){
+    if(__PLATFORM__ === 'gp' || __PLATFORM__ === 'gd'){
       showAdvWrapper()
     }
     if(level === levels.length - 1 || gameLocation === 'dailyLevel'){

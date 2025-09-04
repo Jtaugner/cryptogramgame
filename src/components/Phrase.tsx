@@ -1,6 +1,6 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import './Phrase.css'
-import { LevelDataProps, UserData } from '../App'
+import { LevelDataProps, scrollIntoViewY, UserData } from '../App'
 import {dices, LevelData, namesDescs, testLetterForNotAlphabet } from '../levels'
 
 const gameModes = {
@@ -247,9 +247,11 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
 
   const scrollToSelected = () => {
     if(!userData.settings.autoScroll) return;
+    // if(__PLATFORM__ === 'gd') return;
     try{
       let scrollEl = document.querySelector('.selected-glow');
-      if(scrollEl) scrollEl.scrollIntoView({behavior: 'smooth', block: "center"});
+      scrollIntoViewY(document.querySelector('.game-main'), scrollEl, { behavior: 'smooth', align: 'center' });
+      // if(scrollEl) scrollEl.scrollIntoView({behavior: 'smooth', block: "center"});
     }catch(ignored){}
   }
 

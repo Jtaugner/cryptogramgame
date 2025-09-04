@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './rating.css';
-import {UserDataProps } from '../../App';
+import {scrollIntoViewY, UserDataProps } from '../../App';
 import Modal from './Modal';
 import { getLeaderboard, setUserToLeaderboard } from '../../main';
 import { useTranslation } from 'react-i18next';
@@ -46,7 +46,8 @@ const Rating: React.FC<RatingProps> = ({userData, onClose }) => {
       setTimeout(() => {
         try{
           let scrollEl = document.querySelector('.rating-row-player');
-          if(scrollEl) scrollEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          scrollIntoViewY(document.querySelector('.modal-wrapper'), scrollEl, { behavior: 'smooth', align: 'start' });
+          // if(scrollEl) scrollEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }catch(ignored){}
       }, 700)
     })

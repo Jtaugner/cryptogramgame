@@ -127,6 +127,9 @@
           width: 45px;
           height: 45px;
      }
+     .modal-rating .modal-wrapper{
+          max-height: 475px;
+     }
 }
 @media (max-width: 600px) {
      .game-header-gameName_text{
@@ -286,5 +289,11 @@
      }
      .menu__mode-card .menu-daily-value-done{
           width: 14px;
+     }
+     .modal{
+          max-height: 70vh;
+     }
+     .modal-wrapper, .modal-rating .modal-wrapper{
+          max-height: 55vh;
      }
 }

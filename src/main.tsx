@@ -19,6 +19,8 @@ export let mainLanguage = 'ru';
 
 if(__PLATFORM__ === 'gd'){
   mainLanguage = 'en';
+}else if(__PLATFORM__ === 'gp'){
+  mainLanguage = 'ru';
 }
 
 let anotherLangDataForYandex = {};
@@ -596,6 +598,16 @@ export const appIsReady = () => {
     if(YSDK && YSDK.gameStart) YSDK.gameStart();
   }
 }
+
+
+function changeLanguage(lang: string){
+  if(ruLangs.includes(lang)){
+    mainLanguage = 'ru';
+  }else{
+    mainLanguage = 'en';
+  }
+}
+
 // @ts-ignore
 if (__PLATFORM__ === 'yandex' && window.YaGames) {
   // @ts-ignore
@@ -604,11 +616,7 @@ if (__PLATFORM__ === 'yandex' && window.YaGames) {
           console.log('gt sdk');
           YSDK = ysdk;
           let lang = ysdk?.environment?.i18n?.lang;
-          if(ruLangs.includes(lang)){
-            mainLanguage = 'ru';
-          }else{
-            mainLanguage = 'en';
-          }
+          changeLanguage(lang);
           console.log('lang', lang, mainLanguage);
           initPlayer(ysdk);
             ysdk.features.GamesAPI.getGameByID(435796).then(({isAvailable, game}) => {
@@ -623,7 +631,9 @@ if (__PLATFORM__ === 'yandex' && window.YaGames) {
 }else if(__PLATFORM__ === 'gp') {
   // @ts-ignore
   window.onGPInit = async (gp) => {
+    console.log('gp init');
     YSDK = gp;
+    changeLanguage(gp.language);
     
     if(gp?.platform?.type === 'VK'){
       gameLink = 'https://vk.com/app53847636';

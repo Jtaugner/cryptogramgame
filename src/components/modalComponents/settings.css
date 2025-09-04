@@ -140,3 +140,6 @@
 .switch input:checked + .slider .label.on {
   opacity: 1;
 }
+.modal-settings-row_hidden{
+  display: none;
+}

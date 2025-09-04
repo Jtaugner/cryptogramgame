@@ -21,7 +21,7 @@ import { getMinutesFromSeconds } from '../tasks'
 import ProgressCounter from './ProgressCounter'
 import Timer from './TImer'
 import ClickParticles from './ClickParticles'
-import { NOT_SHOW_ADV } from '../main'
+import { NOT_SHOW_ADV, showAdv } from '../main'
 import { useTranslation } from 'react-i18next'
 import Modes from './Modes/Modes'
 
@@ -171,6 +171,10 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
           }
      }
      const startGame = () => {
+
+          if(__PLATFORM__ === 'gd'){
+               showAdv();
+          }
           if(levels[userData.lastLevel]){
                setPreviousTasksData(copyObject(taskObjectBefore));
                onStart();
@@ -398,7 +402,7 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
                     <div className="menu-bottom-icon icon-shop" onClick={() => setShowShop(true)}>
                          <span className="menu-bottom-label">{t('shop')}</span>
                     </div>
-                    <div className="menu-bottom-icon icon-rating" onClick={() => setShowRating(true)}>
+                    <div className={`menu-bottom-icon icon-rating ${__PLATFORM__ === 'gd' ? 'blockHidden' : ''}`} onClick={() => setShowRating(true)}>
                          <span className="menu-bottom-label">{t('rating')}</span>
                     </div>
                     <div className="menu-bottom-icon icon-stat" onClick={() => setShowStats(true)}>

@@ -40,7 +40,10 @@ const Settings: React.FC<SettingsProps> = ({userData, onClose, setUserData, onHo
             >
               {
                 settingsRows.map(row => (
-                  <div className="modal-settings-row" key={row}>
+                  <div
+                   className={`modal-settings-row`}
+                    key={row}
+                  >
                     <span className="modal-settings-row-text">{t(row)}</span>
                     <label className="switch">
                       <input type="checkbox" checked={userData.settings[row]} onChange={() => changeSettings({[row]: !userData.settings[row]})}/>
