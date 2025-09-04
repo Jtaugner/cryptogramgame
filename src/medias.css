@@ -127,9 +127,6 @@
           width: 45px;
           height: 45px;
      }
-     .modal-rating .modal-wrapper{
-          max-height: 475px;
-     }
 }
 @media (max-width: 600px) {
      .game-header-gameName_text{
@@ -237,4 +234,57 @@
       .menu-daily-broccoli{
           width: 104px;
       }
+}
+
+@media (max-height: 550px) {
+     .menu__top{
+          padding: 5px;
+     }
+     .moneyCount{
+          top: 25px;
+     }
+     .menu-daily{
+          max-width: 350px;
+     }
+     .menu-daily-row{
+       height: 20px;
+     }
+     .menu-daily-value-text, .menu-daily-label{
+          font-size: 0.75rem;
+     }
+     .menu-daily-broccoli{
+          width: 25%;
+          height: 80px;
+     }
+     .menu-daily-title{
+          font-size: 0.9rem;
+     }
+     .menu-daily-title-block .menu-daily-iq{
+          font-size: 1.1rem;
+          line-height: 1.1rem;
+     }
+     .menu-daily-bottom{
+          font-size: 0.65rem;
+     }
+     .menu__mode-card  {
+          height: 56px;
+     }
+     .menu__mode-card__iq{
+          display: none;
+     }
+     .menu__mode-card__name{
+          font-size: 1rem;
+          line-height: 1rem;
+     }
+     .menu__mode-card__play{
+          font-size: 1rem;
+          /* line-height: 1rem; */
+          /* padding: 1px 10px; */
+     }
+     .menu__mode-card_notAvailable .menu__mode-card__play {
+          display: none;
+     }
+     .menu__mode-card .menu-daily-value-done{
+          width: 14px;
+     }
 }

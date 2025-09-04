@@ -12,6 +12,9 @@
 .modal-settings{
   align-items: center !important;
 }
+.modal-settings .modal-wrapper{
+  max-height: none;
+}
 .modal-settings .modal-title{
   margin-bottom: 15px;
 }

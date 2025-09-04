@@ -23,11 +23,10 @@
      width: 90vw;
      padding: 0 0 24px 0;
      position: relative;
-     font-family: 'SF Pro Display', Arial, sans-serif;
      animation: modalFadeInCenter 0.35s ease-in-out forwards;
      border-radius: 20px 20px 6px 6px;
      font-weight: 500;
-     max-height: 100%;
+     max-height: 70vh;
 }
 .modal_closing .blackout{
   transition: opacity 0.35s ease-in-out;
@@ -59,6 +58,7 @@
      height: 100%;
      overflow-y: auto;
      padding-bottom: 20px;
+     max-height: 55vh;
 }
 .modal-title {
   display: flex;

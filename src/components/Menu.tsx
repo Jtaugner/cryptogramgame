@@ -250,7 +250,7 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
           <div className="menu__top">
                <div className="menu-settings-btn" onClick={() => setShowSettings(true)}></div>
 
-               <div className="noAds" onClick={openShopMoney}
+               <div className={`noAds ${__PLATFORM__ === 'gd' ? 'notShowAds' : ''}`} onClick={openShopMoney}
                     style={{
                          opacity: NOT_SHOW_ADV ? 0 : 1
                     }}

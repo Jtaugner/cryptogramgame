@@ -15,7 +15,7 @@ console.log('__PLATFORM__', __PLATFORM__);
 let wasPurchase = false;
 let ruLangs = ['ru', 'be', 'kk', 'uk', 'uz', 'kz'];
 
-export let mainLanguage = 'en';
+export let mainLanguage = 'ru';
 
 if(__PLATFORM__ === 'gd'){
   mainLanguage = 'en';

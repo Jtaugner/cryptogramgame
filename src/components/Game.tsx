@@ -274,7 +274,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
     }
   }
   const showAdvWrapper = () => {
-    if(__PLATFORM__ === 'gp' && level > 2){
+    if(__PLATFORM__ === 'gp'){
       showAdv();
     }else{
       showAdv();

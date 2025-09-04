@@ -580,3 +580,7 @@ color: var(--textColor);
     background-position: 0% 100%, 10% 110%, 20% 120%, 30% 130%, 40% 125%, 50% 120%, 60% 115%, 70% 110%, 80% 105%, 90% 100%;
   }
 }
+.notShowAds{
+  opacity: 0 !important;
+  cursor: default !important;
+}
