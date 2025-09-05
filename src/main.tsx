@@ -166,10 +166,16 @@ function stringifyJSON(obj: any) {
 export function getServerTime(){
   let dateTime = new Date().getTime();
   try{
+    let newTime;
     if(__PLATFORM__ === 'yandex'){
-      dateTime = YSDK.serverTime()
+      newTime = YSDK.serverTime()
     }else if(__PLATFORM__ === 'gp'){
-      dateTime = YSDK.serverTime;
+      newTime = YSDK.serverTime;
+      const currentDate = new Date(YSDK.serverTime);
+      newTime = currentDate.getTime();
+    }
+    if(newTime){
+      dateTime = newTime;
     }
   }catch(e){}
   return dateTime;
@@ -629,6 +635,7 @@ if (__PLATFORM__ === 'yandex' && window.YaGames) {
           })
       });
 }else if(__PLATFORM__ === 'gp') {
+  console.log('gp playform init');
   // @ts-ignore
   window.onGPInit = async (gp) => {
     console.log('gp init');
@@ -662,14 +669,22 @@ if (__PLATFORM__ === 'yandex' && window.YaGames) {
         // Начался показ рекламы
     gp.ads.on('start', () => {
       canPlaySound = false;
-      musicStoppedByAdv = true;
-      switchOffMainMusic();
     });
     // Закончился показ рекламы
     gp.ads.on('close', (success) => {
       canPlaySound = true;
-      musicStoppedByAdv = false;
+    });
+        // Выключили звук
+    gp.sounds.on('mute', () => {
+      // Необходимо выключить все звуки в игре
+      musicStoppedByAdv = true;
+      switchOffMainMusic();
+    });
+    // Включили звук
+    gp.sounds.on('unmute', () => {
+      // Необходимо включить все звуки в игре
       switchOnMainMusic();
+      musicStoppedByAdv = false;
     });
     //Покупки
     payments = gp.payments;

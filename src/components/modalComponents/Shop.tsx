@@ -73,7 +73,7 @@ const Shop: React.FC<ShopProps> = ({userData, onClose, setUserData,
             tips: userData.tips + item.count
           });
           let time = getServerTime();
-          setShowRewardTimer(time)
+          setShowRewardTimer(time);
           setRewardTimer(countRewardTime(time))
           playSound('addMoney');
         })

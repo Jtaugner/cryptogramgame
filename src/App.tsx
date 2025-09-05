@@ -145,6 +145,7 @@ export type AppProps = {
 }
 
 let musicStarted = false;
+let firstClickWasMade = false;
 
 const App: React.FC<AppProps> = ({allUserData, mainLanguage}) => {
   const [showGame, setShowGame] = useState(allUserData.lastLevel === 0)
@@ -216,7 +217,7 @@ const App: React.FC<AppProps> = ({allUserData, mainLanguage}) => {
 
   }
   useEffect(() => {
-    if(!musicStarted){
+    if(!firstClickWasMade){
       return;
     }
     if(userData.settings.music){
@@ -342,6 +343,7 @@ const App: React.FC<AppProps> = ({allUserData, mainLanguage}) => {
       params({'firstStart': 1});
     }
     window.addEventListener('click', (e) => {
+      firstClickWasMade = true;
       if(userData.settings.music && !musicStarted ){
         playSound('music');
         musicStarted = true;
