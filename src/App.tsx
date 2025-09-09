@@ -5,7 +5,7 @@ import Menu from './components/Menu'
 import { CSSTransition, SwitchTransition } from 'react-transition-group'
 import './AppTransition.css'
 import { usePageActiveTimer } from './components/PageTimer'
-import { appIsReady, consumePurchase, getServerTime, makePurchaseSDK, setNotShowAdv, payments, saveData, shopItemCount, shopItems, tryPlaySound, setUserToLeaderboard, tryToAddUserToLeaderboard, params, gameLink } from './main'
+import { appIsReady, consumePurchase, getServerTime, makePurchaseSDK, setNotShowAdv, payments, saveData, shopItemCount, shopItems, tryPlaySound, setUserToLeaderboard, tryToAddUserToLeaderboard, params, gameLink, isPurchaseAvailable  } from './main'
 import { copyObject, getTasks } from './tasks'
 import { LevelData, namesDescs } from './levels'
 import Shop from './components/modalComponents/Shop'
@@ -170,7 +170,7 @@ const App: React.FC<AppProps> = ({allUserData, mainLanguage}) => {
   }
 
   const openShopMoney = () => {
-    if(__PLATFORM__ === 'gd'){
+    if(!isPurchaseAvailable){
       return;
     }
     setShowShopMoney(true);

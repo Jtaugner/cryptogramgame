@@ -16,9 +16,11 @@ let wasPurchase = false;
 let ruLangs = ['ru', 'be', 'kk', 'uk', 'uz', 'kz'];
 
 export let mainLanguage = 'ru';
+export let isPurchaseAvailable = true;
 
 if(__PLATFORM__ === 'gd'){
   mainLanguage = 'en';
+  isPurchaseAvailable = false;
 }else if(__PLATFORM__ === 'gp'){
   mainLanguage = 'ru';
 }
@@ -747,6 +749,15 @@ if (__PLATFORM__ === 'yandex' && window.YaGames) {
       }, false);
       if(window.innerHeight >= 600){
         showBanner();
+      }
+      if(platformType !== 'VK' && platformType !== 'OK'){
+        gp.ads.showSticky();
+        gp.ads.showPreloader();
+      }
+      if (gp.payments.isAvailable) {
+        isPurchaseAvailable = true;
+      }else{
+        isPurchaseAvailable = false;
       }
 
     }catch(e){

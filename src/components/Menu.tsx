@@ -21,7 +21,7 @@ import { getMinutesFromSeconds } from '../tasks'
 import ProgressCounter from './ProgressCounter'
 import Timer from './TImer'
 import ClickParticles from './ClickParticles'
-import { NOT_SHOW_ADV, showAdv } from '../main'
+import { NOT_SHOW_ADV, showAdv, isPurchaseAvailable } from '../main'
 import { useTranslation } from 'react-i18next'
 import Modes from './Modes/Modes'
 
@@ -254,7 +254,7 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
           <div className="menu__top">
                <div className="menu-settings-btn" onClick={() => setShowSettings(true)}></div>
 
-               <div className={`noAds ${__PLATFORM__ === 'gd' ? 'notShowAds' : ''}`} onClick={openShopMoney}
+               <div className={`noAds ${!isPurchaseAvailable ? 'notShowAds' : ''}`} onClick={openShopMoney}
                     style={{
                          opacity: NOT_SHOW_ADV ? 0 : 1
                     }}

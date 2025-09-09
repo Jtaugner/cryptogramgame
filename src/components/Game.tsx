@@ -474,7 +474,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
   const generateLevel = () => {
     if(levelGenerated.current === level) return;
     console.log("\x1b[34mgenerateLevel\x1b[0m");
-    if(__PLATFORM__ === 'yandex'){
+    if(__PLATFORM__ !== 'gd' && __PLATFORM__ !== 'gp'){
       showAdvWrapper()
     }
     setIsLevelCompleted(false)
