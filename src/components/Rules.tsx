@@ -5,6 +5,7 @@ import { LevelDataProps } from '../App';
 import { useSwipeable } from 'react-swipeable';
 import { useTranslation } from 'react-i18next';
 import {levelPhraseRules} from './rulesPhrases'
+import { gpBannerSize } from '../main';
 
 type RulesProps = {
   onClose: () => void
@@ -122,7 +123,7 @@ const Rules: React.FC<RulesProps> = ({onClose, gameMode = 'default', gameLanguag
     return (
     <div className={`modal-bg modal-rules`}>
       <div className="blackout" onClick={onClose}></div>
-      <div className="rules" {...handlers}>
+      <div className={`rules ${gpBannerSize > 0 ? 'miniModal' : ''}`} {...handlers}>
         {
            rulesTexts && 
            <div className="rules-wrap">

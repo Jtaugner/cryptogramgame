@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './modal.css';
+import { gpBannerSize } from '../../main';
 
 type ModalProps = {
   children: React.ReactNode;
@@ -24,7 +25,7 @@ const Modal: React.FC<ModalProps> = ({children, onClose, title,
   }
   return <div className={`modal-bg ${modalClassName} ${isClosing ? 'modal_closing' : ''}`}>
   <div className="blackout" onClick={closeModal}></div>
-  <div className="modal">
+  <div className={`modal ${gpBannerSize > 0 ? 'miniModal' : ''}`}>
   <div className="modal-title">
         <div className="modal-icon"></div>
         <span>{title}</span>

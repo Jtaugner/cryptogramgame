@@ -28,6 +28,9 @@
   animation: modalFadeInCenter 0.35s ease-in-out forwards;
   font-weight: 500;
 }
+.rules.miniModal{
+  animation: miniModalFadeInCenter 0.35s ease-in-out forwards;
+}
 .rules-wrap{
   width: 100%;
   display: flex;

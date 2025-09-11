@@ -378,7 +378,7 @@ const App: React.FC<AppProps> = ({allUserData, mainLanguage}) => {
         timeout={200}
         classNames="fade"
       >
-        <div style={{height: '100%', width: '100%'}}>
+        <div style={{height: '100%', width: '100%', position: 'relative'}}>
           {showCopied && <div className="text-copied">Скопировано</div>}
         {(showShop || showShopMoney || !showGame) &&
           <div

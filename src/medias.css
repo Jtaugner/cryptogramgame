@@ -38,6 +38,9 @@
      .modal, .rules, .collection-category-container{
           animation: modalFadeInCenter 0.2s ease-out forwards;
      }
+     .modal.miniModal, .rules.miniModal, .collection-category-container.miniModal{
+          animation: miniModalFadeInCenter 0.2s ease-out forwards;
+     }
      .modal_closing .blackout{
           transition: opacity 0.2s ease-out;
           opacity: 0;

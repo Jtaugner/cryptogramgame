@@ -66,6 +66,7 @@
 .modal-rating .modal-section{
   height: 100%;
   overflow-y: auto;
+  touch-action: pan-y;
 }
 .skeleton-row, .skeleton-row .rating-row-icon{
   background: linear-gradient(90deg, #8e93f5, #7b82fb, #8e93f5);

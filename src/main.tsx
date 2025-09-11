@@ -17,6 +17,7 @@ let ruLangs = ['ru', 'be', 'kk', 'uk', 'uz', 'kz'];
 
 export let mainLanguage = 'ru';
 export let isPurchaseAvailable = true;
+export let gpBannerSize = 0;
 
 if(__PLATFORM__ === 'gd'){
   mainLanguage = 'en';
@@ -650,24 +651,20 @@ if (__PLATFORM__ === 'yandex' && window.YaGames) {
     // Wait while the player syncs with the server
     await gp.player.ready;
 
-    gp.player.fetchFields();
-
-    // Поля получены (success === true)
-    gp.player.on('fetchFields', (success) => {
-      if(success && gp.player.has(getGameProgressName())){
-        console.log('get player success');
-        let newData = gp.player.get(getGameProgressName());
-        if(newData){
-          newData = chooseLatestData(newData);
-          userData = newData;
-          recentData = stringifyJSON(userData);
-        }
-        console.log('newData', newData);
-        createApp();
-      }else{
-        createApp();
+    if(gp.player.has(getGameProgressName())){
+      console.log('get player success');
+      let newData = gp.player.get(getGameProgressName());
+      if(newData){
+        newData = chooseLatestData(newData);
+        userData = newData;
+        recentData = stringifyJSON(userData);
       }
-    });
+      console.log('newData', newData);
+      createApp();
+    }else{
+      createApp();
+    }
+
         // Начался показ рекламы
     gp.ads.on('start', () => {
       canPlaySound = false;
@@ -751,6 +748,27 @@ if (__PLATFORM__ === 'yandex' && window.YaGames) {
         showBanner();
       }
       if(platformType !== 'VK' && platformType !== 'OK'){
+        gp.ads.on('sticky:start', () => {
+          setTimeout(() => { 
+            try{
+              console.log('sticky:start');
+              console.log(document.querySelector('.gp-ads-fullscreen_sticky'));
+              gpBannerSize = document.querySelector('.gp-ads-fullscreen_sticky').offsetHeight;
+              document.querySelector('#root').style.paddingBottom = gpBannerSize + 'px';
+            }catch(e){
+              gpBannerSize = 0;
+              document.querySelector('#root').style.paddingBottom = gpBannerSize + 'px';
+            } 
+          }, 1000);
+          
+          
+        });
+        gp.ads.on('sticky:close', () => {
+          console.log('sticky:close');
+            console.log(document.querySelector('.gp-ads-fullscreen_sticky'));
+          gpBannerSize = 0;
+          document.querySelector('#root').style.paddingBottom = gpBannerSize + 'px';
+        });
         gp.ads.showSticky();
         gp.ads.showPreloader();
       }

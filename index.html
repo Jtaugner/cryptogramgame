@@ -28,10 +28,7 @@
       <% if (PLATFORM === 'yandex') { %>
         <script src="/sdk.js"></script>
       <% } %>
-      
-      <% if (PLATFORM === 'gp') { %>
-        <script src="https://gamepush.com/sdk/gamepush.js?projectId=22609&publicToken=lnYwyPc6QQjxcHdYkNr0BEyOrxhytsye&callback=onGPInit"></script>
-      <% } %>
+
 
       <% if (PLATFORM === 'gd') { %>
         <script>
@@ -136,5 +133,8 @@
       <% } %>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <% if (PLATFORM === 'gp') { %>
+      <script src="https://gamepush.com/sdk/gamepush.js?projectId=22609&publicToken=lnYwyPc6QQjxcHdYkNr0BEyOrxhytsye&callback=onGPInit"></script>
+    <% } %>
   </body>
 </html>

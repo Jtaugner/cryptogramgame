@@ -4,6 +4,7 @@ import {levelsByCategory, collectionNames, LevelData, namesDescs} from '../../le
 import { useSwipeable } from 'react-swipeable';
 import { getTextForLevelEnd } from '../Phrase';
 import { useTranslation } from 'react-i18next';
+import { gpBannerSize } from '../../main';
 type CollectionCategoryProps = {
   onClose: () => void
   category: string
@@ -41,7 +42,7 @@ const CollectionCategory: React.FC<CollectionCategoryProps> = ({onClose, categor
     return (
     <div className={`modal-bg modal-collection-category ${isClosing ? 'collection-category_closing' : ''}`}>
       <div className="blackout" onClick={closeModal}></div>
-      <div className="collection-category-container" {...handlers}>
+      <div className={`collection-category-container ${gpBannerSize > 0 ? 'miniModal' : ''}`} {...handlers}>
         <div className="collection-category-main">
 
           <div className="collection-category-main-title">

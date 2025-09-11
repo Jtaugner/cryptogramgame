@@ -1,5 +1,5 @@
 .modal-bg {
-     position: fixed;
+     position: absolute;
      top: 0; left: 0; right: 0; bottom: 0;
      z-index: 1000;
      display: flex;
@@ -12,6 +12,14 @@
   }
   100% {
      transform: scale(1);
+  }
+}
+@keyframes miniModalFadeInCenter {
+  0% {
+     transform: scale(0.1);
+  }
+  100% {
+     transform: scale(0.9);
   }
 }
 .modal {
@@ -27,6 +35,9 @@
      border-radius: 20px 20px 6px 6px;
      font-weight: 500;
      max-height: 100%;
+}
+.miniModal {
+  animation: miniModalFadeInCenter 0.35s ease-in-out forwards;
 }
 .modal_closing .blackout{
   transition: opacity 0.35s ease-in-out;
@@ -58,6 +69,7 @@
      height: 100%;
      overflow-y: auto;
      padding-bottom: 20px;
+     touch-action: pan-y;
 }
 .modal-title {
   display: flex;
