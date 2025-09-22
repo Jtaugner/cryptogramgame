@@ -198,7 +198,7 @@ allLevels.forEach(level => {
 
 console.log(allNamesWithoutDescs);
 
-while(allLevels.length !== 1500){
+while(allLevels.length !== 1800){
      let index = Math.floor(Math.random() * allQuotes.length);
      let phrase = allQuotes[index];
      let text = phrase.text;
