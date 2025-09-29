@@ -507,10 +507,9 @@ function chooseLatestData(gp: any){
   //Если локальные данные дальше, чем серверные, то используем локальные
   try{
     let localStorageUserData = getUserDataFromLocalStorage();
-    if(localStorageUserData.lastLevel > gp.lastLevel){
+    if(localStorageUserData.lastLevel > gp.lastLevel || localStorageUserData.statistics.iq > gp.statistics.iq){
         gp = localStorageUserData;
-    }
-    if(localStorageUserData.lastLevel === gp.lastLevel){
+    }else if(localStorageUserData.lastLevel === gp.lastLevel){
       console.log('lastLevel same', localStorageUserData.lastLevel, gp.lastLevel);
       //Если оба уровня заполнены, то сравниваем заполненные буквы
       if(localStorageUserData.lastLevelData && gp.lastLevelData){
