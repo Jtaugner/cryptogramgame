@@ -240,24 +240,26 @@ export function saveData(newUserData: any) {
         }else if(__PLATFORM__ === 'gp'){
             //Сохраняем в gp
           lastData = JSON.parse(lastData);
+          try{
+            if(newUserData.lastLevel > lastData.lastLevel || wasPurchase || newUserData.statistics.iq > lastData.statistics.iq){
+              wasPurchase = false;
+              YSDK.player.set(
+                  getGameProgressName(),
+                  newData
+              );
+              YSDK.player.set(
+                'iq',
+                newUserData.statistics.iq
+              );
+             // Синхронизовать, возвращает промис ожидания, дождитесь завершения
+              YSDK.player.sync().then(() => {
+                console.log('sync success');
+              }).catch((err: any) => {
+                  console.log('sync error', err);
+              });
+            }
+          }catch(e){}
 
-          if(newUserData.lastLevel > lastData.lastLevel || wasPurchase){
-            wasPurchase = false;
-            YSDK.player.set(
-                getGameProgressName(),
-                newData
-            );
-            YSDK.player.set(
-              'iq',
-              newUserData.statistics.iq
-            );
-           // Синхронизовать, возвращает промис ожидания, дождитесь завершения
-            YSDK.player.sync().then(() => {
-              console.log('sync success');
-            }).catch((err: any) => {
-                console.log('sync error', err);
-            });
-          }
         }
     }catch (ignored) {}
 }
@@ -402,18 +404,19 @@ export function makePurchaseSDK(id: string, callback: (purchase: string) => void
 }
 
 export function tryToAddUserToLeaderboard(iq: number){
-  if(__PLATFORM__ === 'gp') return;
-  try{
-    YSDK.leaderboards.getPlayerEntry('iq')
-    .then((res: any) => {
-      if(res.score < iq){
+  if(__PLATFORM__ === 'yandex'){
+    try{
+      YSDK.leaderboards.getPlayerEntry('iq')
+      .then((res: any) => {
+        if(res.score < iq){
+          setUserToLeaderboard(iq);
+        }
+      })
+      .catch((err: any) => {
         setUserToLeaderboard(iq);
-      }
-    })
-    .catch((err: any) => {
-      setUserToLeaderboard(iq);
-    });
-  }catch(e){}
+      });
+    }catch(e){}
+  }
 }
 
 export function setUserToLeaderboard(iq: number){

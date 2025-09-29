@@ -20,7 +20,6 @@ type RatingItem = {
 const ratingTest = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 
 
-
 const Rating: React.FC<RatingProps> = ({userData, onClose }) => {
   const [rating, setRating] = useState<RatingItem[] | null>(null);
   const [userRank, setUserRank] = useState<number>(-1);
@@ -79,13 +78,15 @@ const Rating: React.FC<RatingProps> = ({userData, onClose }) => {
              key={'rating-row-' + index}
              >
               <div className="rating-row-left">
-                <div className="rating-row-icon"
+                <div
                 style={{
                   background: `url(${item.player.getAvatarSrc('medium')}) center center no-repeat`,
                   backgroundSize: '100%'
                 }}
+                className={`rating-row-icon ${!item.player.getAvatarSrc('medium') ? 'rating-row-icon_empty' : ''}`}
+                
                 ></div>
-                <div className="rating-row-name">{item.player.publicName}</div>
+                <div className="rating-row-name">{item.player.publicName === "" ? 'Anonymous' : item.player.publicName}</div>
               </div>
             
               <div className="rating-row-score">

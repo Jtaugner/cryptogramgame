@@ -85,3 +85,7 @@
 .lastInTop{
   margin-bottom: 20px;
 }
+.rating-row-icon_empty{
+  background: url('../../assets/ava.png') center center no-repeat, #9fefae !important;
+  background-size: 85% !important;
+}

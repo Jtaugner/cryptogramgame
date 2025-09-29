@@ -83,5 +83,6 @@
      "dailyBlocked": "Open {{level}} level to get access",
      "autoScroll": "Auto scroll",
      "game_hintText_dailyLevel": "In daily tasks, the phrases are encrypted using the Glagolitic alphabet.",
-     "daily-rules-step-1-text": "Glagolitic letters instead of numbers. The rules are same. Good luck!"
+     "daily-rules-step-1-text": "Glagolitic letters instead of numbers. The rules are same. Good luck!",
+     "dailySmallLevel": "Daily"
 }

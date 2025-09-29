@@ -683,7 +683,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
                   </div>
                   <div className={`game-header_sameSize
                      ${isTipSelecting || (selecetedHint !== 0) ? 'disabledButton' : ''}`}>
-                    {t('smallLevel')} {gameLocation === 'dailyLevel' ? '' : level+1}
+                    {gameLocation === 'dailyLevel' ? t('dailySmallLevel') : t('smallLevel') + ' ' + level+1}
                     </div>
                   <div className={`
                         menu-tips-btn
