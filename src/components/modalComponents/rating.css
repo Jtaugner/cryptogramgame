@@ -89,3 +89,9 @@
   background: url('../../assets/ava.png') center center no-repeat, #9fefae !important;
   background-size: 85% !important;
 }
+.rating-row-rank_big{
+  font-size: 0.9rem;
+}
+.rating-row-rank_veryBig{
+  font-size: 0.7rem;
+}

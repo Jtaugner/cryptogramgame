@@ -21,7 +21,7 @@ import { getMinutesFromSeconds } from '../tasks'
 import ProgressCounter from './ProgressCounter'
 import Timer from './TImer'
 import ClickParticles from './ClickParticles'
-import { NOT_SHOW_ADV, showAdv, isPurchaseAvailable } from '../main'
+import { NOT_SHOW_ADV, showAdv, isPurchaseAvailable, params } from '../main'
 import { useTranslation } from 'react-i18next'
 import Modes from './Modes/Modes'
 
@@ -148,6 +148,7 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
                     }
                     if(countOfPunch === countsOfPunch[3]){
                          setAnimationData(animationPunch7);
+                         params({'broccoliKilled': 1});
                     }
                }, 200)
           }catch(e){

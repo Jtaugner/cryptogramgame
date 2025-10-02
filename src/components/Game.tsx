@@ -124,7 +124,14 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
       //Для статистики
       const newLetters = levelData ? levelData.hiddenIndexes.length : 0;
       const newWords = levelData ? countWordsWithHiddenLetters(levelData, gameLanguage) : 0;
-      const levelWithoutMistake = userData.lastLevelData ? !userData.lastLevelData.atLeastOneError : false;
+      let levelWithoutMistake = false;
+      console.log(levelData);
+      if(gameLocation === 'main'){
+        levelWithoutMistake = userData.lastLevelData ? !userData.lastLevelData.atLeastOneError : false;        
+      }else{
+        levelWithoutMistake = userData.locations[gameLocation].data ? !userData.locations[gameLocation].data.atLeastOneError : false;
+      }
+      
       const passedLevels = userData.statistics.levels + 1;
       const avgTime = (userData.statistics.avgTime * userData.statistics.levels + realLevelTime) / (passedLevels);
       let bestTime = Math.min(userData.statistics.bestTime, realLevelTime);
