@@ -121,6 +121,10 @@ button:disabled {
   background: url('assets/settings.png') center center no-repeat;
   background-size: 90%;
   cursor: pointer;
+  transition: transform 0.5s ease-in-out;
+}
+.menu-settings-btn:hover{
+  transform: rotate(360deg);
 }
 .menu-home-btn{
   background: url('assets/house.png') center center no-repeat;
@@ -185,4 +189,14 @@ button:disabled {
   z-index: 10000;
   /* box-shadow: 0 0 1px 1px rgba(255, 255, 255, 0.3); */
   animation: copiedAnimation 0.3s ease-in-out forwards;
+}
+
+.scroll-hidden {
+  overflow: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE и Edge Legacy */
+}
+
+.scroll-hidden::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }

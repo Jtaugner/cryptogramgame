@@ -737,7 +737,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
       </div>
       }
       {/* Main content (Phrase + Hint) */}
-      <div className="game-main">
+      <div className="game-main scroll-hidden">
         <Phrase 
           ref={phraseRef}
           data={phraseData}

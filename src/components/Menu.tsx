@@ -274,9 +274,7 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
 
           {/* Дневной результат */}
           <div className="menu__centerBlock">
-          {gameLanguage === 'ru' &&
-               <Modes openDailyLevel={openDailyLevel} userData={userData} setUserData={setUserData} dailyAnimation={dailyAnimation}/>
-          }
+          <Modes openDailyLevel={openDailyLevel} userData={userData} setUserData={setUserData} dailyAnimation={dailyAnimation}/>
           <div className="menu-daily">
           <div className="menu-daily-title-block">
                <span className="menu-daily-title">{t('tasks')}</span>

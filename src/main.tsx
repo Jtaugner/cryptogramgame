@@ -141,6 +141,7 @@ async function createApp(){
     dailyModule = await import(`./dailyLevels.js`);
   }else{
     module = await import(`./allLevels-en.js`);
+    dailyModule = await import(`./dailyLevels-en.js`);
   }
   const allLevels = module.default;
   initLevels(allLevels, mainLanguage);
@@ -501,6 +502,10 @@ export function consumePurchase(purchase: any) {
 
 export let gameLink = 'https://yandex.ru/games/app/435796';
 
+if(__PLATFORM__ === 'gd'){
+  gameLink = '';
+}
+
 
 function chooseLatestData(gp: any){
   gp = JSON.parse(gp);
@@ -649,6 +654,8 @@ if (__PLATFORM__ === 'yandex' && window.YaGames) {
     
     if(gp?.platform?.type === 'VK'){
       gameLink = 'https://vk.com/app53847636';
+    }else if(gp?.platform?.type === 'OK'){
+      gameLink = 'https://ok.ru/game/cryptogram';
     }
     // Wait while the player syncs with the server
     await gp.player.ready;
