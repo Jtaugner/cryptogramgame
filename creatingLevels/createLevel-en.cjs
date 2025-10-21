@@ -2,7 +2,8 @@ const { promises: fsp } = require('fs');
 var path = require('path');
 // var {phrases} = require('./citats');
 var {phrases} = require('./englishCitats.js');
-const allLevelsEN = require('./src/allLevels-en.js');
+var {dailyLevels} = require('./dailyLevelsTexts-en.js');
+const allLevelsEN = require('../src/allLevels-en.js');
 
 const allLevels = allLevelsEN.default;
 
@@ -86,7 +87,6 @@ function generateCryptogram(phrase, complexity = 3, fullness = 0.05) {
         visibleLetters.add(sortedByFrequency[Math.floor(sortedByFrequency.length / 2)]);
      }
 
-     console.log(visibleLetters);
    
    
      // Определим позиции всех букв
@@ -199,7 +199,7 @@ allLevels.forEach(level => {
 
 // console.log(allNamesWithoutDescs);
 
-while(allLevels.length !== 250){
+while(allLevels.length !== 450){
      let index = Math.floor(Math.random() * allQuotes.length);
      let phrase = allQuotes[index];
      let text = phrase.text;
@@ -207,7 +207,6 @@ while(allLevels.length !== 250){
      if(/[а-я]/ig.test(text) || text.length > 250){
           continue;
      }
-
      //Если тип не новый, то пропускаем
      if(!notUsedTypes.includes(phrase.type)){
           continue;
@@ -227,7 +226,6 @@ while(allLevels.length !== 250){
      level.hiddenIndexes = level.hiddenIndexes.filter(index => /[a-z]/i.test(text[index]));
      if(JSON.stringify(test) !== JSON.stringify(level.hiddenIndexes)){
           console.log("fixed");
-          console.log(test, level.hiddenIndexes);
      }
      text = text.trim();
 
@@ -239,6 +237,7 @@ while(allLevels.length !== 250){
      if(allLevelsTexts.includes(text)){
           continue;
      }
+     console.log(phrase.type);
      const levelData = {};
      levelData.text = text;
      levelData.hiddenIndexes = level.hiddenIndexes;
@@ -312,5 +311,35 @@ fsp.writeFile(path.join(__dirname, 'levelsList-en.js'),
  ${allLevels.map(result => '\n' + JSON.stringify(result) )}
  \n]`);
 
-
- 
+let newDailyLevels = [];
+console.log(dailyLevels.length);
+dailyLevels.forEach(text => {
+     text = replaceLongDashes(text.replace(/ё/gi, 'е'));
+     if(/[а-я]/ig.test(text)){
+          return;
+     }
+     text = text.trim();
+     //Если в конце нет знака препинания, то ставим точку
+     if(/[A-Za-z]/.test(text[text.length-1])){
+          text += '.'
+     }
+     let level = generateCryptogram(text, complexity, fullness);
+     let test = level.hiddenIndexes;
+     level.hiddenIndexes = level.hiddenIndexes.filter(index => /[a-z]/i.test(text[index]));
+     if(JSON.stringify(test) !== JSON.stringify(level.hiddenIndexes)){
+          console.log("fixed");
+          // console.log(test, level.hiddenIndexes);
+     }
+     const levelData = {};
+     levelData.text = text;
+     levelData.hiddenIndexes = level.hiddenIndexes;
+     levelData.name = 'Definitions'
+     levelData.desc = '';
+     levelData.type = 'quotes';
+     newDailyLevels.push(levelData);
+});
+console.log(newDailyLevels.length);
+ fsp.writeFile(path.join(__dirname, 'dailyLevelsList-en.js'),
+ `const dailyLevels = [
+ ${newDailyLevels.map(result => '\n' + JSON.stringify(result) )}
+ \n]`);

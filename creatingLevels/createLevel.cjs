@@ -1,9 +1,9 @@
 const { promises: fsp } = require('fs');
 var path = require('path');
 // var {phrases} = require('./citats');
-var {phrases} = require('./newCitats');
-var {dailyLevels} = require('./dailyLevelsTexts');
-let allLevels = require('./src/allLevels.js');
+var {phrases} = require('../newCitats.js');
+var {dailyLevels} = require('./dailyLevelsTexts.js');
+let allLevels = require('../src/allLevels.js');
 allLevels = allLevels.default;
 
 const allLevelsTexts = [];
