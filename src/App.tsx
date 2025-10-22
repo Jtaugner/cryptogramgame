@@ -32,7 +32,6 @@ function stopEvent(event){
 
 export function scrollIntoViewY(container: any, element: any, options: any = {}) {
   try{
-    console.log('scrollIntoViewY', container, element, options);
     const { behavior = 'auto', align = 'start' } = options;
 
     const elTop = element.offsetTop - container.offsetTop;

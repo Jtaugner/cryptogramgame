@@ -8,6 +8,8 @@ import { getTasks } from './tasks.tsx'
 import { playSound, switchOffMainMusic, switchOnMainMusic } from './sounds.tsx'
 import { initDailyLevels, initLevels } from './levels.tsx'
 import { main } from 'framer-motion/client'
+import { mobileSaveData, mobileShowFullscreenAd, mobileShowRewardedAd } from './mobile-sdk.tsx'
+import { dailyLevels } from './levels.tsx'
 // @ts-ignore
 // import {allLevels} from './allLevels.js';
 
@@ -81,6 +83,7 @@ export const tryPlaySound = (soundName: string) => {
 
 export function params(data: any) {
 	try{
+    if(__PLATFORM__ === 'gd' || __PLATFORM__ === 'mobile') return;
     let ymID = 102631060;
     if(__PLATFORM__ === 'gp') ymID = 103175743;
     if(mainLanguage !== 'ru'){
@@ -126,6 +129,11 @@ function fixUserData(userData: any){
       userData.locations[name] = defaultUserData.locations[name];
     }
   })
+  let lastLocationLevel = userData.locations['dailyLevel'].level;
+  if(lastLocationLevel >= dailyLevels.length){
+    userData.locations['dailyLevel'].level = dailyLevels.length;
+  }
+
 
   if(userData.settings.autoScroll === undefined) userData.settings.autoScroll = defaultUserData.settings.autoScroll;
   return userData;
@@ -261,6 +269,8 @@ export function saveData(newUserData: any) {
             }
           }catch(e){}
 
+        }else if(__PLATFORM__ === 'mobile'){
+          mobileSaveData(newUserData);
         }
     }catch (ignored) {}
 }
@@ -316,6 +326,8 @@ export function showRewarded(callback: () => void){
             console.log(error)
           });
       }
+    }else if(__PLATFORM__ === 'mobile'){
+      mobileShowRewardedAd(callback);
     }
   }catch(e){}
 }

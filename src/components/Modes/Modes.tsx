@@ -3,7 +3,7 @@ import './Modes.css'
 import { getCurrentDateFormatted, getTimeLeftInDay } from '../../main';
 import { t } from 'i18next';
 import { UserDataProps } from '../../App';
-import { formatSmallTime } from '../../levels';
+import { dailyLevels, formatSmallTime } from '../../levels';
 import { levelToOpenDaily } from '../../levels';
 
 interface ModesProps {
@@ -35,7 +35,13 @@ const Modes: React.FC<ModesProps> = ({openDailyLevel, userData, setUserData, dai
      const openDailyWrapper = () => {
           if(!isDailyClosed && userData.lastLevel >= levelToOpenDaily){
                let loc = 'dailyLevel';
-               if(userData.locations[loc].data === null || userData.locations[loc].currentDate !== getCurrentDateFormatted()){
+               let lastLocationLevel = userData.locations[loc].level;
+               if(lastLocationLevel >= dailyLevels.length){
+                    return;
+               }
+
+               if(userData.locations[loc].data === null
+                     || userData.locations[loc].currentDate !== getCurrentDateFormatted()){
                     setUserData({
                          ...userData,
                          locations: {
@@ -98,7 +104,7 @@ const Modes: React.FC<ModesProps> = ({openDailyLevel, userData, setUserData, dai
                                    <div className="menu__mode-card__iq-number"> 1</div>
                               </div>
                               <div className={`menu__mode-card__play ${userData.lastLevel >= levelToOpenDaily ? 'shiny-button shiny-button-anotherTiming' : ''}`}>
-                              {t('play')}
+                              {userData.locations['dailyLevel'].level >= dailyLevels.length ? t('soon') : t('play')}
                               </div>
                          </>
                     }
