@@ -528,6 +528,9 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
     }else{
       lastLevelData = userData.locations[gameLocation].data;
     }
+
+    console.log('initialPhraseData', initialPhraseData.text);
+    console.log('lastLevelData', lastLevelData?.text);
     
     if(lastLevelData && lastLevelData.text === initialPhraseData.text){
       console.log('user has lastLevel data'); 

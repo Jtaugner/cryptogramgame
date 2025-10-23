@@ -1,7 +1,7 @@
 const { promises: fsp } = require('fs');
 var path = require('path');
 // var {phrases} = require('./citats');
-var {phrases} = require('../newCitats.js');
+var {phrases} = require('./newCitats.js');
 var {dailyLevels} = require('./dailyLevelsTexts.js');
 let allLevels = require('../src/allLevels.js');
 allLevels = allLevels.default;
@@ -134,7 +134,7 @@ function generateCryptogram(phrase, complexity = 3, fullness = 0.05) {
          cryptogram.push(ch);
        } else if (/[А-Яа-яЁё]/.test(ch)) {
          cryptogram.push('•');
-         hiddenIndexes.push(i);
+            hiddenIndexes.push(i);
        } else {
          cryptogram.push(ch);
        }
@@ -198,26 +198,31 @@ allLevels.forEach(level => {
 
 console.log(allNamesWithoutDescs);
 
-while(allLevels.length !== 2000){
+function testTextForBadWords(text){
+     let badWords = ['секс', 'овуляц', 'оргазм', 'сперм', 'мастурбац', 'пенис', 'вагин', 'минет', 'клитор',
+          'героин', 'экстази', 'амфетамин', 'кокаин', 'марихуан', 'изнасилова', 'гей'
+     ]
+     for(let word of badWords){
+          if(text.indexOf(word) !== -1){
+               // console.log(word);
+               return true;
+          }
+     }
+     return false;
+}
+
+while(allLevels.length !== 2200){
      let index = Math.floor(Math.random() * allQuotes.length);
      let phrase = allQuotes[index];
      let text = phrase.text;
-     console.log(phrase);
      text = replaceLongDashes(text.replace(/ё/gi, 'е'));
-     if(/[a-z]/ig.test(text) || text.length < 150 || text.length > 250){
+     if(/[a-z]/ig.test(text) || text.length < 150 || text.length > 300 || testTextForBadWords(text)){
           continue;
      }
 
      //Если тип не новый, то пропускаем
-     if(!notUsedTypes.includes(phrase.type) && Math.random() < 0.92){
+     if(!notUsedTypes.includes(phrase.type) && Math.random() < 0.97){
           continue;
-     }
-     let typeIndex = notUsedTypes.indexOf(phrase.type);
-     if(typeIndex !== -1){
-          notUsedTypes.splice(typeIndex, 1);
-          if(notUsedTypes.length === 0){
-               notUsedTypes = typesOfCategories.slice();
-          }
      }
 
      text = text.trim();
@@ -232,14 +237,22 @@ while(allLevels.length !== 2000){
      let test = level.hiddenIndexes;
      level.hiddenIndexes = level.hiddenIndexes.filter(index => /[а-я]/i.test(text[index]));
      if(JSON.stringify(test) !== JSON.stringify(level.hiddenIndexes)){
-          console.log("fixed");
-          console.log(test, level.hiddenIndexes);
+          // console.log("fixed");
+          // console.log(test, level.hiddenIndexes);
      }
 
      //Если текст уже есть, то пропускаем
      if(allLevelsTexts.includes(text)){
           continue;
      }
+     let typeIndex = notUsedTypes.indexOf(phrase.type);
+     if(typeIndex !== -1){
+          notUsedTypes.splice(typeIndex, 1);
+          if(notUsedTypes.length === 0){
+               notUsedTypes = typesOfCategories.slice();
+          }
+     }
+     console.log(phrase.name);
      const levelData = {};
      levelData.text = text;
      levelData.hiddenIndexes = level.hiddenIndexes;
