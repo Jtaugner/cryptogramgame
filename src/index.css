@@ -187,6 +187,7 @@ button:disabled {
   font-size: 1.3rem;
   font-weight: 500;
   z-index: 10000;
+  text-transform: uppercase;
   /* box-shadow: 0 0 1px 1px rgba(255, 255, 255, 0.3); */
   animation: copiedAnimation 0.3s ease-in-out forwards;
 }

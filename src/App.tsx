@@ -12,6 +12,7 @@ import Shop from './components/modalComponents/Shop'
 import ShopMoney from './components/modalComponents/ShopMoney'
 import { stopSound, switchOffMainMusic } from './sounds'
 import { changeLanguage } from './i18n'
+import { useTranslation } from 'react-i18next'
 // @ts-ignore
 let iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 if(iOS){
@@ -147,6 +148,7 @@ let musicStarted = false;
 let firstClickWasMade = false;
 
 const App: React.FC<AppProps> = ({allUserData, mainLanguage}) => {
+  const { t } = useTranslation();
   const [showGame, setShowGame] = useState(allUserData.lastLevel === 0)
   const [showCopied, setShowCopied] = useState(false)
   const [showShop, setShowShop] = useState(false)
@@ -378,7 +380,7 @@ const App: React.FC<AppProps> = ({allUserData, mainLanguage}) => {
         classNames="fade"
       >
         <div style={{height: '100%', width: '100%', position: 'relative'}}>
-          {showCopied && <div className="text-copied">Скопировано</div>}
+          {showCopied && <div className="text-copied">{t('copied')}</div>}
         {(showShop || showShopMoney || !showGame) &&
           <div
              className={`moneyCount ${showShop || showShopMoney ? 'moneyCount_big' : ''}`}
