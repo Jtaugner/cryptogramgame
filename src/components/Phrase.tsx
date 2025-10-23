@@ -247,7 +247,6 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
 
   const scrollToSelected = () => {
     if(!userData.settings.autoScroll) return;
-    // if(__PLATFORM__ === 'gd') return;
     try{
       let scrollEl = document.querySelector('.selected-glow');
       scrollIntoViewY(document.querySelector('.game-main'), scrollEl, { behavior: 'smooth', align: 'center' });

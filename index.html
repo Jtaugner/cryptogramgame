@@ -5,13 +5,13 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
 
-    <% if (PLATFORM === 'gd') { %>
+    <% if (PLATFORM === 'gd' || PLATFORM === 'mobile') { %>
       <meta name="description" content="Cryptogram - a game on logic and attention">
     <% } else { %>
       <meta name="description" content="Криптограмма - игра на логику и внимательность">
     <% } %>
 
-    <% if (PLATFORM === 'gd') { %>
+    <% if (PLATFORM === 'gd' || PLATFORM === 'mobile') { %>
       <title>Cryptogram</title>
     <% } else { %>
       <title>Криптограмма</title> 
@@ -133,7 +133,7 @@
       <% } %>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    <% if (PLATFORM === 'gp') { %>
+    <% if (PLATFORM === 'gp' || PLATFORM === 'mobile') { %>
       <script src="https://gamepush.com/sdk/gamepush.js?projectId=22609&publicToken=lnYwyPc6QQjxcHdYkNr0BEyOrxhytsye&callback=onGPInit"></script>
     <% } %>
   </body>

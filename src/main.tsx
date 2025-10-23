@@ -8,7 +8,7 @@ import { getTasks } from './tasks.tsx'
 import { playSound, switchOffMainMusic, switchOnMainMusic } from './sounds.tsx'
 import { initDailyLevels, initLevels } from './levels.tsx'
 import { main } from 'framer-motion/client'
-import { mobileSaveData, mobileShowFullscreenAd, mobileShowRewardedAd } from './mobile-sdk.tsx'
+import { mobileShowFullscreenAd, mobileShowRewardedAd } from './mobile-sdk.tsx'
 import { dailyLevels } from './levels.tsx'
 // @ts-ignore
 // import {allLevels} from './allLevels.js';
@@ -181,7 +181,7 @@ export function getServerTime(){
     let newTime;
     if(__PLATFORM__ === 'yandex'){
       newTime = YSDK.serverTime()
-    }else if(__PLATFORM__ === 'gp'){
+    }else if(__PLATFORM__ === 'gp' || __PLATFORM__ === 'mobile'){
       newTime = YSDK.serverTime;
       const currentDate = new Date(YSDK.serverTime);
       newTime = currentDate.getTime();
@@ -246,7 +246,7 @@ export function saveData(newUserData: any) {
             };
             playerGame.setData(state).then((ignored: any) => {}).catch(()=>{});
           }
-        }else if(__PLATFORM__ === 'gp'){
+        }else if(__PLATFORM__ === 'gp' || __PLATFORM__ === 'mobile'){
             //Сохраняем в gp
           lastData = JSON.parse(lastData);
           try{
@@ -269,8 +269,6 @@ export function saveData(newUserData: any) {
             }
           }catch(e){}
 
-        }else if(__PLATFORM__ === 'mobile'){
-          mobileSaveData(newUserData);
         }
     }catch (ignored) {}
 }
@@ -363,6 +361,8 @@ export function showAdv(){
       if (gdsdk && gdsdk.showAd !== 'undefined') {
         gdsdk.showAd();
       }
+    }else if(__PLATFORM__ === 'mobile'){
+      mobileShowFullscreenAd();
     }
   }catch(e){
 
@@ -405,7 +405,7 @@ export function makePurchaseSDK(id: string, callback: (purchase: string) => void
       }).catch((err: any) => {
         console.log('err', err);
       });
-    }else if(__PLATFORM__ === 'gp'){
+    }else if(__PLATFORM__ === 'gp' || __PLATFORM__ === 'mobile'){
       YSDK.payments.purchase({ tag: id });
       YSDK.payments.on('purchase', () => {
         callback(id);
@@ -433,7 +433,7 @@ export function tryToAddUserToLeaderboard(iq: number){
 }
 
 export function setUserToLeaderboard(iq: number){
-  if(__PLATFORM__ === 'gp') return;
+  if(__PLATFORM__ === 'gp' || __PLATFORM__ === 'mobile') return;
   try{
     if(__PLATFORM__ === 'yandex'){
       YSDK.isAvailableMethod('leaderboards.setScore').then((res: boolean) => {
@@ -461,7 +461,7 @@ export function getLeaderboard(callback: (res: any) => void){
             .then((res: any) => callback(res));
         }
       })
-    }else if(__PLATFORM__ === 'gp'){
+    }else if(__PLATFORM__ === 'gp' || __PLATFORM__ === 'mobile'){
         YSDK.leaderboard.fetch({
           orderBy: ['iq'],
           order: 'DESC',
@@ -505,7 +505,7 @@ export function consumePurchase(purchase: any) {
         console.log('try to consume: ', purchase.productID);
         if(purchase.productID === 'remove_ads') return;
         payments.consumePurchase(purchase.purchaseToken);
-      }else if(__PLATFORM__ === 'gp'){
+      }else if(__PLATFORM__ === 'gp' || __PLATFORM__ === 'mobile'){
         if(purchase === 'remove_ads') return;
         YSDK.payments.consume({ tag: purchase });
       }
@@ -622,7 +622,7 @@ export function initPlayer(ysdk: any) {
 export const appIsReady = () => {
   if(__PLATFORM__ === 'yandex'){
     if(YSDK && YSDK.features && YSDK.features.LoadingAPI) YSDK.features.LoadingAPI.ready();
-  }else if(__PLATFORM__ === 'gp'){
+  }else if(__PLATFORM__ === 'gp' || __PLATFORM__ === 'mobile'){
     if(YSDK && YSDK.gameStart) YSDK.gameStart();
   }
 }
@@ -634,6 +634,15 @@ function changeLanguage(lang: string){
   }else{
     mainLanguage = 'en';
   }
+}
+
+export function switchOffAllMusic(){
+  musicStoppedByAdv = true;
+  switchOffMainMusic();
+}
+export function switchOnAllMusic(){
+  switchOnMainMusic();
+  musicStoppedByAdv = false;
 }
 
 // @ts-ignore
@@ -656,7 +665,7 @@ if (__PLATFORM__ === 'yandex' && window.YaGames) {
               // Ошибка при получении данных об игре.
           })
       });
-}else if(__PLATFORM__ === 'gp') {
+}else if(__PLATFORM__ === 'gp' || __PLATFORM__ === 'mobile') {
   console.log('gp playform init');
   // @ts-ignore
   window.onGPInit = async (gp) => {
@@ -668,6 +677,9 @@ if (__PLATFORM__ === 'yandex' && window.YaGames) {
       gameLink = 'https://vk.com/app53847636';
     }else if(gp?.platform?.type === 'OK'){
       gameLink = 'https://ok.ru/game/cryptogram';
+    }else{
+      //link for mobile game
+      gameLink = ''; 
     }
     // Wait while the player syncs with the server
     await gp.player.ready;
@@ -721,6 +733,9 @@ if (__PLATFORM__ === 'yandex' && window.YaGames) {
 
 
     //Sticky
+    if(__PLATFORM__ === 'mobile'){
+      return;
+    }
     let platformType = gp.platform.type;
     console.log('Platform: ', platformType);
     params({'platform': platformType});
@@ -802,8 +817,6 @@ if (__PLATFORM__ === 'yandex' && window.YaGames) {
     }catch(e){
       console.log(e);
     }
-
-    // You can start the game :)
   };
 } else {
   createApp();

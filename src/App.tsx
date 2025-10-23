@@ -322,7 +322,7 @@ const App: React.FC<AppProps> = ({allUserData, mainLanguage}) => {
               consumePurchase(purchase);
             }
       }));
-      }else if(__PLATFORM__ === 'gp'){
+      }else if(__PLATFORM__ === 'gp' || __PLATFORM__ === 'mobile'){
         payments.purchases.forEach((purchase: any)=>{
           console.log('last purchase', purchase);
           if(purchase.tag === 'remove_ads'){

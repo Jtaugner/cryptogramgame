@@ -21,7 +21,7 @@ const ShopMoney: React.FC<ShopProps> = ({onClose, makePurchase, isShopOpened }) 
           let bg = shopItems[0].getPriceCurrencyImage('svg');
           return `url(${bg}) no-repeat center center`;
         }
-      }else if(__PLATFORM__ === 'gp'){
+      }else if(__PLATFORM__ === 'gp' || __PLATFORM__ === 'mobile'){
         if(shopItems && shopItems[0].iconSmall){
           let bg = shopItems[0].iconSmall;
           return `url(${bg}) no-repeat center center`;
@@ -35,7 +35,7 @@ const ShopMoney: React.FC<ShopProps> = ({onClose, makePurchase, isShopOpened }) 
         if(shopItems && shopItems[0].priceCurrencyCode){
           return shopItems[0].priceCurrencyCode;
         }
-      }else if(__PLATFORM__ === 'gp'){
+      }else if(__PLATFORM__ === 'gp' || __PLATFORM__ === 'mobile'){
         if(shopItems && shopItems[index].currencySymbol){
           return shopItems[index].currencySymbol;
         }
@@ -66,13 +66,15 @@ const ShopMoney: React.FC<ShopProps> = ({onClose, makePurchase, isShopOpened }) 
                       <div>{item.priceValue}</div>
                       {
                         __PLATFORM__ === 'yandex'
-                         && <div className="modal-shop-row-price_icon" style={{background: getMoneyIconBackground(), backgroundSize: '100%'}}></div>
+                         ? <div className="modal-shop-row-price_icon" style={{background: getMoneyIconBackground(), backgroundSize: '100%'}}></div>
+                         :
+                         <div className={`modal-shop-row-price_money
+                          ${__PLATFORM__ !== 'yandex' ? 'modal-shop-row-price_money_gp' : ''}`}>
+                           {getMoneyName(index)}
+                       </div>
                       }
                       
-                      <div className={`modal-shop-row-price_money
-                         ${__PLATFORM__ === 'gp' ? 'modal-shop-row-price_money_gp' : ''}`}>
-                          {getMoneyName(index)}
-                      </div>
+
                     </div>
                   </div>
                 ))}
@@ -96,7 +98,7 @@ const ShopMoney: React.FC<ShopProps> = ({onClose, makePurchase, isShopOpened }) 
                          && <div className="modal-shop-row-price_icon" style={{background: getMoneyIconBackground(), backgroundSize: '100%'}}></div>
                       }
                       <div className={`modal-shop-row-price_money
-                         ${__PLATFORM__ === 'gp' ? 'modal-shop-row-price_money_gp' : ''}`}>
+                         ${__PLATFORM__ !== 'yandex' ? 'modal-shop-row-price_money_gp' : ''}`}>
                           {getMoneyName(shopItems.length - 1)}
                       </div>
                     </div>

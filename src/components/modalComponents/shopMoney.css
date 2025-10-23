@@ -34,6 +34,7 @@
   width: 20px;
   height: 20px;
   margin: 0 0 0 2px;
+  transform: translateY(1px);
 }
 .modal-shop-money .modal-shop-row-price_money{
   color: #fed65a;
