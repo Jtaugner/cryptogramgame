@@ -26,6 +26,8 @@ if(__PLATFORM__ === 'gd'){
   isPurchaseAvailable = false;
 }else if(__PLATFORM__ === 'gp'){
   mainLanguage = 'ru';
+}else if(__PLATFORM__ === 'mobile'){
+  isPurchaseAvailable = false;
 }
 
 let anotherLangDataForYandex = {};
