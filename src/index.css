@@ -121,10 +121,10 @@ button:disabled {
   background: url('assets/settings.png') center center no-repeat;
   background-size: 90%;
   cursor: pointer;
-  transition: transform 0.5s ease-in-out;
+  transition: transform 0.3s ease-in-out;
 }
 .menu-settings-btn:hover{
-  transform: rotate(360deg);
+  transform: rotate(180deg);
 }
 .menu-home-btn{
   background: url('assets/house.png') center center no-repeat;

@@ -4,7 +4,7 @@ import { LevelDataProps, scrollIntoViewY, UserData } from '../App'
 import {dices, LevelData, namesDescs, testLetterForNotAlphabet } from '../levels'
 
 const gameModes = {
-  glagolitic: ['Ⱝ', 'Ⰰ', 'Ⰱ', 'Ⰲ', 'Ⰳ', 'Ⰴ', 'Ⰵ', 'Ⰶ', 'Ⰷ', 'Ⰸ', 'Ⰹ', 'Ⰺ', 'Ⰻ', 'Ⰼ', 'Ⰽ', 'Ⰾ', 'Ⰿ', 'Ⱀ', 'Ⱁ', 'Ⱂ', 'Ⱃ', 'Ⱄ', 'Ⱅ', 'Ⱆ', 'Ⱇ', 'Ⱈ', 'Ⱉ', 'Ⱊ', 'Ⱋ', 'Ⱌ', 'Ⱍ', 'Ⱎ', 'Ⱏ', 'Ⱐ', 'Ⱑ', 'Ⱒ', 'Ⱓ', 'Ⱔ', 'Ⱕ', 'Ⱖ', 'Ⱚ', 'Ⱛ', 'Ⱜ', 'Ⱞ',]
+  glagolitic: ['Ⱝ', 'Ⰰ', 'Ⰱ', 'Ⰲ', 'Ⰳ', 'Ⰴ', 'Ⰵ', 'Ⰶ', 'Ⰷ', 'Ⰸ', 'Ⰹ', 'Ⰼ', 'Ⰽ', 'Ⰾ', 'Ⰿ', 'Ⱀ', 'Ⱂ', 'Ⱃ', 'Ⱄ', 'Ⱅ', 'Ⱆ', 'Ⱇ', 'Ⱉ', 'Ⱊ', 'Ⱋ', 'Ⱌ', 'Ⱍ', 'Ⱎ', 'Ⱏ', 'Ⱑ', 'Ⱒ', 'Ⱓ', 'Ⱕ', 'Ⱖ', 'Ⱚ', 'Ⱛ', 'Ⱜ', 'Ⱞ']
 };
 
 interface PhraseProps {
