@@ -329,6 +329,26 @@ function fixLevels(allLevels: LevelData[], language: string){
 
 export function initLevels(allLevels: LevelData[], language: string){
   levels = fixLevels(allLevels, language);
+  // console.log('levels length');
+  // console.log(levels.length);
+//   let b = levels.map(c => c.text)
+
+// function findDuplicates(arr) {
+//      const seen = new Set();
+//      const duplicates = new Set();
+   
+//      for (const item of arr) {
+//        if (seen.has(item)) {
+//          duplicates.add(item);
+//        } else {
+//          seen.add(item);
+//        }
+//      }
+   
+//      return [...duplicates];
+// }
+// console.log("DASDS");
+// console.log(findDuplicates(b));
 }
 
 export function initDailyLevels(allLevels: LevelData[], language: string){

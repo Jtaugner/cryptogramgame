@@ -11,6 +11,13 @@ const allLevelsTexts = [];
 allLevels.forEach(level => {
      allLevelsTexts.push(level.text);
 });
+// const hasLowerThenUpper = str => /[a-zа-яё][A-ZА-ЯЁ]/.test(str);
+// allLevelsTexts.forEach(text => {
+//      if(hasLowerThenUpper(text)){
+//           console.log(text);
+//      }
+// });
+// return;
 
 
 
@@ -211,7 +218,7 @@ function testTextForBadWords(text){
      return false;
 }
 
-while(allLevels.length !== 2200){
+while(allLevels.length !== 2220){
      let index = Math.floor(Math.random() * allQuotes.length);
      let phrase = allQuotes[index];
      let text = phrase.text;
