@@ -11,3 +11,6 @@ export function mobileShowRewardedAd(callBack: () => void){
      //При удачном просмотре вызывать колбэк
      console.log('mobileShowRewardedAd');
  }
+export function mobileBackButtonClick(){
+    window.dispatchEvent(new Event("back-button-click"));
+}

@@ -137,7 +137,7 @@ const Shop: React.FC<ShopProps> = ({userData, onClose, setUserData,
                   <div className="modal-shop-row-name">{item.count} {t('hint', {count: item.count})}</div>
                   <div
                     className={`modal-shop-row-price
-                    ${userData.money <= item.price ? 'modal-shop-row-price_disabled' : ''}
+                    ${userData.money < item.price ? 'modal-shop-row-price_disabled' : ''}
                     ${item.price === 0 && rewardTimer === 0 ? 'modal-shop-row-adv' : ''}`
                   }
                     onClick={() => buyItem(item)}

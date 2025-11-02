@@ -152,6 +152,7 @@
   background-position: center center;
   background-size: 80%;
   animation: errorShake 0.7s ease-in-out;
+  transform-origin: center center;
 }
 
 @keyframes errorShake {

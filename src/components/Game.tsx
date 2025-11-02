@@ -15,6 +15,7 @@ import { showAdv, params, getCurrentDateFormatted } from '../main'
 import { getMinutesFromSeconds } from '../tasks'
 import Confetti from 'confetti-react';
 import { useTranslation } from 'react-i18next'
+import { useBackButtonClick } from '../hooks/useBackButtonClick'
 
 interface GameProps {
   onMenu: () => void
@@ -85,6 +86,13 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
 
   //Время
   const { getSeconds, reset } = usePageActiveTimer()
+
+  const backButtonClick = () => {
+    setSelecetedHint(0);
+    setIsTipSelecting(false);
+    setIsShowSettings(false);
+  };
+  useBackButtonClick(backButtonClick);
 
 
   const getLevelTime = () => {

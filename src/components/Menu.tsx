@@ -24,6 +24,7 @@ import ClickParticles from './ClickParticles'
 import { NOT_SHOW_ADV, showAdv, isPurchaseAvailable, params } from '../main'
 import { useTranslation } from 'react-i18next'
 import Modes from './Modes/Modes'
+import { useBackButtonClick } from '../hooks/useBackButtonClick'
 
 
 
@@ -101,6 +102,13 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
           }
           addPreviousIQ();
      }
+     const backButtonClick = () => {
+          setShowStats(false);
+          setShowSettings(false);
+          setShowRating(false);
+          setShowCollection(false);
+     };
+     useBackButtonClick(backButtonClick);
      
 
      const resetLottie = () => {

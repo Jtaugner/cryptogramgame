@@ -7,6 +7,7 @@ import './AppTransition.css'
 import { usePageActiveTimer } from './components/PageTimer'
 import { appIsReady, consumePurchase, getServerTime, makePurchaseSDK, setNotShowAdv, payments, saveData, shopItemCount, shopItems, tryPlaySound, setUserToLeaderboard, tryToAddUserToLeaderboard, params, gameLink, isPurchaseAvailable  } from './main'
 import { copyObject, getTasks } from './tasks'
+import { useBackButtonClick } from './hooks/useBackButtonClick'
 import { LevelData, namesDescs } from './levels'
 import Shop from './components/modalComponents/Shop'
 import ShopMoney from './components/modalComponents/ShopMoney'
@@ -146,6 +147,7 @@ export type AppProps = {
 
 let musicStarted = false;
 let firstClickWasMade = false;
+let handlersAdded = false;
 
 const App: React.FC<AppProps> = ({allUserData, mainLanguage}) => {
   const { t } = useTranslation();
@@ -176,6 +178,20 @@ const App: React.FC<AppProps> = ({allUserData, mainLanguage}) => {
     }
     setShowShopMoney(true);
   }
+
+  const backButtonClick = () => {
+    let windowClosed = false;
+    setShowShopMoney(c => {
+      if(c){
+        windowClosed = true;
+      }
+      return false;
+    })
+    if(!windowClosed){
+      setShowShop(false);
+    }
+  };
+  useBackButtonClick(backButtonClick);
   
 
 
@@ -343,25 +359,29 @@ const App: React.FC<AppProps> = ({allUserData, mainLanguage}) => {
     if(userData?.lastLevel === 0){
       params({'firstStart': 1});
     }
-    window.addEventListener('click', (e) => {
-      firstClickWasMade = true;
-      if(userData.settings.music && !musicStarted ){
-        playSound('music');
-        musicStarted = true;
-      }
-      try{
-        for(let i = 0; i < clickSoundElements.length; i++){
-          if(e?.target?.className?.indexOf(clickSoundElements[i]) !== -1){
-            // console.log('clickSoundElements', soundsRef.current);
-            playSound('click', !soundsRef.current);
-          }
+    if(!handlersAdded){
+      console.log('ADDHANDLERS');
+      handlersAdded = true;
+      const clickHandler = (e) => {
+        firstClickWasMade = true;
+        if(userData.settings.music && !musicStarted ){
+          playSound('music');
+          musicStarted = true;
         }
-      }catch(err){
-
+        try{
+          for(let i = 0; i < clickSoundElements.length; i++){
+            if(e?.target?.className?.indexOf(clickSoundElements[i]) !== -1){
+              // console.log('clickSoundElements', soundsRef.current);
+              playSound('click', !soundsRef.current);
+            }
+          }
+        }catch(err){
+  
+        }
+  
       }
-
-    })
-
+      window.addEventListener('click', clickHandler);
+    }
     try{
       changeLanguage(mainLanguage);
     }catch(e){
