@@ -1,0 +1,359 @@
+{
+     "continue": {
+          "ru": "Продолжить",
+          "en": "Continue"
+     },
+     "level": {
+          "ru": "Уровень",
+          "en": "Level"
+     },
+     "noLevels": {
+          "ru": "Уровней нет",
+          "en": "No levels available"
+     },
+     "levelsWillAppear": {
+          "ru": "Они скоро появятся",
+          "en": "They will appear soon"
+     },
+     "shop": {
+          "ru": "Магазин",
+          "en": "Shop"
+     },
+     "rating": {
+          "ru": "Рейтинг",
+          "en": "Rating"
+     },
+     "collection": {
+          "ru": "Коллекция",
+          "en": "Collection"
+     },
+     "statistics": {
+          "ru": "Статистика",
+          "en": "Statistics"
+     },
+     "untillNextTask": {
+          "ru": "До следующего задания:",
+          "en": "Until the next task:"
+     },
+     "dailyTasks": {
+          "ru": "Выполняйте ежедневные задания:",
+          "en": "Complete daily tasks:"
+     },
+     "nextTask": {
+          "ru": "До следующего задания:",
+          "en": "Until the next task:"
+     },
+     "on": {
+          "ru": "ВКЛ",
+          "en": "ON"
+     },
+     "off": {
+          "ru": "ВЫК",
+          "en": "OFF"
+     },
+     "task-levels": {
+          "ru": "Пройдено уровней",
+          "en": "Levels completed"
+     },
+     "task-time": {
+          "ru": "Время в игре (мин)",
+          "en": "Time in game (min)"
+     },
+     "task-levelWithoutMistake": {
+          "ru": "Побед без ошибок",
+          "en": "Flawless wins"
+     },
+     "quotes": {
+          "ru": "Цитаты",
+          "en": "Quotes"
+     },
+     "poems": {
+          "ru": "Литература",
+          "en": "Literature"
+     },
+     "aphorisms": {
+          "ru": "Афоризмы",
+          "en": "Aphorisms"
+     },
+     "music": {
+          "ru": "Музыка",
+          "en": "Music"
+     },
+     "cinema": {
+          "ru": "Кино",
+          "en": "Cinema"
+     },
+     "science": {
+          "ru": "Наука",
+          "en": "Science"
+     },
+     "collection-category-text": {
+          "ru": "Здесь появятся фразы, которые вы разгадаете",
+          "en": "Here you will see the phrases you have solved"
+     },
+     "settings": {
+          "ru": "Настройки",
+          "en": "Settings"
+     },
+     "sounds": {
+          "ru": "Звуки",
+          "en": "Sounds"
+     },
+     "arrowLeft": {
+          "ru": "Стрелочки слева",
+          "en": "Arrows on the left"
+     },
+     "howToPlay": {
+          "ru": "Как играть?",
+          "en": "How to play?"
+     },
+     "home": {
+          "ru": "Домой",
+          "en": "Home"
+     },
+     "youHave": {
+          "ru": "У вас",
+          "en": "You have"
+     },
+     "hint": {
+          "ru": "подсказка",
+          "en": "hint"
+     },
+     "hint_few": {
+          "ru": "подсказки"
+     },
+     "hint_many": {
+          "ru": "подсказок"
+     },
+     "hint_zero": {
+          "ru": "подсказок"
+     },
+     "coins": {
+          "ru": "Монетки",
+          "en": "Coins"
+     },
+     "coinsCount": {
+          "ru": "монет",
+          "en": "coins"
+     },
+     "advert": {
+          "ru": "Реклама",
+          "en": "Ads"
+     },
+     "removeAds": {
+          "ru": "Отключение рекламы",
+          "en": "Remove ads"
+     },
+     "parameters": {
+          "ru": "Параметры",
+          "en": "Parameters"
+     },
+     "score": {
+          "ru": "Очки",
+          "en": "Score"
+     },
+     "levels": {
+          "ru": "Пройдено уровней",
+          "en": "Levels completed"
+     },
+     "letters": {
+          "ru": "Отгадано букв",
+          "en": "Letters solved"
+     },
+     "words": {
+          "ru": "Отгадано слов",
+          "en": "Words solved"
+     },
+     "perfectLevels": {
+          "ru": "Уровней без ошибок",
+          "en": "Flawless levels"
+     },
+     "mistakes": {
+          "ru": "Ошибок",
+          "en": "Mistakes"
+     },
+     "avgTime": {
+          "ru": "Среднее время",
+          "en": "Average time"
+     },
+     "bestTime": {
+          "ru": "Лучшее время",
+          "en": "Best time"
+     },
+     "time": {
+          "ru": "Время",
+          "en": "Time"
+     },
+     "tasks": {
+          "ru": "Задания",
+          "en": "Tasks"
+     },
+     "mistakesGame": {
+          "ru": "Ошибки",
+          "en": "Mistakes"
+     },
+     "smallLevel": {
+          "ru": "Ур.",
+          "en": "Lvl."
+     },
+     "game_hintTitle_1": {
+          "ru": "Цитаты",
+          "en": "Quotes"
+     },
+     "game_hintTitle_2": {
+          "ru": "Ошибки",
+          "en": "Mistakes"
+     },
+     "game_hintText_1": {
+          "ru": "Здесь вы можете узнать тип фразы, которую будете разгадывать",
+          "en": "Here you can see the type of phrase you are solving"
+     },
+     "game_hintText_2": {
+          "ru": "После 3 ошибок клавиатура заблокируется на определённое время",
+          "en": "After 3 mistakes the keyboard will be blocked for a certain time"
+     },
+     "game_tip_1": {
+          "ru": "Выберите ячейку",
+          "en": "Select a cell"
+     },
+     "game_tip_2": {
+          "ru": "для открытия",
+          "en": "to open it"
+     },
+     "only": {
+          "ru": "Только",
+          "en": "Only"
+     },
+     "playersPassedLevel": {
+          "ru": "игроков прошли этот уровень",
+          "en": "players passed this level"
+     },
+     "withoutMistakes": {
+          "ru": "без ошибок",
+          "en": "without mistakes"
+     },
+     "cancel": {
+          "ru": "Отменить",
+          "en": "Cancel"
+     },
+     "youMadeMistakes": {
+          "ru": "Вы сделали 3 ошибки, поэтому клавиатура",
+          "en": "You made 3 mistakes, so the keyboard"
+     },
+     "keyboardBlocked": {
+          "ru": "заблокирована на",
+          "en": "is blocked for"
+     },
+     "seconds": {
+          "ru": "сек.",
+          "en": "sec"
+     },
+     "next": {
+          "ru": "Далее",
+          "en": "Next"
+     },
+     "play": {
+          "ru": "Играть",
+          "en": "Play"
+     },
+     "rules-step-1": {
+          "ru": "Число - это буква",
+          "en": "Number means letter"
+     },
+     "rules-step-2": {
+          "ru": "Цель игры",
+          "en": "Goal of the game"
+     },
+     "rules-step-3": {
+          "ru": "Клавиатура",
+          "en": "Keyboard"
+     },
+     "rules-step-4": {
+          "ru": "Совет",
+          "en": "Tip"
+     },
+     "rules-step-1-text": {
+          "ru": "<span>Каждое число относится к букве. <br> К примеру, <span class='rules-text-important'>2</span> - это <span class='rules-text-important'>А</span></span>",
+          "en": "<span>Each number represents a letter. <br> For example, <span class='rules-text-important'>2</span> means <span class='rules-text-important'>A</span></span>"
+     },
+     "rules-step-2-text": {
+          "ru": "Ваша задача - заполнить все клетки, чтобы получить исходную фразу.",
+          "en": "Your goal is to fill in all the cells to reveal the original phrase."
+     },
+     "rules-step-3-text": {
+          "ru": "Зелёным на клавиатуре подсвечены буквы, чьи числа вы уже разгадали.",
+          "en": "Letters you have already decoded are highlighted in green on the keyboard."
+     },
+     "rules-step-4-text": {
+          "ru": "Сначала заполните те клетки, числа которых вы уже знаете",
+          "en": "Start by filling in the cells with numbers you already know."
+     },
+     "rulesDice-step-1": {
+          "ru": "Сложный уровень",
+          "en": "Hard level"
+     },
+     "rulesDice-step-2": {
+          "ru": "Цель игры",
+          "en": "Goal of the game"
+     },
+     "rulesDice-step-3": {
+          "ru": "Совет",
+          "en": "Tip"
+     },
+     "rulesDice-step-1-text": {
+          "ru": "<span>Это <span class='rules-text-important'>усложнённый уровень</span> игры. Вместо чисел здесь используются игральные кубики</span>",
+          "en": "<span>This is a <span class='rules-text-important'>hard level</span> of the game. Dice are used instead of numbers</span>"
+     },
+     "rulesDice-step-2-text": {
+          "ru": "<span> Обращайте внимание на <span class='rules-text-important'>количество очков</span> на игральных кубиках и их <span class='rules-text-important'> цвета</span>.</span>",
+          "en": "<span> Pay attention to the <span class='rules-text-important'>number of dots</span> on the dice and their <span class='rules-text-important'>colors</span>.</span>"
+     },
+     "rulesDice-step-3-text": {
+          "ru": "Сначала заполните те клетки, значения которых вы уже знаете",
+          "en": "Start by filling in the cells with values you already know"
+     },
+     "hours-mini": {
+          "ru": "ч",
+          "en": "h"
+     },
+     "minutes-mini": {
+          "ru": "м",
+          "en": "m"
+     },
+     "dailyTask": {
+          "ru": "Вызов дня",
+          "en": "Daily task"
+     },
+     "newTask": {
+          "ru": "Новый вызов",
+          "en": "New task"
+     },
+     "dailyBlocked": {
+          "ru": "Откройте {{level}} уровень, чтобы получить доступ",
+          "en": "Open {{level}} level to get access"
+     },
+     "autoScroll": {
+          "ru": "Автопрокрутка",
+          "en": "Auto scroll"
+     },
+     "game_hintText_dailyLevel": {
+          "ru": "В вызове дня с помощью глаголицы зашифрованы различные определения и понятия.",
+          "en": "In daily tasks, the phrases are encrypted using the Glagolitic alphabet."
+     },
+     "daily-rules-step-1-text": {
+          "ru": "Вместо чисел - буквы глаголицы. Правила игры не меняются. Удачи!",
+          "en": "Glagolitic letters instead of numbers. The rules are same. Good luck!"
+     },
+     "dailySmallLevel": {
+          "ru": "Вызов",
+          "en": "Daily"
+     },
+     "soon": {
+          "ru": "Скоро",
+          "en": "Soon"
+     },
+     "copied": {
+          "ru": "Скопировано",
+          "en": "Copied"
+     }
+}
