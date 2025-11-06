@@ -5,7 +5,7 @@ import Menu from './components/Menu'
 import { CSSTransition, SwitchTransition } from 'react-transition-group'
 import './AppTransition.css'
 import { usePageActiveTimer } from './components/PageTimer'
-import { appIsReady, consumePurchase, getServerTime, makePurchaseSDK, setNotShowAdv, payments, saveData, shopItemCount, shopItems, tryPlaySound, setUserToLeaderboard, tryToAddUserToLeaderboard, params, gameLink, isPurchaseAvailable  } from './main'
+import { appIsReady, consumePurchase, getServerTime, makePurchaseSDK, setNotShowAdv, payments, saveData, shopItemCount, shopItems, tryPlaySound, setUserToLeaderboard, tryToAddUserToLeaderboard, params, gameLink, isPurchaseAvailable, getLocationByDate  } from './main'
 import { copyObject, getTasks } from './tasks'
 import { useBackButtonClick } from './hooks/useBackButtonClick'
 import { LevelData, namesDescs } from './levels'
@@ -14,6 +14,7 @@ import ShopMoney from './components/modalComponents/ShopMoney'
 import { stopSound, switchOffMainMusic } from './sounds'
 import { changeLanguage } from './i18n'
 import { useTranslation } from 'react-i18next'
+import Calendar from './components/Calendar/Calendar'
 // @ts-ignore
 let iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 if(iOS){
@@ -134,6 +135,10 @@ export type UserDataProps = {
       data: LevelDataProps | null,
       currentDate: string,
       doneForToday: boolean
+    } | {
+      completedLevels: number[],
+      currentLevels: number[],
+      currentLevelsData: Record<number, LevelDataProps>
     }
   }
 }
@@ -157,7 +162,18 @@ const App: React.FC<AppProps> = ({allUserData, mainLanguage}) => {
   const [showShopMoney, setShowShopMoney] = useState(false)
   const [gameLanguage, setGameLanguage] = useState(mainLanguage)
   const [gameLocation, setGameLocation] = useState('main')
+  const [gameLocationData, setGameLocationData] = useState({
+    location: 'main',
+    level: 0
+  })
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false)
+  const [calendarLocation, setCalendarLocation] = useState(getLocationByDate());
 
+  const openCalendar = (location: string = getLocationByDate()) => {
+    setIsCalendarOpen(true);
+    setCalendarLocation(location);
+  }
+  
   const [showRewardTimer, setShowRewardTimer] = useState(0)
   const [dailyDone, setDailyDone] = useState(false)
 
@@ -170,6 +186,17 @@ const App: React.FC<AppProps> = ({allUserData, mainLanguage}) => {
 
   const getGameSeconds = () => {
     return getSeconds(true);
+  }
+
+  const openCalendarLevel = (location: string, level: number) => {
+    setGameLocation('calendar');
+    setIsCalendarOpen(false);
+    setGameLocationData({
+      location: location,
+      level: level
+    })
+    setShowGame(true);
+    playSound('changeWindow')
   }
 
   const openShopMoney = () => {
@@ -416,6 +443,9 @@ const App: React.FC<AppProps> = ({allUserData, mainLanguage}) => {
               onMenu={() => {
                 setShowGame(false)
                 playSound('changeWindow')
+                if(gameLocation === 'calendar'){
+                  setIsCalendarOpen(true);
+                }
               }}
               userData={userData}
               setUserData={setUserData}
@@ -428,11 +458,14 @@ const App: React.FC<AppProps> = ({allUserData, mainLanguage}) => {
               gameLanguage={gameLanguage}
               gameLocation={gameLocation}
               setDailyDone={setDailyDone}
+              gameLocationData={gameLocationData}
             />
         ) : (
           <Menu
               onStart={() => {
                 setShowGame(true)
+                // setGameLocation('main');
+                setIsCalendarOpen(false);
                 playSound('changeWindow')
               }}
               userData={userData}
@@ -453,7 +486,8 @@ const App: React.FC<AppProps> = ({allUserData, mainLanguage}) => {
               setGameLocation={setGameLocation}
               dailyDone={dailyDone}
               setDailyDone={setDailyDone}
-             />
+              openCalendar={openCalendar}
+          />
         )}
           {showShop && (
                <Shop
@@ -471,6 +505,16 @@ const App: React.FC<AppProps> = ({allUserData, mainLanguage}) => {
                     onClose={() => {setShowShopMoney(false)}}
                     makePurchase={makePurchase}
                     isShopOpened={showShop}
+               />
+          )}
+          {isCalendarOpen && (
+               <Calendar
+                    userData={userData}
+                    setUserData={setUserData}
+                    onClose={() => setIsCalendarOpen(false)}
+                    calendarLocation={calendarLocation}
+                    setCalendarLocation={setCalendarLocation}
+                    openCalendarLevel={openCalendarLevel}
                />
           )}
         </div>

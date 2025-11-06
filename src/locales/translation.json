@@ -355,5 +355,62 @@
      "copied": {
           "ru": "Скопировано",
           "en": "Copied"
+     },
+     "monthName0": {
+          "ru": "Январь",
+          "en": "January"
+     },
+     "monthName1": {
+          "ru": "Февраль",
+          "en": "February"
+     },
+     "monthName2": {
+          "ru": "Март",
+          "en": "March"
+     },
+     "monthName3": {
+          "ru": "Апрель",
+          "en": "April"
+     },
+     "monthName4": {
+          "ru": "Май",
+          "en": "May"
+     },
+     "monthName5": {
+          "ru": "Июнь",
+          "en": "June"
+     },
+     "monthName6": {
+          "ru": "Июль",
+          "en": "July"
+     },
+     "monthName7": {
+          "ru": "Август",
+          "en": "August"
+     },
+     "monthName8": {
+          "ru": "Сентябрь",
+          "en": "September"
+     },
+     "monthName9": {
+          "ru": "Октябрь",
+          "en": "October"
+     },
+     "monthName10": {
+          "ru": "Ноябрь",
+          "en": "November"
+     },
+     "monthName11": {
+          "ru": "Декабрь",
+          "en": "December"
+     },
+     "lookAdv": {
+          "ru": "СМОТРЕТЬ РЕКЛАМУ И",
+          "en": "LOOK ADVERT AND"
+     },
+     "location2025-10": {
+          "ru": "Назад в СССР",
+          "en": "Location 11"
      }
+
 }

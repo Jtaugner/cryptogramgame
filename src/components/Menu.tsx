@@ -11,8 +11,6 @@ import animationPunch7 from '../Hi/Fall.json'
 import Statistics from './modalComponents/Statistics'
 import { TaskObjectProps, UserDataProps } from '../App'
 import Settings from './modalComponents/Settings'
-import Shop from './modalComponents/Shop'
-import ShopMoney from './modalComponents/ShopMoney'
 import Rating from './modalComponents/Rating'
 import Collection from './modalComponents/Collection'
 import { LevelData, levels, msToTime } from '../levels'
@@ -50,6 +48,7 @@ interface MenuProps {
   setGameLocation: (gameLocation: string) => void
   dailyDone: boolean
   setDailyDone: (dailyDone: boolean) => void
+  openCalendar: () => void
 }
 const getIQcolor = (iq: number) => {
      if (iq <= 10) return '#e28f2e';
@@ -80,7 +79,7 @@ let dailyAdded = false;
 const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeconds,
       previousTasksData, setPreviousTasksData, previousIQ, addPreviousIQ,
        copyFunction, testTasks, showShop, showShopMoney, setShowShop,
-       openShopMoney, playSound, gameLanguage, setGameLocation, dailyDone, setDailyDone }) => {
+       openShopMoney, playSound, gameLanguage, setGameLocation, dailyDone, setDailyDone, openCalendar }) => {
 
      const { t } = useTranslation();
 
@@ -282,7 +281,14 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
 
           {/* Дневной результат */}
           <div className="menu__centerBlock">
-          <Modes openDailyLevel={openDailyLevel} userData={userData} setUserData={setUserData} dailyAnimation={dailyAnimation}/>
+          <Modes
+             openDailyLevel={openDailyLevel}
+             userData={userData}
+             setUserData={setUserData}
+             dailyAnimation={dailyAnimation}
+             openCalendar={openCalendar}
+              
+          />
           <div className="menu-daily">
           <div className="menu-daily-title-block">
                <span className="menu-daily-title">{t('tasks')}</span>

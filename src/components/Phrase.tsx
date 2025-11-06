@@ -53,6 +53,8 @@ export function getTextForLevelEnd(text: string){
   </>);
 }
 
+let enteredNextLetter: string | undefined = undefined;
+
 
 const Phrase = forwardRef<PhraseHandle, PhraseProps>(
   ({ data, onError, onLetterFill, onCompleteNumber,
@@ -166,10 +168,17 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
     if(inactiveKeys.has(letter.toLowerCase())) return;
     if (!doItWhatever && (blockedTime > 0 || isTipSelecting)) return
     if (Object.keys(wrongLetters).length > 0) return
+
+
     
     const isCorrect = letters[selectedIndex].toLowerCase() === letter.toLowerCase()
 
+    if(!isCorrect && typeof enteredNextLetter === 'string' &&
+       enteredNextLetter.toLowerCase() === letter.toLowerCase()) return;
+
+
     if (isCorrect) {
+      enteredNextLetter = letters[selectedIndex+1];
       playSound('goodLetter');
       setCorrectLetters(prev => ({ ...prev, [selectedIndex]: true }))
       const newFilledLetters = { ...data.filledLetters, [selectedIndex]: letter }

@@ -1,10 +1,10 @@
+// vite.config.ts
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import { createHtmlPlugin } from 'vite-plugin-html';
+import { createHtmlPlugin } from 'vite-plugin-html'
 
-// https://vite.dev/config/
-
-console.log('process.env.PLATFORM', process.env.PLATFORM);
+console.log('START')
+console.log('process.env.PLATFORM', process.env.PLATFORM)
 
 export default defineConfig({
   base: './',
@@ -16,9 +16,19 @@ export default defineConfig({
         },
       },
     }),
-    react()
+    react(),
   ],
-  define: {
-    __PLATFORM__: JSON.stringify(process.env.PLATFORM || 'default')
-  }
+
+  // Ключевой момент — сюда
+  esbuild: {
+    define: {
+      __PLATFORM__: JSON.stringify(process.env.PLATFORM || 'default'),
+    },
+  },
+
+  // А вот этот блок можно убрать совсем
+  // define: {
+  //   __PLATFORM__: JSON.stringify(process.env.PLATFORM || 'default')
+  // },
 })
+  

@@ -4,7 +4,7 @@ import Phrase from './Phrase'
 import './Game.css'
 import './designs.css'
 import ProgressCircle from '../ProgressCircle'
-import { countWordsWithHiddenLetters, levels, percentOfLevels, testLetterForNotAlphabet, dailyLevels } from '../levels'
+import { countWordsWithHiddenLetters, levels, percentOfLevels, testLetterForNotAlphabet, dailyLevels, locationLevels } from '../levels'
 import { usePageActiveTimer } from './PageTimer'
 import { UserDataProps, LevelDataProps } from '../App'
 import { SwitchTransition, CSSTransition } from 'react-transition-group';
@@ -30,6 +30,10 @@ interface GameProps {
   gameLanguage: string,
   gameLocation: string,
   setDailyDone: (dailyDone: boolean) => void
+  gameLocationData: {
+    location: string,
+    level: number
+  }
 }
 
 const cancelBlockPrice = 1;
@@ -39,9 +43,13 @@ let realLevelTime = 0;
 let timeToAdd = 0;
 let reduceMoney = false;
 
-function chooseLevelData(gameLocation: string, userData: any){
+function chooseLevelData(gameLocation: string, userData: any,
+   gameLocationData?: { location: string, level: number }){
     if(gameLocation === 'main'){
       return levels[userData.lastLevel]
+    }else if(gameLocation === 'calendar'){
+      if(!gameLocationData) gameLocationData = { location: '2025-10', level: 0 };
+      return locationLevels[gameLocationData?.location][gameLocationData?.level]
     }else{
       let lvl = userData.locations[gameLocation].level;
       console.log('lvl', lvl);
@@ -59,7 +67,8 @@ function chooseDesignByLoction(gameLocation: string){
 }
 
 const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
-   getGameSeconds, copyFunction, testTasks, playSound, setShowShop, openShopMoney, gameLanguage, gameLocation, setDailyDone }) => { 
+   getGameSeconds, copyFunction, testTasks, playSound, setShowShop, openShopMoney,
+    gameLanguage, gameLocation, setDailyDone, gameLocationData = { location: '2025-10', level: 0 } }) => { 
   const [level, setLevel] = useState(userData.lastLevel)
   const [isLevelCompleted, setIsLevelCompleted] = useState(false)
   const [showConfetti, setShowConfetti] = useState(false)
@@ -77,7 +86,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
   const [errorScreenAnimation, setErrorScreenAnimation] = useState(false)
   const [phraseData, setPhraseData] = useState<LevelDataProps>()
   const [inactiveKeys, setInactiveKeys] = useState<Set<string>>(new Set())
-  const [levelData, setLevelData] = useState<LevelData>(chooseLevelData(gameLocation, userData));
+  const [levelData, setLevelData] = useState<LevelData>(chooseLevelData(gameLocation, userData, gameLocationData));
   const { t } = useTranslation();
 
   const phraseRef = useRef<{ handleKeyPress: (key: string) => void, updatePhrase: (data: LevelDataProps) => void, getNextEmptyIndex: (getPrevious: boolean) => void }>(null)
@@ -136,6 +145,9 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
       console.log(levelData);
       if(gameLocation === 'main'){
         levelWithoutMistake = userData.lastLevelData ? !userData.lastLevelData.atLeastOneError : false;        
+      }else if(gameLocation === 'calendar'){
+        let currentLevelData = userData.locations[gameLocationData.location].currentLevelsData[gameLocationData.level];
+        levelWithoutMistake = currentLevelData ? !currentLevelData.atLeastOneError : false;
       }else{
         levelWithoutMistake = userData.locations[gameLocation].data ? !userData.locations[gameLocation].data.atLeastOneError : false;
       }
@@ -189,6 +201,12 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
       if(gameLocation === 'main'){
         lastLevelData = null;
         lastLevel = level + 1;
+      }else if(gameLocation === 'calendar'){
+        locationsData[gameLocationData.location].completedLevels.push(gameLocationData.level);
+        delete locationsData[gameLocationData.location].currentLevelsData[gameLocationData.level];
+        if(locationsData[gameLocationData.location].currentLevels.includes(gameLocationData.level)){
+          locationsData[gameLocationData.location].currentLevels.splice(locationsData[gameLocationData.location].currentLevels.indexOf(gameLocationData.level), 1);
+        }
       }else{
         locationsData[gameLocation].data = null;
         if(getCurrentDateFormatted() === userData.locations[gameLocation].currentDate){
@@ -238,12 +256,30 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
           ...newLevelData,
           time: getLevelTime()
         }
+      }else if(gameLocation === 'calendar'){
+        locationsData[gameLocationData.location].currentLevelsData[gameLocationData.level] = {
+          ...locationsData[gameLocationData.location].currentLevelsData[gameLocationData.level],
+          ...newLevelData,
+          time: getLevelTime()
+        }
+        //Если уровень ещё не добавлен в текущие уровни, то добавляем его
+        if(!locationsData[gameLocationData.location].currentLevels.includes(gameLocationData.level)){
+          locationsData[gameLocationData.location].currentLevels.push(gameLocationData.level);
+        }
+        //Если в локации сохранено больше 3 уровней, то удаляем самый старый уровень
+        if(locationsData[gameLocationData.location].currentLevels.length > 3){
+          let deletedLevel = locationsData[gameLocationData.location].currentLevels.shift();
+          delete locationsData[gameLocationData.location].currentLevelsData[deletedLevel];
+        }
       }else{
         locationsData[gameLocation].data = {
           ...locationsData[gameLocation].data,
           ...newLevelData,
           time: getLevelTime()
         }
+      }
+      if(typeof lastLevelData === 'object'){
+        delete lastLevelData.hiddenIndexes;
       }
       //Если обновляем кол-во ошибок, то записываем в статистику
       setUserData({...userData,
@@ -373,7 +409,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
     if(__PLATFORM__ === 'gp' || __PLATFORM__ === 'gd'){
       showAdvWrapper()
     }
-    if(level === levels.length - 1 || gameLocation === 'dailyLevel'){
+    if(level === levels.length - 1 || gameLocation === 'dailyLevel' || gameLocation === 'calendar'){
       onMenu();
       return;
     }
@@ -533,12 +569,13 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
     let lastLevelData = null;
     if(gameLocation === 'main'){
       lastLevelData = userData.lastLevelData;
+    }else if(gameLocation === 'calendar'){
+      if(userData.locations[gameLocationData.location].currentLevels.includes(gameLocationData.level)){
+        lastLevelData = userData.locations[gameLocationData.location].currentLevelsData[gameLocationData.level];
+      }
     }else{
       lastLevelData = userData.locations[gameLocation].data;
     }
-
-    console.log('initialPhraseData', initialPhraseData.text);
-    console.log('lastLevelData', lastLevelData?.text);
     
     if(lastLevelData && lastLevelData.text === initialPhraseData.text){
       console.log('user has lastLevel data'); 
@@ -743,8 +780,8 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
             />
       </div>
       }
-      {/* Main content (Phrase + Hint) */}
-      <div className="game-main scroll-hidden">
+      {/* Main content (Phrase + Hint) scroll-hidden*/}
+      <div className="game-main">
         <Phrase 
           ref={phraseRef}
           data={phraseData}
@@ -783,7 +820,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
              
              >
               <div className="nextLevelButton-text">{t('next')}</div>
-              {gameLocation !== 'dailyLevel' &&
+              {gameLocation === 'main' &&
                 <div className="nextLevelButton-level">{t('level')} {level + 2}</div>
               }
             </div>

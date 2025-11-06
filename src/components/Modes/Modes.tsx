@@ -1,16 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react'
 import './Modes.css'
-import { getCurrentDateFormatted, getTimeLeftInDay } from '../../main';
+import { getCurrentDateFormatted, getCurrentMonth, getCurrentYear, getLocationByDate, getTimeLeftInDay, mainLanguage } from '../../main';
 import { t } from 'i18next';
 import { UserDataProps } from '../../App';
-import { dailyLevels, formatSmallTime } from '../../levels';
+import { dailyLevels, formatSmallTime, levelToOpenCalendar } from '../../levels';
 import { levelToOpenDaily } from '../../levels';
 
 interface ModesProps {
   openDailyLevel: () => void,
   userData: UserDataProps,
   setUserData: (userData: UserDataProps) => void,
-  dailyAnimation: boolean
+  dailyAnimation: boolean,
+  openCalendar: () => void
 }
 
 function testIsDailyClosed(userData: UserDataProps){
@@ -18,9 +19,10 @@ function testIsDailyClosed(userData: UserDataProps){
       && userData.locations['dailyLevel'].currentDate === getCurrentDateFormatted();
 }
 
-const Modes: React.FC<ModesProps> = ({openDailyLevel, userData, setUserData, dailyAnimation}) => {
+const Modes: React.FC<ModesProps> = ({openDailyLevel, userData, setUserData, dailyAnimation, openCalendar}) => {
      const [timeLeft, setTimeLeft] = useState(getTimeLeftInDay());
      const [isDailyClosed, setIsDailyClosed] = useState(testIsDailyClosed(userData));
+     const [calendarLocation, setCalendarLocation] = useState(getLocationByDate(getCurrentYear(), getCurrentMonth()));
      
      useEffect(() => {
           const interval = setInterval(() => {
@@ -118,6 +120,47 @@ const Modes: React.FC<ModesProps> = ({openDailyLevel, userData, setUserData, dai
                }
 
           </div>
+
+
+
+
+
+
+          {/* Calendar mode choose */}
+          {
+               false && mainLanguage === 'ru' && 
+               <div className="menu__mode-card-wrapper">
+                    <div
+                    className={`menu__mode-card ${userData.lastLevel < levelToOpenCalendar ? 'menu__mode-card_notAvailable' : ''}`}
+                    onClick={() => openCalendar()}
+                    >
+                         {userData.lastLevel < levelToOpenCalendar &&
+                              <>
+                                   <div className="closedMode"></div>
+                                   <div className="closedMode__text">
+                                        {t('dailyBlocked', {level: levelToOpenCalendar+1})}
+                                   </div>
+                              </>
+                         }
+                         <div className="menu__mode-card__name">{t('location' + calendarLocation)}</div>
+                         <>
+                                   <div className="menu__mode-card__iq"
+                                        style={{
+                                             opacity: userData.lastLevel >= levelToOpenCalendar ? 1 : 0
+                                        }}>
+                                        + IQ
+                                        <div className="menu__mode-card__iq-number"> 20</div>
+                                   </div>
+                                   <div className={`menu__mode-card__play ${userData.lastLevel >= levelToOpenCalendar ? 'shiny-button shiny-button-anotherTiming' : ''}`}>
+                                        {t('play')}
+                                   </div>
+                         </>
+
+                    </div>
+
+               </div>
+          }
+          
      </div>
   )
 }

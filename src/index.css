@@ -27,7 +27,7 @@
 @font-face {
   font-family: 'SF Pro Display';
   src: url('./assets/font/SF-Pro-Display-Bold.otf') format('opentype');
-  font-weight: 700;
+  font-weight: bold;
   font-style: normal;
   font-display: block;
 }

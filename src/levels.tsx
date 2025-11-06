@@ -228,6 +228,7 @@ export const percentOfLevels ={
   
 }
 export const levelToOpenDaily = 19;
+export const levelToOpenCalendar = 39;
 
 export const getPercentOfLevels = (type: number) => {
      let percents = percentOfLevels[type as keyof typeof percentOfLevels];
@@ -309,6 +310,11 @@ const regexForDifferentLanguages = {
 export let levels: LevelData[] = [];
 export let dailyLevels: LevelData[] = [];
 
+interface LocationLevelsData {
+  [key: string]: LevelData[]; 
+}
+export let locationLevels: LocationLevelsData = {};
+
 
 function fixLevels(allLevels: LevelData[], language: string){
   const levels = allLevels.map((level: LevelData) => {
@@ -353,6 +359,12 @@ export function initLevels(allLevels: LevelData[], language: string){
 
 export function initDailyLevels(allLevels: LevelData[], language: string){
   dailyLevels = fixLevels(allLevels, language);
+}
+
+export function initLocationLevels(allLevels: LocationLevelsData, language: string){
+  Object.keys(allLevels).forEach((key: string) => {
+    locationLevels[key] = fixLevels(allLevels[key], language);
+  });
 }
 
 export const testLetterForNotAlphabet = (char: string, language: string) => {

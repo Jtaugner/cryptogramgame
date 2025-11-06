@@ -1,1 +1,264 @@
 /* Стили для клавиатуры */
+.calendar-wrapper{
+     position: absolute;
+     top: 0;
+     left: 0;
+     width: 100%;
+     height: 100%;
+     background: url('../../assets/locations/locationUSSR/bg.png') center center no-repeat;
+     background-size: cover;
+     z-index: 1000;
+
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
+}
+.calendar-wrapper .menu__top{
+     position: absolute;
+     top: 0;
+     left: 0;
+}
+
+.calendar{
+     max-width: 500px;
+     margin: 0 auto;
+}
+.calendar-month{
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+     margin-bottom: 60px;
+     padding: 0 10px;
+}
+.calendar__arrow-left, .calendar__arrow-right{
+     width: 20px;
+     aspect-ratio: 0.583/1;
+     background: url('../../assets/calendar/arrow-calendar.svg') center center no-repeat;
+     background-size: 100%;
+     cursor: pointer;
+}
+.calendar__arrow-right{
+     transform: rotate(180deg);
+}
+.calendar-month-center{
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     justify-content: center;
+     color: white;
+
+}
+.calendar-month-name{
+     font-size: 1.7rem;
+     line-height: 1.5rem;
+     font-weight: bold;
+     text-transform: uppercase;
+     margin-bottom: 8px;
+}
+.calendar-location-name{
+     font-size: 1rem;
+     line-height: 1rem;
+     font-weight: 600;
+     text-transform: uppercase;
+}
+.calendar__progress{
+     position: relative;
+     width: 98%;
+     margin: 0 auto;
+     height: 23px;
+     background: #c1bec3;
+     margin-bottom: 20px;
+     border-radius: 15px;
+     display: flex;
+     align-items: center;
+     justify-content: flex-start;
+     padding: 2px;
+     
+     box-shadow: inset 0 1px 0px rgba(255, 255, 255, 1);
+}
+.calendar__progress-bar{
+     height: 100%;
+     width: 0%;
+     background: #35b24a;
+     border-radius: 10px;
+}
+
+.calendar__progress-bar__number, .calendar__progress-bar__zero{
+     position: absolute;
+     top: 50%;
+     transform: translateY(-50%);
+
+     height: 100%;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+
+     font-size: 1rem;
+     line-height: 1rem;
+     color: #373b82;
+}
+.calendar__prize{
+     position: absolute;
+     top: 0;
+     left: 50%;
+     transform: translateX(-50%) translateY(-100%);
+     
+     display: flex;
+     flex-flow: column nowrap;
+     align-items: center;
+     justify-content: center;
+}
+.calendar__prize .calendar__prize__money{
+     margin: 0;
+     transform: scale(0.9);
+}
+.calendar__prize__money-count{
+     color: #fcd249;
+     text-shadow: 0px 1px 0px rgba(10, 10, 10, 0.49);
+        
+}
+.calendar__prize__tip, .calendar__prize__iq{
+     position: relative;
+     width: 38px;
+     height: 38px;
+     background: url(../../assets/calendar/tip-prize.png) center center no-repeat;
+     background-size: 100%;
+}
+.calendar__prize__count{
+     position: absolute;
+     right: -7px;
+     bottom: 0;
+     font-size: 0.6rem;
+     line-height: 0.6rem;
+     font-weight: bold;
+     color: rgba(255,255,255,0.68);
+     text-shadow: 0px 1px 0px rgba(10, 10, 10, 0.49);
+}
+.calendar__prize__iq{
+     background: url(../../assets/calendar/iq.png) center center no-repeat;
+     background-size: 100%;
+}
+.calendar__prize__strip{
+     height: 10.6px;
+     width: 1px;
+     background: url(../../assets/calendar/strip.png) center center no-repeat;
+     background-size: 100%;
+     margin-top: 1px;
+}
+.calendar__days{
+     margin-bottom: 20px;
+}
+.calendar__days-row{
+     display: flex;
+     justify-content: center;
+     align-items: center;
+}
+.calendar__day{
+
+     position: relative;
+     
+     width: 42px;
+     height: 42px;
+
+     display: flex;
+     justify-content: center;
+     align-items: center;
+
+     background: #e6ecf8;
+     box-shadow:  rgba(10, 10, 10, 0.14) 0px 0.5px 0px 1px, #ffffff 0px 0px 0px 2px inset;
+
+
+     font-weight: bold;
+     font-size: 1.2rem;
+     color: #444889;
+     border-radius: 6px;
+     margin: 5px;
+}
+.calendar__day_notAvailable{
+     background-color: rgba(186, 186, 243, 0.94);
+     color: #9496d1;
+     box-shadow:  rgba(10, 10, 10, 0.14) 0px 0.5px 0px 1px, #d8d2ee 0px 0px 0px 2px inset;
+}
+.calendar__day_inProcess{
+     background: linear-gradient(to bottom, #e8e9ff 50%, #abdcb3 50%);
+}
+.calendar__day_today{
+     background: #35b24a;
+     color: #e6ffeb;
+     box-shadow:  rgba(10, 10, 10, 0.14) 0px 0.5px 0px 1px, #5bc66c 0px 0px 0px 2px inset;
+}
+.calendar__day_selected{
+     box-shadow:  rgba(10, 10, 10, 0.14) 0px 0.5px 0px 1px, #e98060 0px 0px 0px 2px inset;
+}
+.calendar__day_completed{
+     background: url('../../assets/calendar/doneDay.svg') center center no-repeat, #abdcb3;
+     background-size: 60%;
+
+     box-shadow:  rgba(10, 10, 10, 0.14) 0px 0.5px 0px 1px, #a5e6b0 0px 0px 0px 2px inset;
+}
+.calendar__day:not(.calendar__day_notAvailable):not(.calendar__day_completed){
+     cursor: pointer;
+}
+.calendar__day_lookAdv:after{
+     content: '';
+     position: absolute;
+     bottom: 0;
+     right: 0;
+     width: 15px;
+     aspect-ratio: 1.05/1;
+     background: url('../../assets/calendar/advDay.png') center center no-repeat;
+     background-size: 100%;
+}
+
+.calendar__day_notVisible, .calendar__arrow_notVisible{
+     opacity: 0;
+}
+
+.calendar__play{
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
+    width: 90%;
+    max-width: 350px;
+    background: #fb8a67;
+    height: 73px;
+    color: white;
+    font-weight: bold;
+    font-size: 1.6rem;
+    line-height: 1.6rem;
+    border-radius: 7px;
+    box-shadow: 0 1px 0px 0 rgba(10, 10, 10, 0.4), inset 0px -3px 0px 0px #bf5433;
+    cursor: pointer;
+    position: relative;
+    text-transform: uppercase;
+    margin: 0 auto;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+}
+.calendar__play__lookAdv{
+     font-size: 1.3rem;
+     line-height: 1.3rem;
+     font-weight: bold;
+     text-transform: uppercase;
+     margin-bottom: 6px;
+     text-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+}
+.calendar__play:active {
+     box-shadow: none;
+     transform: scale(0.99) translateY(1px);
+}
+
+@media (min-with: 500px) {
+     .calendar-wrapper{
+          background-size: 100% 100%;
+     }
+}
+
+.redButton{
+     width: 20px;
+     height: 20px;
+     background: #ff0000;
+     border-radius: 50%;
+     cursor: pointer;
+}

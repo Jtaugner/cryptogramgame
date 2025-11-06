@@ -6,7 +6,7 @@ import './medias.css'
 import './i18n'
 import { getTasks } from './tasks.tsx'
 import { playSound, switchOffMainMusic, switchOnMainMusic } from './sounds.tsx'
-import { initDailyLevels, initLevels } from './levels.tsx'
+import { initDailyLevels, initLevels, initLocationLevels } from './levels.tsx'
 import { main } from 'framer-motion/client'
 import { mobileShowFullscreenAd, mobileShowRewardedAd } from './mobile-sdk.tsx'
 import { dailyLevels } from './levels.tsx'
@@ -146,9 +146,11 @@ async function createApp(){
   appCreated = true;
   let module;
   let dailyModule = null;
+  let locationModule = null;
   if(mainLanguage === 'ru'){
     module = await import(`./allLevels.js`);
     dailyModule = await import(`./dailyLevels.js`);
+    locationModule = await import(`./locationLevels.js`);
   }else{
     module = await import(`./allLevels-en.js`);
     dailyModule = await import(`./dailyLevels-en.js`);
@@ -158,6 +160,9 @@ async function createApp(){
   if(dailyModule){
     initDailyLevels(dailyModule.default, mainLanguage);
   }  
+  if(locationModule){
+    initLocationLevels(locationModule.default, mainLanguage);
+  }
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
       <App allUserData={fixUserData(userData)} mainLanguage={mainLanguage} />
@@ -193,6 +198,21 @@ export function getServerTime(){
     }
   }catch(e){}
   return dateTime;
+}
+export function getCurrentMonth() {
+  return new Date(getServerTime()).getMonth();
+}
+export function getCurrentDay() {
+  return new Date(getServerTime()).getDate();
+}
+export function getCurrentYear() {
+  return new Date(getServerTime()).getFullYear();
+}
+export function getLocationByDate(year = getCurrentYear(), month = getCurrentMonth()) {
+  if (month < 10) {
+    month = '0' + month;
+  }
+  return year + '-' + month;
 }
 export function getTimeLeftInDay() {
   const now = getServerTime();
@@ -552,8 +572,7 @@ export function initPlayer(ysdk: any) {
         console.log('INIT PLAYER');
         // Игрок авторизован.
         playerGame = _player;
-        console.log('playerGame', playerGame);
-        console.log(getGameProgressName());
+        // console.log('playerGame', playerGame);
 
         playerGame.getData(['gameProgress', 'gameProgress-en'], false).then((data: any) => {
             let gp = data[getGameProgressName()];
@@ -563,8 +582,6 @@ export function initPlayer(ysdk: any) {
               anotherLangDataForYandex = {['gameProgress-en']: data['gameProgress-en']};
             }
             //Вовзврат прогресса
-            console.log(getGameProgressName());
-            console.log(data);
             try {
 
                 if(gp){
