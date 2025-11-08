@@ -365,7 +365,7 @@ export function showAdv(){
     if(__PLATFORM__ === 'yandex'){
       YSDK.adv.showFullscreenAdv({
           callbacks: {
-              onOpen: function() {
+            onOpen: function() {
               canPlaySound = false;
               switchOffMainMusic();
             },
@@ -373,6 +373,9 @@ export function showAdv(){
               canPlaySound = true;
               switchOnMainMusic();
               // Действие после закрытия рекламы.
+            },
+            onError: function() {
+              console.log('Ошибка при показе рекламы');
             }
         }
       })

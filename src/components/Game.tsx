@@ -37,7 +37,7 @@ interface GameProps {
 }
 
 const cancelBlockPrice = 1;
-const moneyToAdd = 3;
+const moneyToAdd = 2;
 let realLevelTime = 0;
 
 let timeToAdd = 0;
@@ -65,6 +65,9 @@ function chooseDesignByLoction(gameLocation: string){
     return 'defaultDesign'
   }
 }
+
+let canShowAdvAfterMistake = true;
+
 
 const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
    getGameSeconds, copyFunction, testTasks, playSound, setShowShop, openShopMoney,
@@ -339,6 +342,13 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
     
   }
   const addErrors = () => {
+    if(canShowAdvAfterMistake && level > 11){
+      showAdvWrapper();
+      canShowAdvAfterMistake = false;
+      timeoutIds.current.push(setTimeout(() => {
+        canShowAdvAfterMistake = true;
+      }, 100000))
+    }
     if(errors >= 2){
       switchOnBlockedKeyboard();
       playSound('keyboardBlocked');
@@ -733,7 +743,13 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
                       </div>
                   </div>
                   <div className={`game-header_sameSize
-                     ${isTipSelecting || (selecetedHint !== 0) ? 'disabledButton' : ''}`}>
+                     ${isTipSelecting || (selecetedHint !== 0) ? 'disabledButton' : ''}`}
+                      onClick={() => {
+                        if(gameLocation === 'dailyLevel'){
+                          setSelecetedHint(1)
+                        }
+                      }}
+                     >
                     {gameLocation === 'dailyLevel' ? t('dailySmallLevel') : t('smallLevel') + ' ' + (level+1)}
                     </div>
                   <div className={`
@@ -758,8 +774,19 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
       {
         selecetedHint !== 0 &&
         <div className="game-hint" onClick={switchOffHint}>
-          <div className="game-hint-title">{gameLocation === 'dailyLevel' ? t('dailyTask') : selecetedHint === 1 ? t(levelData.type) : t('game_hintTitle_' + selecetedHint)}</div>
-          <div className="game-hint-text">{gameLocation === 'dailyLevel' ? t('game_hintText_dailyLevel') : t('game_hintText_' + selecetedHint)}</div>
+          <div className="game-hint-title">
+            <div className={`game-hint-icon
+             ${'game-hint-icon_' + selecetedHint}
+             ${selecetedHint === 1 ? 'game-header-type-icon_' + levelData.type : ''}
+            `}></div>
+            {gameLocation === 'dailyLevel' && (selecetedHint === 1 ? t('dailyTask') : t('game_hintTitle_' + selecetedHint)) }
+            {gameLocation !== 'dailyLevel' && (selecetedHint === 1 ? t(levelData.type) : t('game_hintTitle_' + selecetedHint))}
+            
+          </div>
+          <div className="game-hint-text">
+            {gameLocation === 'dailyLevel' && (selecetedHint === 1 ? t('game_hintText_dailyLevel') : t('game_hintText_' + selecetedHint))}
+            {gameLocation !== 'dailyLevel' && t('game_hintText_' + selecetedHint)}
+          </div>
         </div>
       }
 

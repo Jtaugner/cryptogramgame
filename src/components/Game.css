@@ -130,6 +130,24 @@
 .game-hint-title{
   font-size: 1.4rem;
   margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.game-hint-icon{
+  width: 28px;
+  height: 28px;
+  margin-right: 12px;
+}
+.game-hint-icon_1{
+  
+}
+.game-hint-icon_2{
+  background: url('../assets/mistakesHint.png') center center no-repeat;
+  aspect-ratio: 3.157894736842105/1;
+  height: 17px;
+  width: auto;
+  background-size: 100%;
 }
 .game-hint-text{
   font-size: 1.1rem;
