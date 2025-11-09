@@ -209,6 +209,7 @@ function testTextForBadWords(text){
      let badWords = ['секс', 'овуляц', 'оргазм', 'сперм', 'мастурбац', 'пенис', 'вагин', 'минет', 'клитор',
           'героин', 'экстази', 'амфетамин', 'кокаин', 'марихуан', 'изнасилова', 'гей'
      ]
+     text = text.toLowerCase();
      for(let word of badWords){
           if(text.indexOf(word) !== -1){
                // console.log(word);
@@ -218,7 +219,7 @@ function testTextForBadWords(text){
      return false;
 }
 
-while(allLevels.length !== 2500){
+while(allLevels.length !== 2700){
      let index = Math.floor(Math.random() * allQuotes.length);
      let phrase = allQuotes[index];
      let text = phrase.text;
@@ -231,6 +232,7 @@ while(allLevels.length !== 2500){
      if(!notUsedTypes.includes(phrase.type) && Math.random() < 0.97){
           continue;
      }
+     if(phrase.name === 'Теория большого взрыва') continue;
 
      text = text.trim();
 

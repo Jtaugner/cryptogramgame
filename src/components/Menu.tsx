@@ -203,7 +203,7 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
 
      const openDailyLevel = () => {
           setGameLocation('dailyLevel');
-          startGame();
+          onStart();
      }
 
      
