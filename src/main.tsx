@@ -8,7 +8,7 @@ import { getTasks } from './tasks.tsx'
 import { playSound, switchOffMainMusic, switchOnMainMusic } from './sounds.tsx'
 import { initDailyLevels, initLevels, initLocationLevels } from './levels.tsx'
 import { main } from 'framer-motion/client'
-import { mobileShowFullscreenAd, mobileShowRewardedAd } from './mobile-sdk.tsx'
+import { addUserToRating, mobileShowFullscreenAd, mobileShowRewardedAd } from './mobile-sdk.tsx'
 import { dailyLevels } from './levels.tsx'
 // @ts-ignore
 // import {allLevels} from './allLevels.js';
@@ -454,6 +454,8 @@ export function tryToAddUserToLeaderboard(iq: number){
         setUserToLeaderboard(iq);
       });
     }catch(e){}
+  }else if(__PLATFORM__ === 'mobile'){
+    addUserToRating(iq);
   }
 }
 

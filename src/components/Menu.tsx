@@ -23,6 +23,7 @@ import { NOT_SHOW_ADV, showAdv, isPurchaseAvailable, params } from '../main'
 import { useTranslation } from 'react-i18next'
 import Modes from './Modes/Modes'
 import { useBackButtonClick } from '../hooks/useBackButtonClick'
+import { openRating } from '../mobile-sdk'
 
 
 
@@ -415,7 +416,14 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
                     <div className="menu-bottom-icon icon-shop" onClick={() => setShowShop(true)}>
                          <span className="menu-bottom-label">{t('shop')}</span>
                     </div>
-                    <div className={`menu-bottom-icon icon-rating ${__PLATFORM__ === 'gd' ? 'blockHidden' : ''}`} onClick={() => setShowRating(true)}>
+                    <div className={`menu-bottom-icon icon-rating ${__PLATFORM__ === 'gd' ? 'blockHidden' : ''}`}
+                     onClick={() => {
+                         if(__PLATFORM__ === 'mobile'){
+                              openRating();
+                         }else{
+                              setShowRating(true);
+                         }
+                     }}>
                          <span className="menu-bottom-label">{t('rating')}</span>
                     </div>
                     <div className="menu-bottom-icon icon-stat" onClick={() => setShowStats(true)}>

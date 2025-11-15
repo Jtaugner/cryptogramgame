@@ -14,3 +14,11 @@ export function mobileShowRewardedAd(callBack: () => void){
 export function mobileBackButtonClick(){
     window.dispatchEvent(new Event("back-button-click"));
 }
+//Добавить юзера в рейтинг
+export function addUserToRating(iq: number){
+
+}
+//Открыть рейтинг
+export function openRating(callback: (res: any) => void){
+
+}
