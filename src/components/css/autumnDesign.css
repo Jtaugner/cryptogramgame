@@ -1,0 +1,94 @@
+.autumnLocation, .autumnLocation.game-bg, .autumnLocation .rules-main{
+    background: url('../../assets/locations/autumn/bg1.png') center center no-repeat;
+    background-size: cover;
+}
+
+.autumnLocation .phrase-cell, .autumnLocation     .phrase-cell_done .phrase-cell-inner{
+    border-color: #863e32;
+    border-color: #efb387;
+}
+.autumnLocation .phrase-cell_done .phrase-cell-inner{
+    box-shadow: inset 0 -1px 0 0px #efb387;
+}
+.autumnLocation .phrase-cell, .autumnLocation .phrase-cell_done .phrase-cell-inner{
+    background-color: #863e32;
+}
+.autumnLocation .phrase-cell-number{
+     color: #f6dbc1;
+}
+.autumnLocation .phrase-cell_notFilled .phrase-cell-number{
+     color: #863e32;
+}
+.autumnLocation .border-white{
+     border-color: #E6B58D;
+}
+.autumnLocation .phrase-cell_notFilled .border-white{
+     border-color: #824F20;
+}
+
+
+.autumnLocation .game-keyboard {
+     background-color: #5b2a22;
+}
+.autumnLocation .keyboard-key{
+     color: #612c23;
+}
+.autumnLocation .keyboard-key_inactive{
+     color: rgba(91, 42, 34, 0.8) !important;
+     background-color: #794138;
+}
+.autumnLocation .keyboard-key_used{
+     color: #0eb516;
+}
+.autumnLocation .keyboard-key:active:not(.keyboard-key_inactive) {
+     background: #794138;
+}
+.autumnLocation .game-keyboard-buttons{
+     background-color: rgba(100, 48, 35, 0.89);
+     border-color: #5b2a22;
+        
+}
+.autumnLocation .game-keyboard-moveLeft, .autumnLocation .game-keyboard-moveRight{
+     border-color: #441d17;
+}
+.autumnLocation .game-keyboard-moveLeft .game-keyboard-move-icon, .autumnLocation .game-keyboard-moveRight .game-keyboard-move-icon{
+     background-color: #b5805a;
+}
+.autumnLocation .game-keyboard-buttons:after{
+     background-color: #441d17;
+}
+.autumnLocation .tip-text, .autumnLocation .game-hint{
+     background-color: #863e32;
+}
+.autumnLocation .menu-tips-btn .menu-tips-btn-icon{
+     background-color: #863e32;
+ }
+.autumnLocation .menu-tips-btn__count{
+     background-color: #863e32;
+}
+.autumnLocation .complete-number .phrase-cell-number{
+     background-color: #863e32;
+}
+.autumnLocation .keyboard-blocked{
+     background-color: rgba(100, 48, 37, 0.98);
+}
+.autumnLocation .nextLevelButton, .autumnLocation .rules-button{
+     background-color: #863e32;
+}
+.autumnLocation .rules-text{
+     color: #863e32;
+}
+.autumnLocation .rules-text-important{
+     color: #441d17;
+}
+.autumnLocation .rules-steps{
+display: none;
+}
+
+@media (orientation: portrait) {
+     .autumnLocation, .autumnLocation.game-bg, .autumnLocation .rules-main{
+          /* background-image: url('../../assets/locations/autumn/bgVertical.png');
+          background-size: cover; */
+          background-position: 30%;
+     }
+}

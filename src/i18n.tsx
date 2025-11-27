@@ -3,16 +3,25 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
 import translations from './locales/translation.json';
+import locations from './locales/locations.json';
 
-const resources: any = { en: { translation: {} }, ru: { translation: {} } };
+const resources: any = {
+   en: { translation: {} },
+   ru: { translation: {} },
+   fr: { translation: {} },
+   es: { translation: {} },
+   it: { translation: {} },
+   de: { translation: {} }
+};
 
-for (const key in translations) {
-  const entry = translations[key];
+const allTranslations = { ...translations, ...locations };
+
+for (const key in allTranslations) {
+  const entry = allTranslations[key];
   for (const lang in entry) {
     resources[lang].translation[key] = entry[lang];
   }
 }
-
 i18n
   .use(initReactI18next)
   .init({

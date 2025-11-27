@@ -56,7 +56,8 @@ const Collection: React.FC<CollectionProps> = ({userData, onClose, copyFunction 
                     onClick={() => openCollectionCategory(item)}
                     >
                     <div className="modal-collection-book-icon"></div>
-                    <div className="modal-collection-value">{userTypesCount[item]}/{levelsByCategory[item].length}</div>
+                    {/* <div className="modal-collection-value">{userTypesCount[item]}/{levelsByCategory[item].length}</div> */}
+                    <div className="modal-collection-value">{userTypesCount[item]}</div>
                   </div>
                 </div>
               ))}

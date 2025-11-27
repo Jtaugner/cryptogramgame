@@ -16,7 +16,9 @@ export default defineConfig({
         },
       },
     }),
-    react(),
+    react({
+      fastRefresh: false,
+    }),
   ],
 
   // Ключевой момент — сюда

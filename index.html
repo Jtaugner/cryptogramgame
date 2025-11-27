@@ -131,6 +131,7 @@
         </script>
         <noscript><div><img src="https://mc.yandex.ru/watch/103175743" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
       <% } %>
+    <canvas id="game" onmousedown="event.preventDefault ? event.preventDefault() : event.returnValue = false" ondragstart="return false;" ondrop="return false;"></canvas>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
     <% if (PLATFORM === 'gp' || PLATFORM === 'mobile') { %>

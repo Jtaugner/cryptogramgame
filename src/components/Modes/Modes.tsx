@@ -5,6 +5,7 @@ import { t } from 'i18next';
 import { UserDataProps } from '../../App';
 import { dailyLevels, formatSmallTime, levelToOpenCalendar } from '../../levels';
 import { levelToOpenDaily } from '../../levels';
+import Mode from './Mode';
 
 interface ModesProps {
   openDailyLevel: () => void,
@@ -59,6 +60,11 @@ const Modes: React.FC<ModesProps> = ({openDailyLevel, userData, setUserData, dai
                }
                openDailyLevel();
 
+          }
+     }
+     const openCalendarWrapper = () => {
+          if(userData.lastLevel >= levelToOpenCalendar){
+               openCalendar();
           }
      }
   return (
@@ -128,37 +134,16 @@ const Modes: React.FC<ModesProps> = ({openDailyLevel, userData, setUserData, dai
 
           {/* Calendar mode choose */}
           {
-               false && mainLanguage === 'ru' && 
-               <div className="menu__mode-card-wrapper">
-                    <div
-                    className={`menu__mode-card ${userData.lastLevel < levelToOpenCalendar ? 'menu__mode-card_notAvailable' : ''}`}
-                    onClick={() => openCalendar()}
-                    >
-                         {userData.lastLevel < levelToOpenCalendar &&
-                              <>
-                                   <div className="closedMode"></div>
-                                   <div className="closedMode__text">
-                                        {t('dailyBlocked', {level: levelToOpenCalendar+1})}
-                                   </div>
-                              </>
-                         }
-                         <div className="menu__mode-card__name">{t('location' + calendarLocation)}</div>
-                         <>
-                                   <div className="menu__mode-card__iq"
-                                        style={{
-                                             opacity: userData.lastLevel >= levelToOpenCalendar ? 1 : 0
-                                        }}>
-                                        + IQ
-                                        <div className="menu__mode-card__iq-number"> 20</div>
-                                   </div>
-                                   <div className={`menu__mode-card__play ${userData.lastLevel >= levelToOpenCalendar ? 'shiny-button shiny-button-anotherTiming' : ''}`}>
-                                        {t('play')}
-                                   </div>
-                         </>
-
-                    </div>
-
-               </div>
+               mainLanguage === 'ru' &&
+               <Mode
+                    modeClass={'calendarMode'}
+                    isAvailable={userData.lastLevel >= levelToOpenCalendar}
+                    onClick={openCalendarWrapper}
+                    blockedText={t('dailyBlocked', {level: levelToOpenCalendar+1})}
+                    cardName={t('location' + calendarLocation)}
+                    playText={t('play')}
+                    iqNumber={22}
+               />
           }
           
      </div>

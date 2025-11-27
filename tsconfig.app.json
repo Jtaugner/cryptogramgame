@@ -22,5 +22,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src", "src/allLevels.js"]
+  "include": ["src", "src/levels/ru/allLevels.js"]
 }

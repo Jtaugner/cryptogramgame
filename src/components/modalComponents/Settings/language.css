@@ -1,0 +1,107 @@
+.modal-language .modal-icon{
+  background: url('./lang.svg') center center no-repeat !important;
+  background-size: 100% !important;
+}
+.modal-language .modal{
+  height: 470px;
+  max-height: 95dvh;
+  max-height: 95vh;
+}
+.modal-settings-row-icon_choose{
+  background: url('./choose.svg') center center no-repeat;
+  background-size: 100%;
+  
+}
+.modal-language .modal-settings-row:not(.modal-settings-row_rules){
+  border: 2px solid #6c72f0;
+  cursor: pointer;
+}
+.modal-language .modal-settings-row_chosen{
+  border-color: #35b24a !important;
+}
+.modal-language .modal-settings-row_chosen .modal-settings-row-text{
+  color: #35b24a;
+}
+.modal-language__languages{
+  overflow: auto;
+  max-height: 90%;
+}
+@media (min-width: 600px) {
+  .modal-language .modal{
+    height: 550px;
+  }
+}
+
+.modal-language__confirm-change{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #ffffff;
+  border-radius: 20px 20px 6px 6px;
+  width: 320px;
+  max-width: 95vw;
+  max-width: 95dvw;
+  text-align: center;
+}
+.modal-language__confirm-change .modal-title{
+  font-size: 1.2rem;
+  transform: translateY(-1px);
+}
+.modal-language__confirm-change-text{
+  /* color: var(--modalTextColor); */
+}
+.notVisibleClose{
+  opacity: 0;
+  pointer-events: none;
+  cursor: default; 
+}
+.modal-language__confirm-change-text{
+  margin: 25px 0 25px 0;
+  color: var(--modalTextColor);
+  font-weight: bold;
+  font-size: 1.2rem;
+  padding: 0 12px;
+}
+.modal-language__confirm-change-buttons{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: 15px 0;
+}
+.modal-language__confirm-change-button{
+
+  position: relative;
+  width: 110px;
+  height: 35px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border-radius: 4px;
+
+  font-size: 1.2rem;
+  line-height: 1.2rem;
+  color: white;
+  
+  background-color: rgb(53, 178, 74);
+  box-shadow: 0 1px 0px 0 rgba(10, 10, 10, 0.15), inset 0px -1px 0px 0px rgba(10, 10, 10, 0.1);
+
+  cursor: pointer;
+}
+.modal-language__confirm-change-button:after{
+  content: '';
+  position: absolute;
+  left: -10px;
+  top: -10px;
+  right: -10px;
+  bottom: -10px;
+}
+.modal-language__confirm-change-button_no{
+  background-color: var(--mainColor);
+}
+.modal-language__confirm-change-button:active{
+  box-shadow: none;
+  transform: scale(0.99);
+}

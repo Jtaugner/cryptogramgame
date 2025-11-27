@@ -5,36 +5,73 @@
      left: 0;
      width: 100%;
      height: 100%;
-     background: url('../../assets/locations/locationUSSR/bg.png') center center no-repeat;
-     background-size: cover;
      z-index: 1000;
 
     display: flex;
     flex-flow: column nowrap;
     align-items: center;
     justify-content: center;
+    opacity: 1;
+    animation: calendarOpen 0.3s ease-in-out forwards;
+}
+.calendar-wrapper_noOpenAnimation{
+     animation: none;
+}
+@keyframes calendarOpen{
+     from{
+          opacity: 0;
+     }
+     to{
+          opacity: 1;
+     }
+}
+.calendar-wrapper_close{
+     animation: calendarClose 0.3s ease-in-out forwards;
+}
+@keyframes calendarClose{
+     from{
+          opacity: 1;
+     }
+     to{
+          opacity: 0;
+     }
+}
+/*Overlay*/
+.bg-overlay{
+     content: '';
+     position: absolute;
+     inset: 0;
+     background: rgba(0, 0, 0, 0.11);
+     pointer-events: none; 
+     z-index: 0;
 }
 .calendar-wrapper .menu__top{
      position: absolute;
      top: 0;
-     left: 0;
+     left: 50%;
+     transform: translateX(-50%);
+}
+.calendar-wrapper .menu__top .menu-settings-btn{
+     background: url('../../assets/house.png') center center no-repeat;
+     background-size: 90%;
 }
 
 .calendar{
      max-width: 500px;
      margin: 0 auto;
+     position: relative;
 }
 .calendar-month{
      display: flex;
      justify-content: space-between;
      align-items: center;
-     margin-bottom: 60px;
+     margin-bottom: 70px;
      padding: 0 10px;
 }
 .calendar__arrow-left, .calendar__arrow-right{
      width: 20px;
      aspect-ratio: 0.583/1;
-     background: url('../../assets/calendar/arrow-calendar.svg') center center no-repeat;
+     background: url('./calendar/arrow-calendar.svg') center center no-repeat;
      background-size: 100%;
      cursor: pointer;
 }
@@ -61,24 +98,35 @@
      line-height: 1rem;
      font-weight: 600;
      text-transform: uppercase;
+     color: rgba(251,251,255,0.73)
 }
 .calendar__progress{
      position: relative;
-     width: 98%;
      margin: 0 auto;
-     height: 23px;
-     background: #c1bec3;
-     margin-bottom: 20px;
-     border-radius: 15px;
+     /* background: #dcd5cc; */
+     margin-bottom: 5px;
+     /* border-radius: 15px; */
      display: flex;
      align-items: center;
      justify-content: flex-start;
-     padding: 2px;
+     background: url(./calendar/progress-bar.png) center center no-repeat;
+     background-size: 100%;
+     width: 105%;
+     transform: translateX(-2.5%);
+     aspect-ratio: 14.468354430379747/1;
+     padding: 0 2px;
      
-     box-shadow: inset 0 1px 0px rgba(255, 255, 255, 1);
+     
+     /* box-shadow: inset 0 0.5px 0px rgba(255, 255, 255, 1), 0 0.5px 0 rgba(0, 0, 0, 0.35); */
 }
 .calendar__progress-bar{
-     height: 100%;
+     /* position: absolute;
+     left: 0;
+     top: 50%;
+     transform: translateY(-50%); */
+     height: 80%;
+     /* margin-left: 2px; */
+     /* margin-bottom: 1px; */
      width: 0%;
      background: #35b24a;
      border-radius: 10px;
@@ -94,6 +142,7 @@
      justify-content: center;
      align-items: center;
 
+     font-weight: 600;
      font-size: 1rem;
      line-height: 1rem;
      color: #373b82;
@@ -110,39 +159,47 @@
      justify-content: center;
 }
 .calendar__prize .calendar__prize__money{
+     position: relative;
      margin: 0;
-     transform: scale(0.9);
+     width: 23px;
+     aspect-ratio: 1.222/1;
+     background: url(./calendar/coin.png) center center no-repeat;
+     background-size: 100%;
 }
 .calendar__prize__money-count{
      color: #fcd249;
      text-shadow: 0px 1px 0px rgba(10, 10, 10, 0.49);
+     font-size: 0.9rem;
+     line-height: 0.9rem;
         
 }
 .calendar__prize__tip, .calendar__prize__iq{
      position: relative;
      width: 38px;
-     height: 38px;
-     background: url(../../assets/calendar/tip-prize.png) center center no-repeat;
+     aspect-ratio: 1/1;
+     background: url(./calendar/tip-prize.png) center center no-repeat;
      background-size: 100%;
 }
 .calendar__prize__count{
      position: absolute;
-     right: -7px;
+     right: 0;
+     transform: translateX(80%);
      bottom: 0;
-     font-size: 0.6rem;
-     line-height: 0.6rem;
-     font-weight: bold;
-     color: rgba(255,255,255,0.68);
-     text-shadow: 0px 1px 0px rgba(10, 10, 10, 0.49);
+     font-size: 0.7rem;
+     line-height: 0.7rem;
+     font-weight: 600;
+     color: rgba(255,255,255,0.78);
+     text-shadow: 0px 1px 0px rgba(10, 10, 10, 0.1);
 }
 .calendar__prize__iq{
-     background: url(../../assets/calendar/iq.png) center center no-repeat;
+     background: url(./calendar/iq.png) center center no-repeat;
      background-size: 100%;
+     width: 37px;
 }
 .calendar__prize__strip{
-     height: 10.6px;
      width: 1px;
-     background: url(../../assets/calendar/strip.png) center center no-repeat;
+     aspect-ratio: 0.09375/1;
+     background: url(./calendar/strip.png) center center no-repeat;
      background-size: 100%;
      margin-top: 1px;
 }
@@ -155,7 +212,7 @@
      align-items: center;
 }
 .calendar__day{
-
+     --inset-shadow-color: #ffffff;
      position: relative;
      
      width: 42px;
@@ -166,7 +223,11 @@
      align-items: center;
 
      background: #e6ecf8;
-     box-shadow:  rgba(10, 10, 10, 0.14) 0px 0.5px 0px 1px, #ffffff 0px 0px 0px 2px inset;
+     box-shadow:  
+     /* 0px 0 0px 1px rgba(10, 10, 10, 0.33), */
+     0px 0 0px 2px rgba(10, 10, 10, 0.14),
+     var(--inset-shadow-color) 0px 0px 0px 2px inset;
+        
 
 
      font-weight: bold;
@@ -178,7 +239,7 @@
 .calendar__day_notAvailable{
      background-color: rgba(186, 186, 243, 0.94);
      color: #9496d1;
-     box-shadow:  rgba(10, 10, 10, 0.14) 0px 0.5px 0px 1px, #d8d2ee 0px 0px 0px 2px inset;
+     --inset-shadow-color: #d8d2ee;
 }
 .calendar__day_inProcess{
      background: linear-gradient(to bottom, #e8e9ff 50%, #abdcb3 50%);
@@ -186,16 +247,16 @@
 .calendar__day_today{
      background: #35b24a;
      color: #e6ffeb;
-     box-shadow:  rgba(10, 10, 10, 0.14) 0px 0.5px 0px 1px, #5bc66c 0px 0px 0px 2px inset;
+     --inset-shadow-color: #5bc66c;
 }
 .calendar__day_selected{
-     box-shadow:  rgba(10, 10, 10, 0.14) 0px 0.5px 0px 1px, #e98060 0px 0px 0px 2px inset;
+     --inset-shadow-color: #e98060;
 }
 .calendar__day_completed{
-     background: url('../../assets/calendar/doneDay.svg') center center no-repeat, #abdcb3;
+     background: url('./calendar/doneDay.svg') center center no-repeat, #abdcb3;
      background-size: 60%;
 
-     box-shadow:  rgba(10, 10, 10, 0.14) 0px 0.5px 0px 1px, #a5e6b0 0px 0px 0px 2px inset;
+     --inset-shadow-color: #a5e6b0;
 }
 .calendar__day:not(.calendar__day_notAvailable):not(.calendar__day_completed){
      cursor: pointer;
@@ -206,8 +267,8 @@
      bottom: 0;
      right: 0;
      width: 15px;
-     aspect-ratio: 1.05/1;
-     background: url('../../assets/calendar/advDay.png') center center no-repeat;
+     aspect-ratio: 1.055/1;
+     background: url('./calendar/advDay.png') center center no-repeat;
      background-size: 100%;
 }
 
@@ -255,10 +316,196 @@
      }
 }
 
-.redButton{
-     width: 20px;
-     height: 20px;
-     background: #ff0000;
-     border-radius: 50%;
-     cursor: pointer;
+.calendar-wrapper{
+     --progress-animation-delay: 1s;
+     --progress-animation-duration: 0.7s;
+     --prize-animation-duration: 0.5s;
+}
+.calendar__progress .calendar__progress-bar_animation{
+     animation: progressBarAnimation var(--progress-animation-duration) linear forwards;
+     animation-delay: var(--progress-animation-delay);
+}
+@keyframes progressBarAnimation{
+     0%{
+          width: var(--width-before);
+     }
+     100%{
+          width: var(--width);
+     }
+}
+.calendar__progress .calendar__progress-bar_zero_animation_first{
+     animation: progressBarAnimationFirst var(--progress-animation-duration) linear forwards;
+     animation-delay: var(--progress-animation-delay);
+}
+@keyframes progressBarAnimationFirst{
+     0%{
+          height: 0%;
+          width: var(--width-before);
+     }
+     100%{
+          height: 100%;
+          width: var(--width);
+     }
+}
+.calendar__progress-bar__number_animate .calendar__prize{
+     /* position: relative; */
+     animation: progressBarNumberAnimation var(--prize-animation-duration) ease-in-out forwards;
+     transform-origin: center bottom;
+     animation-delay: calc(var(--progress-animation-delay) + var(--progress-animation-duration));
+
+}
+@keyframes progressBarNumberAnimation{
+     0%{
+          filter: brightness(1);
+          transform: translateX(-50%) translateY(-100%) scale(1);
+     }
+     50%{
+          filter: brightness(1.2);
+          transform: translateX(-50%) translateY(-100%) scale(1.01);
+     }
+     100%{
+          filter: brightness(1.1);
+          transform: translateX(-50%) translateY(-100%) scale(1);
+     }
+}
+.calendar__progress-bar__number_done .calendar__prize:after{
+     content: '';
+     position: absolute;
+     top: 0;
+     left: 50%;
+     transform: translate(-50%, -40%);
+     width: 15px;
+     aspect-ratio: 1/1;
+     background: url('./calendar/prizeDone.png') center center no-repeat;
+     background-size: 100%;
+}
+.calendar__progress-bar__number_animate .calendar__prize:after{
+     opacity: 0;
+     animation: prizeDoneAnimation 0.3s ease-in-out forwards;
+     animation-delay: calc(var(--progress-animation-delay) + var(--progress-animation-duration)*2);
+}
+@keyframes prizeDoneAnimation {
+     0%{
+          opacity: 0.8;
+          transform: scale(2) rotate(-10deg) translate(0, -100%);
+     }
+     40%{
+          opacity: 1;
+     }
+     100%{
+          opacity: 1;
+          transform: translate(-50%, -40%) scale(1) rotate(0deg);
+     }
+}
+.calendar__progress-bar__number_done:not(.calendar__progress-bar__number_animate) .calendar__prize{
+     filter: contrast(0.7) brightness(1.02) sepia(0.35);
+     
+}
+.calendar__progress-bar__number_done:not(.calendar__progress-bar__number_animate){
+     color: rgba(228, 232, 242, 0.8);
+}
+.calendar__progress-bar__number_animate{
+     animation: progressBarNumberAnimate 0.2s ease-in-out forwards;
+     animation-delay: calc(var(--progress-animation-delay) + var(--progress-animation-duration));
+}
+@keyframes progressBarNumberAnimate{
+     100%{
+          color: #ffffff
+     }
+}
+
+@media (max-width: 410px) {
+     .calendar__progress{
+          width: 95%;
+          transform:  none;
+     }
+     .calendar__progress-bar__number, .calendar__progress-bar__zero{
+          font-size: 0.85rem;
+          line-height: 0.85rem;
+     }
+     .calendar__day{
+          width: 38px;
+          height: 38px;
+          font-size: 1.1rem;
+     }
+     .calendar__day_lookAdv:after{
+          width: 12px;
+     }
+     .calendar__prize__tip{
+          width: 35px;
+     }
+     .calendar__prize__iq{
+          width: 34px;
+     }
+
+     .calendar-month-name{
+          font-size: 1.4rem;
+          line-height: 1.2rem;
+     }
+     .calendar__arrow-left, .calendar__arrow-right{
+          width: 18px;
+     }
+     .calendar__play{
+          width: 90%;
+          max-width: 330px;
+          height: 60px;
+          font-size: 1.3rem;
+          line-height: 1.3rem;
+     }
+     .calendar__play__lookAdv{
+          font-size: 1.1rem;
+          line-height: 1.2rem;
+          margin-bottom: 4px;
+     }
+     .calendar__prize .calendar__prize__money{
+          width: 21px;
+     }
+     .calendar__prize__money-count{
+          font-size: 0.8rem;
+          line-height: 0.8rem;
+     }
+
+}
+@media (min-width: 600px) and (min-height: 750px) {
+     .calendar-month-name{
+          font-size: 1.9rem;
+          line-height: 1.7rem;
+     }
+     .calendar-location-name{
+          font-size: 1.2rem;
+          line-height: 1.2rem;
+     }
+     .calendar__arrow-left, .calendar__arrow-right{
+          width: 24px;
+     }
+     .calendar__day{
+          width: 45px;
+          height: 45px;
+          font-size: 1.3rem;
+     }
+     .calendar__progress{
+          width: 105%;
+          transform: translateX(-2.5%);
+     }
+     .calendar__prize__tip{
+          width: 45px;
+     }
+     .calendar__prize__iq{
+          width: 44px;
+     }
+     .calendar__progress-bar__zero, .calendar__progress-bar__number{
+          font-size: 1.15rem;
+          line-height: 1.15rem;
+     }
+     .calendar__prize__count{
+          font-size: 0.9rem;
+          line-height: 0.9rem;
+     }
+     .calendar__prize .calendar__prize__money{
+          width: 27px;
+     }
+     .calendar__prize__money-count{
+          font-size: 1.1rem;
+          line-height: 1.1rem;
+     }
 }

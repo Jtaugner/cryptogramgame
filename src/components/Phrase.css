@@ -511,3 +511,20 @@
 .phrase-cell_notFilled .dice-cell-circle_2{
      background-color: #ff4463;
 }
+.symbol-cell{
+     width: 25px;
+     height: 25px;
+     background: #fafafa;
+     background-repeat: no-repeat;
+     background-size: 100%;
+     
+     -webkit-mask-repeat: no-repeat;
+     -webkit-mask-position: center;
+     -webkit-mask-size: 70%;
+     mask-repeat: no-repeat;
+     mask-position: center;
+     mask-size: 70%;
+}
+.phrase-cell_notFilled .symbol-cell{
+     background-color: #44a350;
+}

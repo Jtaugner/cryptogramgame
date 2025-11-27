@@ -16,9 +16,29 @@ export function mobileBackButtonClick(){
 }
 //Добавить юзера в рейтинг
 export function addUserToRating(iq: number){
-
+    if(__PLATFORM__ === 'mobile'){
+        try{
+            if (window.Android && window.Android.addUserToRating) {
+                window.Android.addUserToRating(iq);
+            }
+        }catch(e){}
+    }
 }
 //Открыть рейтинг
-export function openRating(callback: (res: any) => void){
+export function openRating(){
+    if(__PLATFORM__ === 'mobile'){
+        try{
+            if (window.Android && window.Android.openRating) {
+                window.Android.openRating();
+            }
+        }catch(e){}
+    }
+}
 
+export function paramsForMobile(language: string, data: any){
+    if(__PLATFORM__ === 'mobile'){
+        try{
+            Android.reportEventWithParams(language, JSON.stringify(data))
+        }catch(e){}
+    }
 }

@@ -46,6 +46,9 @@ const shopItems = [
     price: 80,
   }
 ]
+if(__PLATFORM__ === 'mobile'){
+  shopItems.shift();
+}
 
 function countRewardTime(showRewardTimer: number){
   if(showRewardTimer === 0) return 0;

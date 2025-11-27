@@ -112,6 +112,7 @@ const NewAudioContext = (function () {
   'music': new NewAudioContext('./sounds/music.mp3', {loop: true}),
   'addMoney': new NewAudioContext('./sounds/addMoney.wav'),
   'click': new NewAudioContext('./sounds/click.wav'),
+  'getPrize': new NewAudioContext('./sounds/getPrize.mp3'),
   
  }
 

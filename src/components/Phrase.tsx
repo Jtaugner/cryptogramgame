@@ -1,11 +1,13 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import './Phrase.css'
 import { LevelDataProps, scrollIntoViewY, UserData } from '../App'
-import {dices, LevelData, namesDescs, testLetterForNotAlphabet } from '../levels'
+import {dices, LevelData, getInfoAboutName, testLetterForNotAlphabet, upperCaseSpecial } from '../levels'
+import { getJumpingLetterIndexes, getSelectedLetterForAdviceStep } from './rulesPhrases';
 
 const gameModes = {
-  glagolitic: ['Ⱝ', 'Ⰰ', 'Ⰱ', 'Ⰲ', 'Ⰳ', 'Ⰴ', 'Ⰵ', 'Ⰶ', 'Ⰷ', 'Ⰸ', 'Ⰹ', 'Ⰼ', 'Ⰽ', 'Ⰾ', 'Ⰿ', 'Ⱀ', 'Ⱂ', 'Ⱃ', 'Ⱄ', 'Ⱅ', 'Ⱆ', 'Ⱇ', 'Ⱉ', 'Ⱊ', 'Ⱋ', 'Ⱌ', 'Ⱍ', 'Ⱎ', 'Ⱏ', 'Ⱑ', 'Ⱒ', 'Ⱓ', 'Ⱕ', 'Ⱖ', 'Ⱚ', 'Ⱛ', 'Ⱜ', 'Ⱞ']
+  glagolitic: ['Ⱝ', 'Ⰰ', 'Ⰱ', 'Ⰲ', 'Ⰳ', 'Ⰴ', 'Ⰵ', 'Ⰶ', 'Ⰷ', 'Ⰸ', 'Ⰹ', 'Ⰼ', 'Ⰽ', 'Ⰾ', 'Ⰿ', 'Ⱀ', 'Ⱂ', 'Ⱃ', 'Ⱄ', 'Ⱅ', 'Ⱆ', 'Ⱇ', 'Ⱉ', 'Ⱊ', 'Ⱋ', 'Ⱌ', 'Ⱍ', 'Ⱎ', 'Ⱏ', 'Ⱑ', 'Ⱒ', 'Ⱓ', 'Ⱕ', 'Ⱖ', 'Ⱚ', 'Ⱛ', 'Ⱜ', 'Ⱞ', '𐚨', '𐛌', '𐛍', '𐚬', '𐚪', '𐀍', '𐀐', '𐀐', '𐀪']
 };
+const assetsBasePath = "./icons1/";
 
 interface PhraseProps {
   data: {
@@ -236,7 +238,7 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
         playSound('changeLetter');
       }
       if (Object.keys(wrongLetters).length > 0) return
-      let key = e.key.toUpperCase()
+      let key = upperCaseSpecial(e.key)
       if (key === 'Ё') key = 'Е'
       if (testLetterForNotAlphabet(key, gameLanguage)) return
       console.log(key, gameLanguage);
@@ -278,11 +280,7 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
   useEffect(() => {
     getNextEmptyIndex(false, data.filledLetters);
     if(adviceStepFromRules){
-      if(gameLanguage === 'ru'){
-        setSelectedIndex(12);
-      }else{
-        setSelectedIndex(6);
-      }
+      setSelectedIndex(getSelectedLetterForAdviceStep(gameLanguage));
       setAdviceLetterForRules(true);
     }
 
@@ -328,9 +326,7 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
               <div>
                 <div className="game-main_author-name">{levelData.name}</div>
                 <div className="game-main_author-desc">
-                  {namesDescs[levelData.name as keyof typeof namesDescs]
-                    || levelData.desc
-                  }
+                  {getInfoAboutName(levelData.name)}
                 </div>
               </div>
               <div className="game-main_copyButton" onClick={() => copyFunction(levelData)}></div>
@@ -369,6 +365,7 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
               const isCompletingNumber = number > 0 && completingNumbers.has(number)
               let changeLetterForRules = false;
               let changeLetterForRulesNumber = 0;
+              let lastNumberToChangeLetter = false;
               let jumpingLetter = false;
               if(adviceLetterForRules && number === 4 && isHidden){
                 changeLetterForRules = true;
@@ -379,9 +376,13 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
                   }
                 }
                 changeLetterForRulesNumber = indexes.indexOf(index);
+                if(changeLetterForRulesNumber === indexes.length - 1){
+                  lastNumberToChangeLetter = true;
+                }
               }
-              if(isFromRules){
-                if((number === 2 && index === 10) || (number === 8 && index === 8)){
+              if(isFromRules && !adviceLetterForRules){
+                let obj = getJumpingLetterIndexes(gameLanguage);
+                if((number === obj.number && index === obj.index)){
                   jumpingLetter = true;
                 }
               }
@@ -420,10 +421,7 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
                       <span
                        className={`phrase-cell-letter`}
                        onAnimationEnd={() => {
-                        if(changeLetterForRules &&
-                           ((gameLanguage === 'ru' && changeLetterForRulesNumber === 2) ||
-                            (gameLanguage === 'en' && changeLetterForRulesNumber === 3)
-                           )){
+                        if(changeLetterForRules && lastNumberToChangeLetter){
                           setAdviceLetterForRules(false);
                           timeoutIds.current.push(setTimeout(() => {
                             setAdviceLetterForRules(true);
@@ -431,17 +429,17 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
                         }
                        }}
                        >
-                        {letter.toUpperCase()}
+                        {upperCaseSpecial(letter)}
                       </span>
                     )}
                     {isHidden && filledLetter && (
                       <span className={`phrase-cell-letter`}>
-                        {filledLetter.toUpperCase()}
+                        {upperCaseSpecial(filledLetter)}
                       </span>
                     )}
                     {isHidden && wrongLetter && (
                       <span className="phrase-cell-letter absolute inset-0 flex items-center justify-center shake">
-                        {wrongLetter.toUpperCase()}
+                        {upperCaseSpecial(wrongLetter)}
                       </span>
                     )}
                     {isLetter && shouldShowNumber && (
@@ -490,9 +488,19 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
                             })
                           }
                         </div>  :
+                        gameMode === 'glagolitic' ?
+                        <div className={`symbol-cell`}
+                            style={{
+                              maskImage: `url(${assetsBasePath + 'g' + (number-1) + '.svg'})`,
+                              WebkitMaskImage: `url(${assetsBasePath + 'g' + (number-1) + '.svg'})`,
+                            }}
+                        >
+                          
+                        </div> :
                           <span
                            className={`${numberCompleted.has(number) ? 'zeroOpacity' : ''}`}>
-                            {gameMode === 'default' ? number : gameModes[gameMode as keyof typeof gameModes][number]}
+                            {/* {gameMode === 'default' ? number : gameModes[gameMode as keyof typeof gameModes][number]} */}
+                            {gameMode === 'default' && number }
                           </span>
                       }
                       

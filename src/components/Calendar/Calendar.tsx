@@ -1,28 +1,38 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import './Calendar.css'
 import { useTranslation } from 'react-i18next';
 import { LevelDataProps, UserDataProps } from '../../App';
 import { getCurrentMonth, getCurrentYear, getLocationByDate, getCurrentDay, showRewarded } from '../../main';
 import { locationLevels } from '../../levels';
+import CollectionCategory from '../modalComponents/CollectionCategory';
 
 interface CalendarProps {
+  isCalendarOpen: boolean;
   onClose: () => void;
   calendarLocation: string;
   setCalendarLocation: (location: string) => void;
   userData: UserDataProps;
   setUserData: (userData: UserDataProps) => void;
   openCalendarLevel: (location: string, level: number) => void;
+  calendarLevelDone: boolean;
+  setCalendarLevelDone: (calendarLevelDone: boolean) => void;
+  noOpenAnimation: boolean;
+  playSound: (soundName: string) => void;
+  copyFunction: (collectionData: {text: string, name: string, desc: string}) => void;
 }
 let currentMonth = getCurrentMonth();
 let currentYear = getCurrentYear();
 let currentMonthYear = getLocationByDate();
 let currentDay = getCurrentDay();
 let allDaysInMonth = 31;
-let prizes = [
+export function getAllPrizesDays(){
+  return [7, 14, 21, allDaysInMonth];
+}
+export let prizes = [
   20,
-  8,
+  7,
   15,
-  16
+  15
 ]
 let daysInProgress = {
   7: 23,
@@ -36,14 +46,19 @@ const daysInProgressWidth = {
   31: [5.5, 9, 12.5, 16, 19.5, 23, 26.5, 30, 33.5, 37, 40.5, 44, 47.5, 51, 54.429, 57.857, 61.286, 64.714, 68.143, 71.571, 75, 77.5, 80, 82.5, 85, 87.5, 90, 92.5, 95, 97.5, 100]
 }
 function getProgressbarWidth(allDaysInMonth: number, completedLevels: number) {
-  console.log('completedLevels', completedLevels);
-  if(completedLevels === 0) return 0;
+  if(completedLevels <= 0) return '0%';
   return daysInProgressWidth[allDaysInMonth][completedLevels-1] + '%';
 }
 
 function getYearAndMonth(location: string) {
   let [year, month] = location.split('-');
   return { year: parseInt(year), month: parseInt(month) };
+}
+
+let currentLocationOutside = 'autumn';
+
+export function getClassForLocationBackground() {
+  return 'autumnLocation';
 }
 
 function getMonthMatrix(location: string) {
@@ -84,14 +99,26 @@ function getDefaultLocationProgress() {
 }
 
 
-const Calendar: React.FC<CalendarProps> = ({ onClose, calendarLocation, userData,
-   setUserData, openCalendarLevel, setCalendarLocation }) => {
+const Calendar: React.FC<CalendarProps> = ({ isCalendarOpen, onClose, calendarLocation, userData,
+   setUserData, openCalendarLevel, setCalendarLocation, calendarLevelDone, setCalendarLevelDone, noOpenAnimation, playSound, copyFunction }) => {
   const { t } = useTranslation();
   const [calendarMonth, setCalendarMonth] = useState(calendarLocation);
   const [monthMatrix, setMonthMatrix] = useState(getMonthMatrix(calendarMonth));
   const [currentYearAndMonth, setCurrentYearAndMonth] = useState(getYearAndMonth(calendarMonth));
   const [selectedDay, setSelectedDay] = useState(currentDay);
   const [locationProgress, setLocationProgress] = useState(getDefaultLocationProgress());
+  const [isProgressAnimation, setIsProgressAnimation] = useState(false);
+  const [showCollection, setShowCollection] = useState(false);
+  const [collectionLevel, setCollectionLevel] = useState<number>(0);
+  const timeoutIds = useRef<number[]>([]);
+
+  useEffect(() => {
+    if(calendarLevelDone) {
+      setIsProgressAnimation(true);
+      setCalendarLevelDone(false);
+      console.log(locationProgress.completedLevels.length, getAllPrizesDays());
+    }
+  }, [calendarLevelDone]);
 
   useEffect(() => {
     setCurrentYearAndMonth(getYearAndMonth(calendarMonth));
@@ -108,6 +135,7 @@ const Calendar: React.FC<CalendarProps> = ({ onClose, calendarLocation, userData
       })
     }
     setMonthMatrix(getMonthMatrix(calendarMonth));
+    currentLocationOutside = calendarMonth;
   }, [calendarMonth]);
 
   //Выбираем выбранный день в календаре
@@ -171,6 +199,8 @@ const Calendar: React.FC<CalendarProps> = ({ onClose, calendarLocation, userData
   const selectDay = (day: number) => {
     if(canUseDay(day)) {
       setSelectedDay(day);
+    }else{
+      tryOpenCollection(day);
     }
   }
 
@@ -182,37 +212,36 @@ const Calendar: React.FC<CalendarProps> = ({ onClose, calendarLocation, userData
     if(!canUseDay(selectedDay)) return;
     if(shouldLookAdv(selectedDay)) {
       showRewarded(openLevel);
+      // openLevel();
     } else {
       openLevel();
     }
   }
+  const tryOpenCollection = (level: number) => {
+    if(locationProgress.completedLevels.includes(level-1)){
+      console.log('open collection', level-1);
+      setShowCollection(true);
+      setCollectionLevel(level-1);
+      return;
+    }
+  }
 
   useEffect(() => {
-
-
+    return () => {
+      timeoutIds.current.forEach(timeoutId => clearTimeout(timeoutId));
+    }
   }, [])
 
   return (
-    <div className="calendar-wrapper">
+    <div className={`
+      calendar-wrapper
+       ${isCalendarOpen ? 'calendar-wrapper_open' : 'calendar-wrapper_close'}
+       ${getClassForLocationBackground()}
+       ${noOpenAnimation ? 'calendar-wrapper_noOpenAnimation' : ''}
+    `}>
+          <div className="bg-overlay"></div>
           <div className="menu__top">
                <div className="menu-settings-btn" onClick={onClose}></div>
-               <div className="redButton"
-               onClick={() => {
-                let completedLevels = locationProgress.completedLevels;
-                completedLevels.push(1);
-                setUserData({
-                  ...userData,
-                  locations: {
-                    ...userData.locations,
-                    [calendarMonth]: {
-                      ...locationProgress,
-                      completedLevels: completedLevels
-                    }
-                  }
-                })
-               }}
-               >
-               </div>
           </div>
           <div className="calendar">
                <div className="calendar-month">
@@ -239,24 +268,48 @@ const Calendar: React.FC<CalendarProps> = ({ onClose, calendarLocation, userData
 
                   </div>
                </div>
-               <div className="calendar__progress">
+               <div className="calendar__progress"
+                onAnimationEnd={(e) => {
+                  if(e.animationName === 'progressBarNumberAnimate') {
+                    playSound('getPrize');
+                  }
+                }}
+               >
                 <div
-                 className={`calendar__progress-bar`}
-                 style={{ width: getProgressbarWidth(allDaysInMonth, locationProgress.completedLevels.length)}}
+                 className={`calendar__progress-bar
+                   ${isProgressAnimation ? 'calendar__progress-bar_animation' : ''}
+                   ${isProgressAnimation && locationProgress.completedLevels.length === 1 ? 'calendar__progress-bar_zero_animation_first' : ''}
+                   `}
+                 style={{
+                   width: isProgressAnimation ?
+                    getProgressbarWidth(allDaysInMonth, locationProgress.completedLevels.length -1) :
+                    getProgressbarWidth(allDaysInMonth, locationProgress.completedLevels.length),
+                   ["--width-before" as any]: getProgressbarWidth(allDaysInMonth, locationProgress.completedLevels.length - 1),
+                   ["--width" as any]: getProgressbarWidth(allDaysInMonth, locationProgress.completedLevels.length)
+                  
+                  }}
                 >
 
                 </div>
-                     <div className={`calendar__progress-bar__zero`}
+                     <div
+                      className={`
+                        calendar__progress-bar__zero
+                        ${isProgressAnimation && locationProgress.completedLevels.length === 1 ? 'calendar__progress-bar__number_animate' : ''}
+                        ${locationProgress.completedLevels.length > 0 ? 'calendar__progress-bar__number_done' : ''}
+                        `}
                         style={{ left: '1.5%' }}>    
-                      0              
+                      {locationProgress.completedLevels.length}              
                      </div>
                      <div
-                          className="calendar__progress-bar__number"
+                          className={`calendar__progress-bar__number
+                             ${isProgressAnimation && locationProgress.completedLevels.length === 7 ? 'calendar__progress-bar__number_animate' : ''}
+                             ${locationProgress.completedLevels.length >= 7 ? 'calendar__progress-bar__number_done' : ''}
+                             `}
                           style={{ left: daysInProgress[7] + '%'}}
                       >    
                           7
                           <div className="calendar__prize">
-                            <div className="calendar__prize__money modal-shop-row-price-icon"></div>
+                            <div className="calendar__prize__money"></div>
                             <div className="calendar__prize__money-count">
                               {prizes[0]}
                             </div>   
@@ -265,7 +318,10 @@ const Calendar: React.FC<CalendarProps> = ({ onClose, calendarLocation, userData
                           </div>
                      </div>
                      <div
-                          className="calendar__progress-bar__number"
+                          className={`calendar__progress-bar__number
+                            ${isProgressAnimation && locationProgress.completedLevels.length === 14 ? 'calendar__progress-bar__number_animate' : ''}
+                            ${locationProgress.completedLevels.length >= 14 ? 'calendar__progress-bar__number_done' : ''}
+                            `}
                           style={{ left: daysInProgress[14] + '%'}}
                       >    
                           14
@@ -279,7 +335,10 @@ const Calendar: React.FC<CalendarProps> = ({ onClose, calendarLocation, userData
     
                      </div>
                      <div
-                          className="calendar__progress-bar__number"
+                          className={`calendar__progress-bar__number
+                            ${isProgressAnimation && locationProgress.completedLevels.length === 21 ? 'calendar__progress-bar__number_animate' : ''}
+                            ${locationProgress.completedLevels.length >= 21 ? 'calendar__progress-bar__number_done' : ''}
+                            `}
                           style={{ left: daysInProgress[21] + '%'}}
                       >    
                           21
@@ -292,7 +351,13 @@ const Calendar: React.FC<CalendarProps> = ({ onClose, calendarLocation, userData
                           </div>      
               
                      </div>                
-                     <div className="calendar__progress-bar__number" style={{ left: '93.5%' }}>    
+                     <div
+                          className={`calendar__progress-bar__number
+                            ${isProgressAnimation && locationProgress.completedLevels.length === allDaysInMonth ? 'calendar__progress-bar__number_animate' : ''}
+                            ${locationProgress.completedLevels.length >= allDaysInMonth ? 'calendar__progress-bar__number_done' : ''}
+                          `}
+                     
+                     style={{ left: '93.5%' }}>    
                       {allDaysInMonth}   
                       <div className="calendar__prize">
                             <div className="calendar__prize__iq">
@@ -345,6 +410,15 @@ const Calendar: React.FC<CalendarProps> = ({ onClose, calendarLocation, userData
                
                
           </div>
+          {showCollection && (
+            <CollectionCategory
+              onClose={() => setShowCollection(false)}
+              category={locationLevels[calendarMonth][collectionLevel].type}
+              categoryIndex={1}
+              copyFunction={copyFunction}
+              collectionLevelData={locationLevels[calendarMonth][collectionLevel]}
+            />
+          )}
     </div>
   )
 }

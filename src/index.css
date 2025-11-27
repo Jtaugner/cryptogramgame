@@ -59,15 +59,9 @@
   font-style: normal;
   font-display: block;
 }
-@font-face {
-  font-family: "Noto Sans Glagolitic Subset";
-  src: url("./assets/font/NotoSansGlagolitic-Regular.ttf") format("truetype");
-  font-display: swap;
-  unicode-range: U+2C00-2C5F;
-}
 
 :root {
-  font-family: 'SF Pro Display', "Noto Sans Glagolitic Subset", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-family: 'SF Pro Display', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -82,7 +76,7 @@ html, body{
   -webkit-tap-highlight-color: rgba(0,0,0,0); /* без серого блика */
   touch-action: none;
   user-select: none;
-  font-family: 'SF Pro Display', "Noto Sans Glagolitic Subset", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-family: 'SF Pro Display', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-weight: 400;
@@ -90,13 +84,15 @@ html, body{
   overflow: hidden;
 }
 body, #root{
-  background: url('assets/bgSpring-big.png') center center no-repeat;
-  background-position: 10%;
-  background-size: cover;
   height: 100vh;
   height: 100dvh;
   width: 100vw;
   width: 100dvw;
+}
+.app-wrapper{
+  background: url('assets/bgSpring-big.png') center center no-repeat;
+  background-position: 10%;
+  background-size: cover;
 }
 body {
   margin: 0;
@@ -193,15 +189,21 @@ button:disabled {
 }
 
 .scroll-hidden {
-  overflow: auto;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE и Edge Legacy */
+  overflow-y: scroll !important;
+  background: transparent; /* невидим */
+  -webkit-overflow-scrolling: touch;
 }
-
 .scroll-hidden::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
+  width: 4px; /* можно 2px, 3px — не видно, но работает */
+  height: 4px;
 }
-
+.scroll-hidden::-webkit-scrollbar, .scroll-hidden::-webkit-scrollbar-thumb {
+  background: transparent; /* невидим */
+}
+/* Firefox */
+.scroll-hidden {
+  scrollbar-width: none;
+}
 #back-button-click{
   position: absolute;
   top: 0;

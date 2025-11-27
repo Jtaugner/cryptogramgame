@@ -1,416 +1,783 @@
 {
      "continue": {
-          "ru": "Продолжить",
-          "en": "Continue"
+       "ru": "Продолжить",
+       "en": "Continue",
+       "fr": "Continuer",
+       "es": "Continuar",
+       "it": "Continua",
+       "de": "Fortsetzen"
      },
      "level": {
-          "ru": "Уровень",
-          "en": "Level"
+       "ru": "Уровень",
+       "en": "Level",
+       "fr": "Niveau",
+       "es": "Nivel",
+       "it": "Livello",
+       "de": "Level"
      },
      "noLevels": {
-          "ru": "Уровней нет",
-          "en": "No levels available"
+       "ru": "Уровней нет",
+       "en": "No levels available",
+       "fr": "Pas de niveaux",
+       "es": "Sin niveles",
+       "it": "Nessun livello",
+       "de": "Keine Stufen"
      },
      "levelsWillAppear": {
-          "ru": "Они скоро появятся",
-          "en": "They will appear soon"
+       "ru": "Они скоро появятся",
+       "en": "They will appear soon",
+       "fr": "Ils arriveront bientôt",
+       "es": "Llegarán pronto",
+       "it": "Arriveranno presto",
+       "de": "Sie erscheinen bald"
      },
      "shop": {
-          "ru": "Магазин",
-          "en": "Shop"
+       "ru": "Магазин",
+       "en": "Shop",
+       "fr": "Boutique",
+       "es": "Tienda",
+       "it": "Negozio",
+       "de": "Shop"
      },
      "rating": {
-          "ru": "Рейтинг",
-          "en": "Rating"
+       "ru": "Рейтинг",
+       "en": "Rating",
+       "fr": "Classement",
+       "es": "Clasificación",
+       "it": "Classifica",
+       "de": "Bewertung"
      },
      "collection": {
-          "ru": "Коллекция",
-          "en": "Collection"
+       "ru": "Коллекция",
+       "en": "Collection",
+       "fr": "Collection",
+       "es": "Colección",
+       "it": "Collezione",
+       "de": "Sammlung"
      },
      "statistics": {
-          "ru": "Статистика",
-          "en": "Statistics"
+       "ru": "Статистика",
+       "en": "Statistics",
+       "fr": "Statistiques",
+       "es": "Estadísticas",
+       "it": "Statistiche",
+       "de": "Statistik"
      },
      "untillNextTask": {
-          "ru": "До следующего задания:",
-          "en": "Until the next task:"
+       "ru": "До следующего задания:",
+       "en": "Until the next task:",
+       "fr": "Jusqu'à la prochaine mission :",
+       "es": "Hasta la siguiente misión:",
+       "it": "Al prossimo incarico:",
+       "de": "Bis zur nächsten Aufgabe:"
      },
      "dailyTasks": {
-          "ru": "Выполняйте ежедневные задания:",
-          "en": "Complete daily tasks:"
+       "ru": "Выполняйте ежедневные задания:",
+       "en": "Complete daily tasks:",
+       "fr": "Accomplissez les quêtes quotidiennes :",
+       "es": "Completa las tareas diarias:",
+       "it": "Completa le missioni giornaliere",
+       "de": "Erledige tägliche Aufgaben:"
      },
      "nextTask": {
-          "ru": "До следующего задания:",
-          "en": "Until the next task:"
+       "ru": "До следующего задания:",
+       "en": "Until the next task:",
+       "fr": "Jusqu'à la prochaine mission :",
+       "es": "Hasta la próxima misión:",
+       "it": "Al prossimo obiettivo:",
+       "de": "Bis zur nächsten Aufgabe:"
      },
      "on": {
-          "ru": "ВКЛ",
-          "en": "ON"
+       "ru": "ВКЛ",
+       "en": "ON",
+       "fr": "ON",
+       "es": "ON",
+       "it": "ON",
+       "de": "ON"
      },
      "off": {
-          "ru": "ВЫК",
-          "en": "OFF"
+       "ru": "ВЫК",
+       "en": "OFF",
+       "fr": "OFF",
+       "es": "OFF",
+       "it": "OFF",
+       "de": "OFF"
      },
      "task-levels": {
-          "ru": "Пройдено уровней",
-          "en": "Levels completed"
+       "ru": "Пройдено уровней",
+       "en": "Levels completed",
+       "fr": "Niveaux terminés",
+       "es": "Niveles completados",
+       "it": "Livelli completati",
+       "de": "Abgeschlossene Level"
      },
      "task-time": {
-          "ru": "Время в игре (мин)",
-          "en": "Time in game (min)"
+       "ru": "Время в игре (мин)",
+       "en": "Time in game (min)",
+       "fr": "Temps de jeu (min)",
+       "es": "Tiempo en juego (min)",
+       "it": "Tempo di gioco (min)",
+       "de": "Spielzeit (Min.)"
      },
      "task-levelWithoutMistake": {
-          "ru": "Побед без ошибок",
-          "en": "Flawless wins"
+       "ru": "Побед без ошибок",
+       "en": "Flawless wins",
+       "fr": "Victoires sans erreurs",
+       "es": "Victorias sin errores",
+       "it": "Vittorie senza errori",
+       "de": "Fehlerfreie Siege"
      },
      "quotes": {
-          "ru": "Цитаты",
-          "en": "Quotes"
+       "ru": "Цитаты",
+       "en": "Quotes",
+       "fr": "Citations",
+       "es": "Citas",
+       "it": "Citazioni",
+       "de": "Zitate"
      },
      "poems": {
-          "ru": "Литература",
-          "en": "Literature"
+       "ru": "Литература",
+       "en": "Literature",
+       "fr": "Littérature",
+       "es": "Literatura",
+       "it": "Letteratura",
+       "de": "Literatur"
      },
      "aphorisms": {
-          "ru": "Афоризмы",
-          "en": "Aphorisms"
+       "ru": "Афоризмы",
+       "en": "Aphorisms",
+       "fr": "Aphorismes",
+       "es": "Aforismos",
+       "it": "Aforismi",
+       "de": "Aphorismen"
      },
      "music": {
-          "ru": "Музыка",
-          "en": "Music"
+       "ru": "Музыка",
+       "en": "Music",
+       "fr": "Musique",
+       "es": "Música",
+       "it": "Musica",
+       "de": "Musik"
      },
      "cinema": {
-          "ru": "Кино",
-          "en": "Cinema"
+       "ru": "Кино",
+       "en": "Cinema",
+       "fr": "Cinéma",
+       "es": "Cine",
+       "it": "Cinema",
+       "de": "Film"
      },
      "science": {
-          "ru": "Наука",
-          "en": "Science"
+       "ru": "Наука",
+       "en": "Science",
+       "fr": "Science",
+       "es": "Ciencia",
+       "it": "Scienza",
+       "de": "Wissenschaft"
      },
      "collection-category-text": {
-          "ru": "Здесь появятся фразы, которые вы разгадаете",
-          "en": "Here you will see the phrases you have solved"
+       "ru": "Здесь появятся фразы, которые вы разгадаете",
+       "en": "Here you will see the phrases you have solved",
+       "fr": "Ici apparaîtront les phrases que vous déchiffrez",
+       "es": "Aquí aparecerán las frases que descifres",
+       "it": "Qui appariranno le frasi che indovinerai",
+       "de": "Hier erscheinen die Sätze, die Sie entschlüsseln"
      },
      "settings": {
-          "ru": "Настройки",
-          "en": "Settings"
+       "ru": "Настройки",
+       "en": "Settings",
+       "fr": "Paramètres",
+       "es": "Configuración",
+       "it": "Impostazioni",
+       "de": "Einstellungen"
      },
      "sounds": {
-          "ru": "Звуки",
-          "en": "Sounds"
+       "ru": "Звуки",
+       "en": "Sounds",
+       "fr": "Sons",
+       "es": "Sonidos",
+       "it": "Suoni",
+       "de": "Sounds"
      },
      "arrowLeft": {
-          "ru": "Стрелочки слева",
-          "en": "Arrows on the left"
+       "ru": "Стрелочки слева",
+       "en": "Arrows on the left",
+       "fr": "Flèches à gauche",
+       "es": "Flechas a la izquierda",
+       "it": "Freccette a sinistra",
+       "de": "Pfeile links"
      },
      "howToPlay": {
-          "ru": "Как играть?",
-          "en": "How to play?"
+       "ru": "Как играть?",
+       "en": "How to play?",
+       "fr": "Comment jouer ?",
+       "es": "¿Cómo jugar?",
+       "it": "Come si gioca?",
+       "de": "Wie spielt man?"
      },
      "home": {
-          "ru": "Домой",
-          "en": "Home"
+       "ru": "Домой",
+       "en": "Home",
+       "fr": "Accueil",
+       "es": "Inicio",
+       "it": "Casa",
+       "de": "Startseite"
      },
      "youHave": {
-          "ru": "У вас",
-          "en": "You have"
+       "ru": "У вас",
+       "en": "You have",
+       "fr": "Vous avez",
+       "es": "Tienes",
+       "it": "Hai",
+       "de": "Du hast"
      },
      "hint": {
-          "ru": "подсказка",
-          "en": "hint"
+       "ru": "подсказка",
+       "en": "hint",
+       "fr": "astuce",
+       "es": "pista",
+       "it": "Suggerimento",
+       "de": "Hinweis"
      },
      "hint_few": {
-          "ru": "подсказки"
+       "ru": "подсказки",
+       "fr": "astuces",
+       "es": "pistas",
+       "it": "suggerimenti",
+       "de": "Hinweise"
      },
      "hint_many": {
-          "ru": "подсказок"
+       "ru": "подсказок",
+       "fr": "astuces",
+       "es": "pistas",
+       "it": "suggerimenti",
+       "de": "Hinweise"
      },
      "hint_zero": {
-          "ru": "подсказок"
+       "ru": "подсказок",
+       "fr": "astuces",
+       "es": "pistas",
+       "it": "Suggerimenti",
+       "de": "Hinweise"
      },
      "coins": {
-          "ru": "Монетки",
-          "en": "Coins"
+       "ru": "Монетки",
+       "en": "Coins",
+       "fr": "Pièces",
+       "es": "Monedas",
+       "it": "Monete",
+       "de": "Münzen"
      },
      "coinsCount": {
-          "ru": "монет",
-          "en": "coins"
+       "ru": "монет",
+       "en": "coins",
+       "fr": "pièces",
+       "es": "monedas",
+       "it": "monete",
+       "de": "Münzen"
      },
      "advert": {
-          "ru": "Реклама",
-          "en": "Ads"
+       "ru": "Реклама",
+       "en": "Ads",
+       "fr": "Publicité",
+       "es": "Publicidad",
+       "it": "Pubblicità",
+       "de": "Werbung"
      },
      "removeAds": {
-          "ru": "Отключение рекламы",
-          "en": "Remove ads"
+       "ru": "Отключение рекламы",
+       "en": "Remove ads",
+       "fr": "Désactiver la pub",
+       "es": "Desactivar anuncios",
+       "it": "Disattiva pubblicità",
+       "de": "Werbung deaktivieren"
      },
      "parameters": {
-          "ru": "Параметры",
-          "en": "Parameters"
+       "ru": "Параметры",
+       "en": "Parameters",
+       "fr": "Paramètres",
+       "es": "Opciones",
+       "it": "Impostazioni",
+       "de": "Einstellungen"
      },
      "score": {
-          "ru": "Очки",
-          "en": "Score"
+       "ru": "Очки",
+       "en": "Score",
+       "fr": "Points",
+       "es": "Puntos",
+       "it": "Punti",
+       "de": "Punkte"
      },
      "levels": {
-          "ru": "Пройдено уровней",
-          "en": "Levels completed"
+       "ru": "Пройдено уровней",
+       "en": "Levels completed",
+       "fr": "Niveaux terminés",
+       "es": "Niveles completados",
+       "it": "Livelli completati",
+       "de": "Erreichte Level"
      },
      "letters": {
-          "ru": "Отгадано букв",
-          "en": "Letters solved"
+       "ru": "Отгадано букв",
+       "en": "Letters solved",
+       "fr": "Lettres devinées",
+       "es": "Letras adivinadas",
+       "it": "Lettere indovinate",
+       "de": "Erkannte Buchstaben"
      },
      "words": {
-          "ru": "Отгадано слов",
-          "en": "Words solved"
+       "ru": "Отгадано слов",
+       "en": "Words solved",
+       "fr": "Mots devinés",
+       "es": "Palabras adivinadas",
+       "it": "Parole indovinate",
+       "de": "Wörter erraten"
      },
      "perfectLevels": {
-          "ru": "Уровней без ошибок",
-          "en": "Flawless levels"
+       "ru": "Уровней без ошибок",
+       "en": "Flawless levels",
+       "fr": "Niveaux sans erreurs",
+       "es": "Niveles sin errores",
+       "it": "Livelli senza errori",
+       "de": "Fehlerfreie Level"
      },
      "mistakes": {
-          "ru": "Ошибок",
-          "en": "Mistakes"
+       "ru": "Ошибок",
+       "en": "Mistakes",
+       "fr": "Erreurs",
+       "es": "Errores",
+       "it": "Errori",
+       "de": "Fehler"
      },
      "avgTime": {
-          "ru": "Среднее время",
-          "en": "Average time"
+       "ru": "Среднее время",
+       "en": "Average time",
+       "fr": "Temps moyen",
+       "es": "Tiempo medio",
+       "it": "Tempo medio",
+       "de": "Durchschnittszeit"
      },
      "bestTime": {
-          "ru": "Лучшее время",
-          "en": "Best time"
+       "ru": "Лучшее время",
+       "en": "Best time",
+       "fr": "Meilleur temps",
+       "es": "Mejor hora",
+       "it": "Tempo migliore",
+       "de": "Beste Zeit"
      },
      "time": {
-          "ru": "Время",
-          "en": "Time"
+       "ru": "Время",
+       "en": "Time",
+       "fr": "Temps",
+       "es": "Tiempo",
+       "it": "Tempo",
+       "de": "Zeit"
      },
      "tasks": {
-          "ru": "Задания",
-          "en": "Tasks"
+       "ru": "Задания",
+       "en": "Tasks",
+       "fr": "Quêtes",
+       "es": "Misiones",
+       "it": "Missioni",
+       "de": "Aufgaben"
      },
      "mistakesGame": {
-          "ru": "Ошибки",
-          "en": "Mistakes"
+       "ru": "Ошибки",
+       "en": "Mistakes",
+       "fr": "Erreurs",
+       "es": "Errores",
+       "it": "Errori",
+       "de": "Fehler"
      },
      "smallLevel": {
-          "ru": "Ур.",
-          "en": "Lvl."
+       "ru": "Ур.",
+       "en": "Lvl.",
+       "fr": "Lvl.",
+       "es": "Lvl.",
+       "it": "Lvl.",
+       "de": "Lvl."
      },
      "game_hintTitle_1": {
-          "ru": "Цитаты",
-          "en": "Quotes"
+       "ru": "Цитаты",
+       "en": "Quotes",
+       "fr": "Citations",
+       "es": "Citas",
+       "it": "Citazioni",
+       "de": "Zitate"
      },
      "game_hintTitle_2": {
-          "ru": "Ошибки",
-          "en": "Mistakes"
+       "ru": "Ошибки",
+       "en": "Mistakes",
+       "fr": "Erreurs",
+       "es": "Errores",
+       "it": "Errori",
+       "de": "Fehler"
      },
      "game_hintText_1": {
-          "ru": "Здесь вы можете узнать тип фразы, которую будете разгадывать",
-          "en": "Here you can see the type of phrase you are solving"
+       "ru": "Здесь вы можете узнать тип фразы, которую будете разгадывать",
+       "en": "Here you can see the type of phrase you are solving",
+       "fr": "Ici, découvrez le type d'énigme à résoudre",
+       "es": "Aquí puedes ver el tipo de frase que vas a descifrar",
+       "it": "Qui puoi scoprire il tipo di frase da indovinare",
+       "de": "Hier erfahren Sie den Typ des zu erratenden Satzes"
      },
      "game_hintText_2": {
-          "ru": "После 3 ошибок клавиатура заблокируется на определённое время",
-          "en": "After 3 mistakes the keyboard will be blocked for a certain time"
+       "ru": "После 3 ошибок клавиатура заблокируется на определённое время",
+       "en": "After 3 mistakes the keyboard will be blocked for a certain time",
+       "fr": "Après 3 erreurs, le clavier sera bloqué temporairement",
+       "es": "Tras 3 errores el teclado se bloqueará temporalmente",
+       "it": "Dopo 3 errori la tastiera si bloccherà per un certo periodo",
+       "de": "Nach 3 Fehlern wird die Tastatur für eine gewisse Zeit gesperrt"
      },
      "game_tip_1": {
-          "ru": "Выберите ячейку",
-          "en": "Select a cell"
+       "ru": "Выберите ячейку",
+       "en": "Select a cell",
+       "fr": "Choisissez une case",
+       "es": "Seleccionar casilla",
+       "it": "Seleziona la cella",
+       "de": "Zelle auswählen"
      },
      "game_tip_2": {
-          "ru": "для открытия",
-          "en": "to open it"
+       "ru": "для открытия",
+       "en": "to open it",
+       "fr": "pour ouvrir",
+       "es": "para abrir",
+       "it": "per aprire",
+       "de": "zum Öffnen"
      },
      "only": {
-          "ru": "Только",
-          "en": "Only"
+       "ru": "Только",
+       "en": "Only",
+       "fr": "Seulement",
+       "es": "Solo",
+       "it": "Solo",
+       "de": "Nur"
      },
      "playersPassedLevel": {
-          "ru": "игроков прошли этот уровень",
-          "en": "players passed this level"
+       "ru": "игроков прошли этот уровень",
+       "en": "players passed this level",
+       "fr": "joueurs ont passé ce niveau",
+       "es": "jugadores completaron este nivel",
+       "it": "giocatori hanno superato questo livello",
+       "de": "Spieler haben diese Stufe geschafft"
      },
      "withoutMistakes": {
-          "ru": "без ошибок",
-          "en": "without mistakes"
+       "ru": "без ошибок",
+       "en": "without mistakes",
+       "fr": "sans erreur",
+       "es": "sin errores",
+       "it": "senza errori",
+       "de": "fehlerfrei"
      },
      "cancel": {
-          "ru": "Отменить",
-          "en": "Cancel"
+       "ru": "Отменить",
+       "en": "Cancel",
+       "fr": "Annuler",
+       "es": "Cancelar",
+       "it": "Annulla",
+       "de": "Abbrechen"
      },
      "youMadeMistakes": {
-          "ru": "Вы сделали 3 ошибки, поэтому клавиатура",
-          "en": "You made 3 mistakes, so the keyboard"
+       "ru": "Вы сделали 3 ошибки, поэтому клавиатура",
+       "en": "You made 3 mistakes, so the keyboard",
+       "fr": "Vous avez fait 3 erreurs, donc le clavier",
+       "es": "Has cometido 3 errores, por eso el teclado",
+       "it": "Hai commesso 3 errori, quindi la tastiera",
+       "de": "Sie machten 3 Fehler, daher die Tastatur"
      },
      "keyboardBlocked": {
-          "ru": "заблокирована на",
-          "en": "is blocked for"
+       "ru": "заблокирована на",
+       "en": "is blocked for",
+       "fr": "bloqué sur",
+       "es": "bloqueada hasta",
+       "it": "bloccata su",
+       "de": "gesperrt am"
      },
      "seconds": {
-          "ru": "сек.",
-          "en": "sec"
+       "ru": "сек.",
+       "en": "sec",
+       "fr": "sec.",
+       "es": "seg.",
+       "it": "sec.",
+       "de": "Sek."
      },
      "next": {
-          "ru": "Далее",
-          "en": "Next"
+       "ru": "Далее",
+       "en": "Next",
+       "fr": "Suivant",
+       "es": "Siguiente",
+       "it": "Avanti",
+       "de": "Weiter"
      },
      "play": {
-          "ru": "Играть",
-          "en": "Play"
+       "ru": "Играть",
+       "en": "Play",
+       "fr": "Jouer",
+       "es": "Jugar",
+       "it": "Gioca",
+       "de": "Spielen"
      },
      "rules-step-1": {
-          "ru": "Число - это буква",
-          "en": "Number means letter"
+       "ru": "Число - это буква",
+       "en": "Number means letter",
+       "fr": "Le nombre est une lettre",
+       "es": "El número es una letra",
+       "it": "Numero è una lettera",
+       "de": "Zahl ist ein Buchstabe"
      },
      "rules-step-2": {
-          "ru": "Цель игры",
-          "en": "Goal of the game"
+       "ru": "Цель игры",
+       "en": "Goal of the game",
+       "fr": "Objectif du jeu",
+       "es": "Objetivo del juego",
+       "it": "Obiettivo del gioco",
+       "de": "Spielziel"
      },
      "rules-step-3": {
-          "ru": "Клавиатура",
-          "en": "Keyboard"
+       "ru": "Клавиатура",
+       "en": "Keyboard",
+       "fr": "Clavier",
+       "es": "Teclado",
+       "it": "Tastiera",
+       "de": "Tastatur"
      },
      "rules-step-4": {
-          "ru": "Совет",
-          "en": "Tip"
+       "ru": "Совет",
+       "en": "Tip",
+       "fr": "Conseil",
+       "es": "Consejo",
+       "it": "Consiglio",
+       "de": "Rat"
      },
      "rules-step-1-text": {
-          "ru": "<span>Каждое число относится к букве. <br> К примеру, <span class='rules-text-important'>2</span> - это <span class='rules-text-important'>А</span></span>",
-          "en": "<span>Each number represents a letter. <br> For example, <span class='rules-text-important'>2</span> means <span class='rules-text-important'>A</span></span>"
+       "ru": "<span>Каждое число относится к букве. <br> К примеру, <span class='rules-text-important'>2</span> - это <span class='rules-text-important'>А</span></span>",
+       "en": "<span>Each number represents a letter. <br> For example, <span class='rules-text-important'>2</span> means <span class='rules-text-important'>A</span></span>",
+       "fr": "<span>Chaque chiffre correspond à une lettre.<br>Par exemple, <span class='rules-text-important'>2</span> = <span class='rules-text-important'>E</span></span>",
+       "es": "Cada número corresponde a una letra.<br>Por ejemplo, <span class='rules-text-important'>3</span> es <span class='rules-text-important'>A</span>",
+       "it": "<span>Ogni numero corrisponde a una lettera. <br> Ad esempio, <span class='rules-text-important'>2</span> è <span class='rules-text-important'>C</span></span>",
+       "de": "<span>Jede Zahl entspricht einem Buchstaben. <br>Zum Beispiel ist <span class='rules-text-important'>7</span> ein <span class='rules-text-important'>L</span>.</span>"
      },
      "rules-step-2-text": {
-          "ru": "Ваша задача - заполнить все клетки, чтобы получить исходную фразу.",
-          "en": "Your goal is to fill in all the cells to reveal the original phrase."
+       "ru": "Ваша задача - заполнить все клетки, чтобы получить исходную фразу.",
+       "en": "Your goal is to fill in all the cells to reveal the original phrase.",
+       "fr": "Remplissez toutes les cases pour retrouver la phrase originale.",
+       "es": "Tu objetivo es llenar todas las casillas para obtener la frase original.",
+       "it": "Il tuo compito è riempire tutte le caselle per ottenere la frase originale.",
+       "de": "Fülle alle Felder aus, um den Satz zu erhalten."
      },
      "rules-step-3-text": {
-          "ru": "Зелёным на клавиатуре подсвечены буквы, чьи числа вы уже разгадали.",
-          "en": "Letters you have already decoded are highlighted in green on the keyboard."
+       "ru": "Зелёным на клавиатуре подсвечены буквы, чьи числа вы уже разгадали.",
+       "en": "Letters you have already decoded are highlighted in green on the keyboard.",
+       "fr": "Les lettres en vert sur le clavier correspondent aux chiffres déjà découverts.",
+       "es": "Las letras iluminadas en verde son las cuyos números ya has adivinado.",
+       "it": "Le lettere sulle quali hai già indovinato i numeri sono evidenziate in verde sulla tastiera.",
+       "de": "Grün markierte Buchstaben auf der Tastatur zeigen Zahlen, die du bereits entschlüsselt hast."
      },
      "rules-step-4-text": {
-          "ru": "Сначала заполните те клетки, числа которых вы уже знаете",
-          "en": "Start by filling in the cells with numbers you already know."
+       "ru": "Сначала заполните те клетки, числа которых вы уже знаете",
+       "en": "Start by filling in the cells with numbers you already know.",
+       "fr": "Remplissez d'abord les cases dont vous connaissez les chiffres",
+       "es": "Primero llena las casillas con números que ya conoces",
+       "it": "Prima riempi le celle con i numeri che conosci già",
+       "de": "Füllen Sie zuerst die Felder aus, deren Zahlen Sie bereits kennen"
      },
      "rulesDice-step-1": {
-          "ru": "Сложный уровень",
-          "en": "Hard level"
+       "ru": "Сложный уровень",
+       "en": "Hard level",
+       "fr": "Niveau difficile",
+       "es": "Nivel difícil",
+       "it": "Livello difficile",
+       "de": "Schwierig"
      },
      "rulesDice-step-2": {
-          "ru": "Цель игры",
-          "en": "Goal of the game"
+       "ru": "Цель игры",
+       "en": "Goal of the game",
+       "fr": "Objectif du jeu",
+       "es": "Objetivo del juego",
+       "it": "Obiettivo del gioco",
+       "de": "Spielziel"
      },
      "rulesDice-step-3": {
-          "ru": "Совет",
-          "en": "Tip"
+       "ru": "Совет",
+       "en": "Tip",
+       "fr": "Conseil",
+       "es": "Consejo",
+       "it": "Consiglio",
+       "de": "Rat"
      },
      "rulesDice-step-1-text": {
-          "ru": "<span>Это <span class='rules-text-important'>усложнённый уровень</span> игры. Вместо чисел здесь используются игральные кубики</span>",
-          "en": "<span>This is a <span class='rules-text-important'>hard level</span> of the game. Dice are used instead of numbers</span>"
+       "ru": "<span>Это <span class='rules-text-important'>усложнённый уровень</span> игры. Вместо чисел здесь используются игральные кубики</span>",
+       "en": "<span>This is a <span class='rules-text-important'>hard level</span> of the game. Dice are used instead of numbers</span>",
+       "fr": "<span>C'est un <span class='rules-text-important'>niveau avancé</span> du jeu. Les nombres sont remplacés par des dés</span>",
+       "es": "<span>Este es un <span class='rules-text-important'>nivel avanzado</span> del juego. En lugar de números, aquí se usan dados</span>",
+       "it": "<span>Questo è un <span class='rules-text-important'>livello avanzato</span> del gioco. Al posto dei numeri si usano i dadi</span>",
+       "de": "<span>Dies ist eine <span class='rules-text-important'>erweiterte Stufe</span> des Spiels. Statt Zahlen werden hier Würfel verwendet</span>"
      },
      "rulesDice-step-2-text": {
-          "ru": "<span> Обращайте внимание на <span class='rules-text-important'>количество очков</span> на игральных кубиках и их <span class='rules-text-important'> цвета</span>.</span>",
-          "en": "<span> Pay attention to the <span class='rules-text-important'>number of dots</span> on the dice and their <span class='rules-text-important'>colors</span>.</span>"
+       "ru": "<span> Обращайте внимание на <span class='rules-text-important'>количество очков</span> на игральных кубиках и их <span class='rules-text-important'> цвета</span>.</span>",
+       "en": "<span> Pay attention to the <span class='rules-text-important'>number of dots</span> on the dice and their <span class='rules-text-important'>colors</span>.</span>",
+       "fr": "Faites attention au nombre de points et aux couleurs des dés.",
+       "es": "Fíjate en la cantidad de puntos y los colores de los dados.",
+       "it": "<span>Fai attenzione al <span class='rules-text-important'>numero</span> e al <span class='rules-text-important'>colore</span> dei dadi.</span>",
+       "de": "Achten Sie auf die <span class='rules-text-important'>Augenzahl</span> und die <span class='rules-text-important'>Farben</span> der Würfel."
      },
      "rulesDice-step-3-text": {
-          "ru": "Сначала заполните те клетки, значения которых вы уже знаете",
-          "en": "Start by filling in the cells with values you already know"
+       "ru": "Сначала заполните те клетки, значения которых вы уже знаете",
+       "en": "Start by filling in the cells with values you already know",
+       "fr": "Remplissez d'abord les cases dont vous connaissez les valeurs",
+       "es": "Primero rellena las casillas cuyos valores ya conoces",
+       "it": "Prima riempi le celle di cui conosci i valori",
+       "de": "Füllen Sie zuerst die Zellen aus, deren Werte Sie bereits kennen"
      },
      "hours-mini": {
-          "ru": "ч",
-          "en": "h"
+       "ru": "ч",
+       "en": "h",
+       "fr": "h",
+       "es": "h",
+       "it": "h",
+       "de": "h"
      },
      "minutes-mini": {
-          "ru": "м",
-          "en": "m"
+       "ru": "м",
+       "en": "m",
+       "fr": "m",
+       "es": "m",
+       "it": "m",
+       "de": "m"
      },
      "dailyTask": {
-          "ru": "Вызов дня",
-          "en": "Daily task"
+       "ru": "Вызов дня",
+       "en": "Daily task",
+       "fr": "Défi du jour",
+       "es": "Desafío del día",
+       "it": "Sfida del giorno",
+       "de": "Tages-Challenge"
      },
      "newTask": {
-          "ru": "Новый вызов",
-          "en": "New task"
+       "ru": "Новый вызов",
+       "en": "New task",
+       "fr": "Nouveau défi",
+       "es": "Nuevo desafío",
+       "it": "Nuova sfida",
+       "de": "Neue Challenge"
      },
      "dailyBlocked": {
-          "ru": "Откройте {{level}} уровень, чтобы получить доступ",
-          "en": "Open {{level}} level to get access"
+       "ru": "Откройте {{level}} уровень, чтобы получить доступ",
+       "en": "Open {{level}} level to get access",
+       "fr": "Débloquez le niveau {{level}} pour accéder",
+       "es": "Desbloquea el nivel {{level}} para acceder",
+       "it": "Sblocca il livello {{level}} per accedere",
+       "de": "Schalte Stufe {{level}} frei, um Zugriff zu erhalten"
      },
      "autoScroll": {
-          "ru": "Автопрокрутка",
-          "en": "Auto scroll"
+       "ru": "Автопрокрутка",
+       "en": "Auto scroll",
+       "fr": "Défilement auto",
+       "es": "Desplazamiento automático",
+       "it": "Scorrimento automatico",
+       "de": "Autoscroll"
      },
-     "game_hintText_dailyLevel": {
-          "ru": "В вызове дня с помощью глаголицы зашифрованы различные определения и понятия.",
-          "en": "In daily tasks, the phrases are encrypted using the Glagolitic alphabet."
-     },
-     "daily-rules-step-1-text": {
-          "ru": "Вместо чисел - буквы глаголицы. Правила игры не меняются. Удачи!",
-          "en": "Glagolitic letters instead of numbers. The rules are same. Good luck!"
-     },
+    "game_hintText_dailyLevel": {
+      "ru": "В вызове дня с помощью старинных символов зашифрованы различные определения и понятия.",
+      "en": "In the daily challenge, various terms and concepts are encoded using ancient symbols.",
+      "fr": "Dans le défi du jour, divers termes et concepts sont chiffrés à l’aide de symboles anciens.",
+      "es": "En el desafío diario, varios términos y conceptos están codificados mediante antiguos símbolos.",
+      "it": "Nella sfida quotidiana, vari termini e concetti sono codificati usando antichi simboli.",
+      "de": "In der täglichen Herausforderung werden verschiedene Begriffe und Konzepte mithilfe alter Symbole verschlüsselt."
+    },
+    "daily-rules-step-1-text": {
+      "ru": "Вместо чисел - старинные символы. Правила игры не меняются. Удачи!",
+      "en": "Instead of numbers, there are ancient symbols. The game rules remain the same. Good luck!",
+      "fr": "À la place des chiffres, il y a des symboles anciens. Les règles du jeu restent inchangées. Bonne chance !",
+      "es": "En lugar de números, hay símbolos antiguos. Las reglas del juego no cambian. ¡Buena suerte!",
+      "it": "Al posto dei numeri ci sono antichi simboli. Le regole del gioco non cambiano. Buona fortuna!",
+      "de": "Anstelle von Zahlen gibt es alte Symbole. Die Spielregeln bleiben unverändert. Viel Glück!"
+    },
      "dailySmallLevel": {
-          "ru": "Вызов",
-          "en": "Daily"
+       "ru": "Вызов",
+       "en": "Daily",
+       "fr": "Jour",
+       "es": "Día",
+       "it": "Giorno",
+       "de": "Tag"
      },
      "soon": {
-          "ru": "Скоро",
-          "en": "Soon"
+       "ru": "Скоро",
+       "en": "Soon",
+       "fr": "Bientôt",
+       "es": "Pronto",
+       "it": "Presto",
+       "de": "Bald"
      },
      "copied": {
-          "ru": "Скопировано",
-          "en": "Copied"
-     },
-     "monthName0": {
-          "ru": "Январь",
-          "en": "January"
-     },
-     "monthName1": {
-          "ru": "Февраль",
-          "en": "February"
-     },
-     "monthName2": {
-          "ru": "Март",
-          "en": "March"
-     },
-     "monthName3": {
-          "ru": "Апрель",
-          "en": "April"
-     },
-     "monthName4": {
-          "ru": "Май",
-          "en": "May"
-     },
-     "monthName5": {
-          "ru": "Июнь",
-          "en": "June"
-     },
-     "monthName6": {
-          "ru": "Июль",
-          "en": "July"
-     },
-     "monthName7": {
-          "ru": "Август",
-          "en": "August"
-     },
-     "monthName8": {
-          "ru": "Сентябрь",
-          "en": "September"
-     },
-     "monthName9": {
-          "ru": "Октябрь",
-          "en": "October"
-     },
-     "monthName10": {
-          "ru": "Ноябрь",
-          "en": "November"
-     },
-     "monthName11": {
-          "ru": "Декабрь",
-          "en": "December"
+       "ru": "Скопировано",
+       "en": "Copied",
+       "fr": "Copié",
+       "es": "Copiado",
+       "it": "Copiato",
+       "de": "Kopiert"
      },
      "lookAdv": {
-          "ru": "СМОТРЕТЬ РЕКЛАМУ И",
-          "en": "LOOK ADVERT AND"
+       "ru": "СМОТРЕТЬ РЕКЛАМУ И",
+       "en": "LOOK ADVERT AND",
+       "fr": "REGARDER LA PUB ET",
+       "es": "VER ANUNCIO Y",
+       "it": "GUARDA LA PUBBLICITÀ E",
+       "de": "WERBUNG ANSEHEN UND"
      },
-     "location2025-10": {
-          "ru": "Назад в СССР",
-          "en": "Location 11"
-     }
-
-}
+     "language": {
+       "ru": "Язык",
+       "en": "Language",
+       "fr": "Langue",
+       "es": "Idioma",
+       "it": "Lingua",
+       "de": "Sprache"
+     },
+     "choose":{
+          "ru": "Выбрать",
+          "en": "Choose",
+          "fr": "Choisir",
+          "es": "Elegir",
+          "it": "Scegliere",
+          "de": "Auswählen"
+     },
+     "areYouSure": {
+       "ru": "Вы уверены, что хотите изменить язык?",
+       "en": "Are you sure you want to change the language?",
+       "fr": "Êtes-vous sûr de vouloir changer de langue ?",
+       "es": "¿Estás seguro de querer cambiar de idioma?",
+       "it": "Sei sicuro di voler cambiare lingua?",
+       "de": "Sind Sie sicher, dass Sie die Sprache ändern möchten?"
+     },
+     "yes": {
+       "ru": "Да",
+       "en": "Yes",
+       "fr": "Oui",
+       "es": "Sí",
+       "it": "Sì",
+       "de": "Ja"
+     },
+     "no": {
+       "ru": "Нет",
+       "en": "No",
+       "fr": "Non",
+       "es": "No",
+       "it": "No",
+       "de": "Nein"
+     },
+     "confirm": {
+       "ru": "Подтверждение",
+       "en": "Confirm",
+       "fr": "Confirmer",
+       "es": "Confirmar",
+       "it": "Conferma",
+       "de": "Bestätigen"
+     },
+    "notEnoughMoney": {
+      "ru": "К сожалению, у вас закончились монеты...",
+      "en": "Unfortunately, you’ve run out of coins...",
+      "fr": "Malheureusement, vous n’avez plus de pièces...",
+      "es": "Lamentablemente, te has quedado sin monedas...",
+      "it": "Purtroppo hai finito le monete...",
+      "de": "Leider sind Ihnen die Münzen ausgegangen..."
+    }
+   }

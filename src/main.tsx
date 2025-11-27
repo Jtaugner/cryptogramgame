@@ -1,33 +1,36 @@
 import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
+import { createRoot, Root } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 import './medias.css'
 import './i18n'
 import { getTasks } from './tasks.tsx'
-import { playSound, switchOffMainMusic, switchOnMainMusic } from './sounds.tsx'
-import { initDailyLevels, initLevels, initLocationLevels } from './levels.tsx'
+import { playSound, stopSound, switchOffMainMusic, switchOnMainMusic } from './sounds.tsx'
+import { initAllNames, initDailyLevels, initLevels, initLocationLevels } from './levels.tsx'
 import { main } from 'framer-motion/client'
-import { addUserToRating, mobileShowFullscreenAd, mobileShowRewardedAd } from './mobile-sdk.tsx'
+import { addUserToRating, mobileShowFullscreenAd, mobileShowRewardedAd, paramsForMobile } from './mobile-sdk.tsx'
 import { dailyLevels } from './levels.tsx'
+import { detectAppLanguage, getLang } from './language.tsx'
 // @ts-ignore
 // import {allLevels} from './allLevels.js';
 
 console.log('__PLATFORM__', __PLATFORM__);
 let wasPurchase = false;
-let ruLangs = ['ru', 'be', 'kk', 'uk', 'uz', 'kz'];
+let root: Root | null = null;
 
 export let mainLanguage = 'ru';
 export let isPurchaseAvailable = true;
 export let gpBannerSize = 0;
 
 if(__PLATFORM__ === 'gd'){
-  mainLanguage = 'en';
+  changeLanguage(getLang());
   isPurchaseAvailable = false;
 }else if(__PLATFORM__ === 'gp'){
-  mainLanguage = 'ru';
+  // mainLanguage = 'ru';
 }else if(__PLATFORM__ === 'mobile'){
+  mainLanguage = 'en';
   isPurchaseAvailable = false;
+  changeLanguage(getLang());
 }
 
 let anotherLangDataForYandex = {};
@@ -42,9 +45,8 @@ function getGameProgressName(){
 
 //Дефолтное состояние юзера
 const locationsNames = ['dailyLevel'];
-let defaultUserData = {
-  lastLevel: 0,
-  lastLevelData: null,
+let defaultUserStats = {
+  broccoliKilled: '',
   tips: 10,
   statistics: {
     iq: 0,
@@ -65,6 +67,18 @@ let defaultUserData = {
   },
   money: 10,
   taskObject: null,
+  startedDate: getCurrentDateFormatted()
+}
+//Убрать при релизе
+if(__PLATFORM__ === 'mobile'){
+  defaultUserStats.money = 50;
+}
+
+
+
+let defaultUserData = {
+  lastLevel: 0,
+  lastLevelData: null,
   locations: {}
 }
 locationsNames.forEach(name => {
@@ -84,20 +98,21 @@ export const tryPlaySound = (soundName: string) => {
 }
 
 export function params(data: any) {
+  if(__PLATFORM__ === 'mobile') {
+    paramsForMobile(mainLanguage, data);
+    return;
+  }
+  let newData = {
+    [mainLanguage]: {
+      ...data
+    }
+  }
 	try{
-    if(__PLATFORM__ === 'gd' || __PLATFORM__ === 'mobile') return;
+    if(__PLATFORM__ === 'gd') return;
     let ymID = 102631060;
     if(__PLATFORM__ === 'gp') ymID = 103175743;
-    if(mainLanguage !== 'ru'){
-      let keys = Object.keys(data);
-      keys.forEach(key => {
-        data['en_' + key] = data[key];
-        delete data[key];
-      });
-    }
-		// eslint-disable-next-line no-undef
-		ym(ymID, 'params', data);
-		// eslint-disable-next-line no-empty
+		ym(ymID, 'params', newData);
+		
 	}catch(ignored){}
 }
 
@@ -118,11 +133,41 @@ export const setElementToLocalStorage = (name: string, val: any) => {
 export const getUserDataFromLocalStorage = () => {
   let localStorageUserData = getFromLocalStorage(getGameProgressName());
   if(localStorageUserData) return JSON.parse(localStorageUserData);
-  return defaultUserData;
+  return {...defaultUserData};
+}
+export const getUserStatsFromLocalStorage = () => {
+  let localStorageUserStats = getFromLocalStorage('userStats');
+  if(localStorageUserStats) return JSON.parse(localStorageUserStats);
+  return {...defaultUserStats};
+}
+function fixUserStats(userData: any){
+  if(userData.statistics){
+
+    if(userData.startedDate === undefined) userData.startedDate = getCurrentDateFormatted();
+    globalUserStats = {
+      tips: userData.tips,
+      statistics: userData.statistics,
+      settings: userData.settings,
+      money: userData.money,
+      taskObject: userData.taskObject,
+      broccoliKilled: "",
+      startedDate: userData.startedDate
+    }
+    delete userData.tips;
+    delete userData.statistics;
+    delete userData.settings;
+    delete userData.money;
+    delete userData.taskObject;
+    delete userData.startedDate;
+    delete userData.broccoKilled;
+  }
 }
 
-let userData = getUserDataFromLocalStorage();
 let appCreated = false;
+let prefferedLanguage: string = getFromLocalStorage('prefferedLanguage') || "";
+if(prefferedLanguage) mainLanguage = prefferedLanguage;
+let userData = getUserDataFromLocalStorage();
+let globalUserStats = getUserStatsFromLocalStorage();
 
 function fixUserData(userData: any){
   if(!userData.locations) userData.locations = {};
@@ -138,38 +183,91 @@ function fixUserData(userData: any){
 
 
   if(userData.settings.autoScroll === undefined) userData.settings.autoScroll = defaultUserData.settings.autoScroll;
+  recentData = stringifyJSON(userData);
+  if(userData.startedDate === undefined) userData.startedDate = getCurrentDateFormatted();
   return userData;
 }
 
 async function createApp(){
   if(appCreated) return;
   appCreated = true;
-  let module;
+  let mainModule;
   let dailyModule = null;
   let locationModule = null;
-  if(mainLanguage === 'ru'){
-    module = await import(`./allLevels.js`);
-    dailyModule = await import(`./dailyLevels.js`);
-    locationModule = await import(`./locationLevels.js`);
-  }else{
-    module = await import(`./allLevels-en.js`);
-    dailyModule = await import(`./dailyLevels-en.js`);
+  let allNamesModule = null;
+  mainModule = await import(`./levels/${mainLanguage}/allLevels.js`);
+  try {
+    dailyModule = await import(`./levels/${mainLanguage}/dailyLevels.js`);
+  } catch (err) {
+    dailyModule = null;
   }
-  const allLevels = module.default;
-  initLevels(allLevels, mainLanguage);
+  try {
+    locationModule = await import(`./levels/${mainLanguage}/locationLevels.js`);
+  } catch (err) {
+    locationModule = null;
+  }
+  try {
+    allNamesModule = await import(`./levels/${mainLanguage}/allNames.js`);
+  } catch (err) {
+    allNamesModule = null;
+  }
+  
+  
+  
+
+  initLevels(mainModule.default, mainLanguage);
+
   if(dailyModule){
     initDailyLevels(dailyModule.default, mainLanguage);
   }  
   if(locationModule){
     initLocationLevels(locationModule.default, mainLanguage);
   }
-  createRoot(document.getElementById('root')!).render(
+  if(allNamesModule){
+    initAllNames(allNamesModule.default);
+  }
+
+  if (!root) {
+    root = createRoot(document.getElementById("root")!);
+  } else {
+    root.unmount();
+    root = createRoot(document.getElementById("root")!);
+  }
+  if(globalUserStats.statistics.iq === 0){
+    fixUserStats(userData)
+  }
+  let data = chooseLatestData({
+    ...userData,
+    ...globalUserStats
+  }, {
+    ...getUserDataFromLocalStorage(),
+    ...getUserStatsFromLocalStorage()
+  });
+  // console.log('data', data);
+  root.render(
     <StrictMode>
-      <App allUserData={fixUserData(userData)} mainLanguage={mainLanguage} />
+      <App allUserData={fixUserData(data)} mainLanguage={mainLanguage} />
     </StrictMode>
 
   )
 }
+
+export function recreateApp(lang: string){
+  mainLanguage = lang;
+  prefferedLanguage = lang;
+  setElementToLocalStorage('prefferedLanguage', lang);
+  appCreated = false;
+  if(__PLATFORM__ === 'yandex'){
+    getDataYandex();
+  }else if(__PLATFORM__ === 'gp' || __PLATFORM__ === 'mobile'){
+    getDataGP();
+  }else{
+    userData = getUserDataFromLocalStorage();
+  }
+  stopSound('music');
+  createApp();
+}
+
 
 function stringifyJSON(obj: any) {
   const json = JSON.stringify(obj, (key, value) => {
@@ -235,6 +333,26 @@ export function getCurrentDateFormatted() {
 
   return `${day}-${month}-${year}`;
 }
+export function daysSince(dateStr: string) {
+  if(!dateStr) return 0;
+  const [day, month, year] = dateStr.split('-').map(Number);
+
+  // Дата из строки (месяц − 1, потому что в JS месяцы 0–11)
+  const startDate = new Date(year, month - 1, day);
+
+  // Сегодня без времени (чтобы считать целые дни)
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // Разница в миллисекундах
+  const diffMs = today.getTime() - startDate.getTime();
+
+  // Переводим в дни
+  const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+  return days < 0 ? 0 : days; // если дата в будущем — вернуть 0
+}
+
 
 var playerGame: any;
 export var payments: any;
@@ -251,21 +369,44 @@ var resetAllData = () => {
 
 
 export function saveData(newUserData: any) {
+  // return;
     try{
         console.log('\x1b[33mTRY: saveData\x1b[0m');
-        const newData = stringifyJSON(newUserData);
-        if(newData === recentData) return;
+        const dataForTest = stringifyJSON(newUserData);
+        if(dataForTest === recentData) return;
         let lastData = recentData;
         console.log('\x1b[32mDONE: saveData\x1b[0m');
-        recentData = newData;
+        recentData = dataForTest;
+        let userStats = {
+          tips: newUserData.tips,
+          statistics: newUserData.statistics,
+          settings: newUserData.settings,
+          money: newUserData.money,
+          taskObject: newUserData.taskObject,
+          broccoliKilled: newUserData.broccoliKilled,
+          startedDate: newUserData.startedDate
+        }
+        console.log('userStats', userStats);
+        globalUserStats = userStats;
+        userStats = stringifyJSON(userStats);
+        setElementToLocalStorage('userStats', userStats);
+        let newData = {
+          lastLevel: newUserData.lastLevel,
+          lastLevelData: newUserData.lastLevelData,
+          locations: newUserData.locations
+        }
+        newData = stringifyJSON(newData);
         setElementToLocalStorage(getGameProgressName(), newData);
 
         if(__PLATFORM__ === 'yandex'){
           if (playerGame) {
             const state = {
+              ...anotherLangDataForYandex,
+              userStats: userStats,
               [getGameProgressName()]: newData,
-              ...anotherLangDataForYandex
+              "prefferedLanguage": prefferedLanguage
             };
+            anotherLangDataForYandex = state;
             playerGame.setData(state).then((ignored: any) => {}).catch(()=>{});
           }
         }else if(__PLATFORM__ === 'gp' || __PLATFORM__ === 'mobile'){
@@ -279,8 +420,16 @@ export function saveData(newUserData: any) {
                   newData
               );
               YSDK.player.set(
+                'userStats',
+                userStats
+              );
+              YSDK.player.set(
                 'iq',
                 newUserData.statistics.iq
+              );
+              YSDK.player.set(
+                'prefferedLanguage',
+                prefferedLanguage
               );
              // Синхронизовать, возвращает промис ожидания, дождитесь завершения
               YSDK.player.sync().then(() => {
@@ -430,7 +579,7 @@ export function makePurchaseSDK(id: string, callback: (purchase: string) => void
       }).catch((err: any) => {
         console.log('err', err);
       });
-    }else if(__PLATFORM__ === 'gp' || __PLATFORM__ === 'mobile'){
+    }else if(__PLATFORM__ === 'gp'){
       YSDK.payments.purchase({ tag: id });
       YSDK.payments.on('purchase', () => {
         callback(id);
@@ -455,7 +604,7 @@ export function tryToAddUserToLeaderboard(iq: number){
       });
     }catch(e){}
   }else if(__PLATFORM__ === 'mobile'){
-    addUserToRating(iq);
+    // addUserToRating(iq);
   }
 }
 
@@ -488,7 +637,7 @@ export function getLeaderboard(callback: (res: any) => void){
             .then((res: any) => callback(res));
         }
       })
-    }else if(__PLATFORM__ === 'gp' || __PLATFORM__ === 'mobile'){
+    }else if(__PLATFORM__ === 'gp'){
         YSDK.leaderboard.fetch({
           orderBy: ['iq'],
           order: 'DESC',
@@ -532,7 +681,7 @@ export function consumePurchase(purchase: any) {
         console.log('try to consume: ', purchase.productID);
         if(purchase.productID === 'remove_ads') return;
         payments.consumePurchase(purchase.purchaseToken);
-      }else if(__PLATFORM__ === 'gp' || __PLATFORM__ === 'mobile'){
+      }else if(__PLATFORM__ === 'gp'){
         if(purchase === 'remove_ads') return;
         YSDK.payments.consume({ tag: purchase });
       }
@@ -541,16 +690,14 @@ export function consumePurchase(purchase: any) {
 
 export let gameLink = 'https://yandex.ru/games/app/435796';
 
-if(__PLATFORM__ === 'gd'){
+if(__PLATFORM__ === 'gd' || __PLATFORM__ === 'mobile'){
   gameLink = '';
 }
 
 
-function chooseLatestData(gp: any){
-  gp = JSON.parse(gp);
+function chooseLatestData(gp: any, localStorageUserData: any){
   //Если локальные данные дальше, чем серверные, то используем локальные
   try{
-    let localStorageUserData = getUserDataFromLocalStorage();
     if(localStorageUserData.lastLevel > gp.lastLevel || localStorageUserData.statistics.iq > gp.statistics.iq){
         gp = localStorageUserData;
     }else if(localStorageUserData.lastLevel === gp.lastLevel){
@@ -572,6 +719,38 @@ function chooseLatestData(gp: any){
   return gp;
 }
 
+function setUserData(data: any){
+  if(!data) return;
+  data = JSON.parse(data);
+  userData = data;
+}
+function setUserStats(data: any){
+  if(!data) return;
+  data = JSON.parse(data);
+  globalUserStats = data;
+}
+
+
+function getDataYandex(){
+  let gp = anotherLangDataForYandex[getGameProgressName()];
+  if(gp){
+    setUserData(gp);
+    return;
+  }
+  userData = getUserDataFromLocalStorage();
+}
+
+function getDataGP(){
+  if(YSDK.player.has(getGameProgressName())){
+    let newData = YSDK.player.get(getGameProgressName());
+    if(newData){
+      setUserData(newData);
+      return;
+    }
+  }
+  userData = getUserDataFromLocalStorage();
+}
+
 export function initPlayer(ysdk: any) {
     ysdk.getPlayer({ scopes: true }).then((_player: any) => {
         console.log('INIT PLAYER');
@@ -579,47 +758,18 @@ export function initPlayer(ysdk: any) {
         playerGame = _player;
         // console.log('playerGame', playerGame);
 
-        playerGame.getData(['gameProgress', 'gameProgress-en'], false).then((data: any) => {
+        playerGame.getData().then((data: any) => {
+            let prefLang = undefined;
+            console.log(data);
+            if(data['prefferedLanguage']){
+              prefLang = data['prefferedLanguage'];
+              prefferedLanguage = prefLang;
+              mainLanguage = prefferedLanguage as string;
+            }
+            setUserStats(data['userStats']);
             let gp = data[getGameProgressName()];
-            if(getGameProgressName() === 'gameProgress-en'){
-              anotherLangDataForYandex = {['gameProgress']: data['gameProgress']};
-            }else{
-              anotherLangDataForYandex = {['gameProgress-en']: data['gameProgress-en']};
-            }
-            //Вовзврат прогресса
-            try {
-
-                if(gp){
-                  gp = chooseLatestData(gp);
-                }
-                
-                //Заменяем данные на нужные нам из payload
-                let o = ysdk.environment.payload;
-                if (o) {
-                    let lvl = o.match(/gasjil\d+/);
-                    if(lvl){
-                        gp.lastLevel = Number(lvl[0].replace("gasjil", ""));
-                    }
-                    let tps = o.match(/tpajqs\d+/);
-                    if(tps){
-                        gp.money = Number(tps[0].replace("tpajqs", ""));
-                    }
-                    let dela = o.match(/dela\d+/);
-                    if(dela){
-                        gp.tips = Number(dela[0].replace("dela", ""));
-                    }
-                }
-                if(gp){
-                  //Заменяем данные
-                  userData = gp;
-                  recentData = stringifyJSON(userData);
-                }else{
-                  userData = getUserDataFromLocalStorage();
-                  recentData = stringifyJSON(userData);
-                }
-            } catch (d) {
-                console.log(d)
-            }
+            anotherLangDataForYandex = {...data};
+            setUserData(gp);
             ysdk.getPayments({signed: false}).then((_payments: any) => {
                 payments = _payments;
                 //Получаем каталог покупок
@@ -653,11 +803,7 @@ export const appIsReady = () => {
 
 
 function changeLanguage(lang: string){
-  if(ruLangs.includes(lang)){
-    mainLanguage = 'ru';
-  }else{
-    mainLanguage = 'en';
-  }
+  mainLanguage = detectAppLanguage(lang);
 }
 
 export function switchOffAllMusic(){
@@ -695,7 +841,13 @@ if (__PLATFORM__ === 'yandex' && window.YaGames) {
   window.onGPInit = async (gp) => {
     console.log('gp init');
     YSDK = gp;
-    changeLanguage(gp.language);
+    if(__PLATFORM__ === 'gp'){
+      changeLanguage(gp.language);
+    }else if(__PLATFORM__ === 'mobile'){
+      if(!prefferedLanguage){
+        changeLanguage(getLang());
+      }
+    }
     
     if(gp?.platform?.type === 'VK'){
       gameLink = 'https://vk.com/app53847636';
@@ -708,19 +860,24 @@ if (__PLATFORM__ === 'yandex' && window.YaGames) {
     // Wait while the player syncs with the server
     await gp.player.ready;
 
-    if(gp.player.has(getGameProgressName())){
-      console.log('get player success');
-      let newData = gp.player.get(getGameProgressName());
-      if(newData){
-        newData = chooseLatestData(newData);
-        userData = newData;
-        recentData = stringifyJSON(userData);
+    let prefLang = undefined;
+    if(gp.player.has('prefferedLanguage')){
+      prefLang = gp.player.get('prefferedLanguage');
+      if(prefLang){
+        prefferedLanguage = prefLang;
+        mainLanguage = prefferedLanguage as string;
       }
-      console.log('newData', newData);
-      createApp();
-    }else{
-      createApp();
+      console.log('prefLang', prefLang);
     }
+    if(gp.player.has('userStats')){
+      let usStats = gp.player.get('userStats');
+      if(usStats){
+        setUserStats(usStats);
+        console.log('usStats', usStats);
+      }
+    }
+    getDataGP();
+    createApp();
 
         // Начался показ рекламы
     gp.ads.on('start', () => {
@@ -742,6 +899,12 @@ if (__PLATFORM__ === 'yandex' && window.YaGames) {
       switchOnMainMusic();
       musicStoppedByAdv = false;
     });
+
+
+    //Sticky
+    if(__PLATFORM__ === 'mobile'){
+      return;
+    }
     //Покупки
     payments = gp.payments;
     let products = gp.payments.products;
@@ -754,12 +917,6 @@ if (__PLATFORM__ === 'yandex' && window.YaGames) {
       }
     });
     shopItems = products;
-
-
-    //Sticky
-    if(__PLATFORM__ === 'mobile'){
-      return;
-    }
     let platformType = gp.platform.type;
     console.log('Platform: ', platformType);
     params({'platform': platformType});

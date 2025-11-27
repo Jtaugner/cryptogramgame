@@ -8,11 +8,12 @@
      position: relative;
 }
 .menu__mode-card{
-     background: url(../../assets/modes//everyDay.png) center center no-repeat, #e8e9ff;
+     --inset-shadow-color: white;
+     background: url(../../assets/modes/everyDay.png) center center no-repeat, #e8e9ff;
      background-size: 88%;
      border-radius: 10px;
-     box-shadow: 0px 1px 0px 1px rgba(10, 10, 10, 0.33),0px 1px 0px 2px rgba(10, 10, 10, 0.14), inset 0 0 0 3px white; 
-     padding: 4px 20px 6px 20px;  
+     box-shadow: 0px 1px 0px 1px rgba(10, 10, 10, 0.33),0px 1px 0px 2px rgba(10, 10, 10, 0.14), inset 0 0 0 3px var(--inset-shadow-color); 
+     padding: 4px 0 6px 0;  
      cursor: pointer;
      position: relative;
      z-index: 2;
@@ -71,6 +72,8 @@
      padding: 3px 30px;
      text-transform: uppercase;
      font-weight: 600;
+     width: 80%;
+     margin: 0 auto;
      
 }
 
@@ -169,9 +172,9 @@
      margin-right: 2px;
 }
 
-@media (min-height: 800px) {
+@media (min-height: 800px) and (min-width: 600px) {
      .menu__mode-card{
-          padding: 8px 25px 8px 25px;  
+          padding: 8px 0 8px 0;  
           background-size: 90%;
           height: 113px;
           width: 196px;
@@ -248,4 +251,35 @@
 }
 .menu__mode-card-wrapper{
      margin: 5px;
+}
+
+.calendarMode .menu__mode-card{
+     background: url(../../assets/locations/autumn/mode2.png) center center no-repeat;
+     background-size: cover;
+     --inset-shadow-color: #f99766;
+}
+.calendarMode .menu__mode-card{
+     /* display: flex;
+     flex-flow: column nowrap;
+     justify-content: center;
+     align-items: center; */
+}
+.calendarMode .menu__mode-card__name{
+     color: #fff;
+     text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+     /* font-size: 1.4rem;
+     line-height: 1.4rem; */
+}
+.calendarMode .menu__mode-card__iq, .calendarMode .menu__mode-card__iq-number{
+     color: #fff;
+     text-shadow: 0 1px 0 rgba(0, 0, 0, 1);
+     /* opacity: 0 !important; */
+}
+.calendarMode .menu__mode-card__play{
+     background-color: #fdfdfd;
+     color: #294a7f;
+     margin-top: auto;
+}
+.shiny-button-anotherTiming::before{
+     animation: shineButton 9s infinite;
 }

@@ -170,14 +170,31 @@
   }
 }
 .rules-keyboard{
-  height: 150px;
-  width: 300px;
-  background: url(../assets/keyboardScreen.png) 0 center no-repeat;
+  width: 98%;
+  aspect-ratio: 2.049723756906077/1;
+  background: url(../assets/locales/ru/keyboardScreen.png) 0 center no-repeat;
   background-size: 100%;
 }
 .rules-keyboard_en{
-  background: url(../assets/keyboardScreen-en.png) 0 center no-repeat;
+  background: url(../assets/locales/en/keyboardScreen.png) 0 center no-repeat;
   background-size: 100%;
+}
+.rules-keyboard_es{
+  background: url(../assets/locales/es/keyboardScreen.png) 0 center no-repeat;
+  background-size: 100%;
+}
+.rules-keyboard_it{
+  background: url(../assets/locales/it/keyboardScreen.png) 0 center no-repeat;
+  background-size: 100%;
+}
+.rules-keyboard_de{
+  background: url(../assets/locales/de/keyboardScreen.png) 0 center no-repeat;
+  background-size: 100%;
+}
+.rules-keyboard_fr{
+  background: url(../assets/locales/fr/keyboardScreen.png) 0 center no-repeat;
+  background-size: 100%;
+  aspect-ratio: 1.577092511013216/1;
 }
 
 .rules {

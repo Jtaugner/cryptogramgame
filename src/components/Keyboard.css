@@ -9,7 +9,7 @@
 .keyboard-row {
   display: flex;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .keyboard-key {
@@ -47,3 +47,6 @@
   cursor: default;
    
 } 
+.keyboard-key_cantUpper{
+  text-transform: none !important;
+}

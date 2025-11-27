@@ -194,10 +194,35 @@
    inset -1px 1px 0px 0px rgba(255, 255, 255, 0.3),
    inset 1px 1px 0px 0px rgba(255, 255, 255, 0.3);
   background-color: rgb(221, 220, 225);
-  background: url('../assets/tip.svg') center center no-repeat, rgb(221, 220, 225);
-  background-size: 40%;
+  /* background: url('../assets/tip.svg') center center no-repeat, rgb(221, 220, 225); */
+  /* background-size: 40%; */
 
   cursor: pointer;
+}
+.menu-tips-btn-icon, .game-keyboard-move-icon{
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40%;
+  aspect-ratio: 0.64625/1;
+  background: #4b50c4;
+  background-repeat: no-repeat;
+
+  mask-image: url('../assets/tip.svg');
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+
+  --webkit-mask-image: url('../assets/tip.svg');
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-size: contain;
+}
+.menu-tips-btn_close .menu-tips-btn-icon{
+  mask-image: url('../assets/close.svg');
+  --webkit-mask-image: url('../assets/close.svg');  
 }
 .menu-tips-btn__count{
   position: absolute;
@@ -221,10 +246,6 @@
 }
 .smallTips{
   font-size: 0.5rem;
-}
-.menu-tips-btn_close{
-  background: url('../assets/close.svg') center center no-repeat, rgb(221, 220, 225);
-  background-size: 45%;
 }
 
 
@@ -284,13 +305,29 @@
   transform: translateY(100%);
 }
 .game-keyboard-moveLeft, .game-keyboard-moveRight{
+  position: relative;
   width: 50%;
   height: 100%;
-  background: url('../assets/arrow1.svg') center center no-repeat;
-  background-size: 42%;
   border-left: 1px solid #282b65;
   cursor: pointer;
   /* transform: rotate(180deg); */
+}
+.game-keyboard-move-icon{
+  width: 50%;
+  aspect-ratio: 1.285591766723842/1;
+
+  background: #6c72f0;
+  background-repeat: no-repeat;
+
+  mask-image: url('../assets/arrow1.svg');
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+
+  --webkit-mask-image: url('../assets/arrow1.svg');
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-size: contain;
 }
 .game-keyboard-moveLeft:active, .game-keyboard-moveRight:active{
   background-color: #282b65;
@@ -361,6 +398,8 @@
   transform: none;
   font-size: 1.3rem;
   line-height: 1.3rem;
+
+  width: auto;
 }
 .cancelBlocked .moneyCount .modal-shop-row-price-icon{
   width: 28px;
@@ -574,4 +613,22 @@
   background: url(../assets/time.svg) no-repeat center center;
   background-size: 100%;
   margin-right: 5px;
+}
+
+@media (max-width: 380px){
+  .game-header-time-icon{
+    width: 25px;
+    height: 25px;
+  }
+  .game-header-time_text{
+    font-size: 1.2rem;
+  }
+  .menu-home-btn{
+    width: 35px;
+    height: 35px;
+  }
+  .game-header-type-icon-levelDone{
+    width: 32px !important;
+    height: 32px !important;
+  }
 }

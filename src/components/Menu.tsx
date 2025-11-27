@@ -10,7 +10,7 @@ import animationPunch6 from '../Hi/Punch_React03.json'
 import animationPunch7 from '../Hi/Fall.json'
 import Statistics from './modalComponents/Statistics'
 import { TaskObjectProps, UserDataProps } from '../App'
-import Settings from './modalComponents/Settings'
+import Settings from './modalComponents/Settings/Settings'
 import Rating from './modalComponents/Rating'
 import Collection from './modalComponents/Collection'
 import { LevelData, levels, msToTime } from '../levels'
@@ -19,11 +19,12 @@ import { getMinutesFromSeconds } from '../tasks'
 import ProgressCounter from './ProgressCounter'
 import Timer from './TImer'
 import ClickParticles from './ClickParticles'
-import { NOT_SHOW_ADV, showAdv, isPurchaseAvailable, params } from '../main'
+import { NOT_SHOW_ADV, showAdv, isPurchaseAvailable, params, getCurrentDateFormatted } from '../main'
 import { useTranslation } from 'react-i18next'
 import Modes from './Modes/Modes'
 import { useBackButtonClick } from '../hooks/useBackButtonClick'
-import { openRating } from '../mobile-sdk'
+import { addUserToRating, openRating } from '../mobile-sdk'
+import { getFlyingCoin } from '../flyingCoin'
 
 
 
@@ -50,6 +51,7 @@ interface MenuProps {
   dailyDone: boolean
   setDailyDone: (dailyDone: boolean) => void
   openCalendar: () => void
+  setCoinAnimation: (coinAnimation: boolean) => void
 }
 const getIQcolor = (iq: number) => {
      if (iq <= 10) return '#e28f2e';
@@ -73,6 +75,7 @@ let countsOfPunch = [
      75,
      100
 ]
+let broccoKilled = false;
 
 let taskObjectBefore: TaskObjectProps = null;
 let dailyAdded = false;
@@ -80,7 +83,7 @@ let dailyAdded = false;
 const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeconds,
       previousTasksData, setPreviousTasksData, previousIQ, addPreviousIQ,
        copyFunction, testTasks, showShop, showShopMoney, setShowShop,
-       openShopMoney, playSound, gameLanguage, setGameLocation, dailyDone, setDailyDone, openCalendar }) => {
+       openShopMoney, playSound, gameLanguage, setGameLocation, dailyDone, setDailyDone, openCalendar, setCoinAnimation }) => {
 
      const { t } = useTranslation();
 
@@ -95,6 +98,7 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
      const lottieRef = useRef();
      const isFirstRender = useRef(true)
      const broccoliCanvasRef = useRef<{ handleClick: () => void}>(null)
+     const timeoutIds = useRef<number[]>([]);
 
      const addPreviousIQWrapper = () => {
           if(isFirstRender.current){
@@ -127,9 +131,32 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
 
      }
 
+     const addCoin = () => {
+          setUserData({
+               ...userData,
+               money: userData.money + 1,
+               broccoliKilled: getCurrentDateFormatted()
+          });
+     }
+
+     const getCoinFromBrocco = () => {
+          console.log('getCoinFromBrocco');
+          getFlyingCoin();
+          setCoinAnimation(true);
+          timeoutIds.current.push(setTimeout(() => {
+               setCoinAnimation(false);
+          }, 1500));
+          timeoutIds.current.push(setTimeout(() => {
+               playSound('addMoney');
+               addCoin();
+          }, 600));
+     }
      const playLottie = () => {
           try{
                if(countsOfPunch.includes(countOfPunch)){
+                    return;
+               }
+               if(broccoKilled || countOfPunch >= countsOfPunch[3]){
                     return;
                }
                broccoliCanvasRef.current?.handleClick();
@@ -139,6 +166,9 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
                     countOfPunch++;
                }
                setTimeout(() => {
+                    if(broccoKilled){
+                         return;
+                    }
                     if(countOfPunch === 5 || countOfPunch === countsOfPunch[0] + 5 || countOfPunch === countsOfPunch[1] + 5){
                          setAnimationData(animationPunch2);
                     }
@@ -156,9 +186,13 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
                     }
                     if(countOfPunch === countsOfPunch[3]){
                          setAnimationData(animationPunch7);
-                         params({'broccoliKilled': 1});
+                         broccoKilled = true;
+                         if(userData.broccoliKilled !== getCurrentDateFormatted()){
+                              params({'broccoliKilled': 1});
+                              getCoinFromBrocco();
+                         }
                     }
-               }, 200)
+               }, 200);
           }catch(e){
                console.log('error', e);
           }
@@ -241,6 +275,7 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
                taskObjectBefore = testTasks(previousTasksData, userData.statistics.iq);
           }
           countOfPunch = 0;
+          broccoKilled = false;
           setGameLocation('main');
 
           if(dailyDone){
@@ -253,6 +288,9 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
                     }, 200);
                }
                
+          }
+          return () => {
+               timeoutIds.current.forEach(id => clearTimeout(id));
           }
      }, []);
 
@@ -419,6 +457,7 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
                     <div className={`menu-bottom-icon icon-rating ${__PLATFORM__ === 'gd' ? 'blockHidden' : ''}`}
                      onClick={() => {
                          if(__PLATFORM__ === 'mobile'){
+                              addUserToRating(userData.statistics.iq);
                               openRating();
                          }else{
                               setShowRating(true);

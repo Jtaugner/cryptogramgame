@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import './Keyboard.css'
-import { keyboardRows } from '../levels'
+import { cantUpperChar, keyboardRows } from '../levels'
 
 interface KeyboardProps {
   onKeyPress: (key: string) => void
@@ -58,8 +58,12 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress, inactiveKeys = new Set(
               className={`
                 keyboard-key
                 ${usedLetters.has(key) ? 'keyboard-key_used' : ''}
-                ${inactiveKeys.has(key.toLowerCase()) ? 'keyboard-key_inactive' : ''}`}
-              onClick={() => !inactiveKeys.has(key.toUpperCase()) && onKeyPress(key)}
+                ${inactiveKeys.has(key.toLowerCase()) ? 'keyboard-key_inactive' : ''}
+                ${cantUpperChar(key) ? 'keyboard-key_cantUpper' : ''}
+                `
+                
+              }
+              onClick={() => !inactiveKeys.has(key.toLowerCase()) && onKeyPress(key)}
             >
               {key}
             </div>

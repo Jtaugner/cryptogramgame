@@ -3,10 +3,12 @@ import './tip.css';
 import Lottie from 'react-lottie-player';
 import nerdData from '../../Hi/Nerd.json'
 import danceData from '../../Hi/Dance.json'
+import sadData from '../../Hi/Sad.json'
 
 const allCharacters = {
   "nerd": nerdData,
   "dance": danceData,
+  "sad": sadData,
 }
 interface TipProps {
   character: string,

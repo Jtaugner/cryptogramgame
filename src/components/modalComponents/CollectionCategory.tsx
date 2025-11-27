@@ -9,12 +9,40 @@ type CollectionCategoryProps = {
   onClose: () => void
   category: string
   categoryIndex: number
-  copyFunction: (levelData: LevelData) => void
+  copyFunction: (collectionData: {text: string, name: string, desc: string}) => void
+  collectionLevelData?: {
+    text: string
+    name: string
+    desc: string
+  } | LevelData
 }
 
-const CollectionCategory: React.FC<CollectionCategoryProps> = ({onClose, category, categoryIndex, copyFunction}) => {
+const CollectionCategory: React.FC<CollectionCategoryProps> = ({onClose, category, categoryIndex, copyFunction,
+  collectionLevelData = null
+}) => {
     const [index, setIndex] = useState(categoryIndex > 0 ? categoryIndex - 1 : 0);
+    const [collectionData, setCollectionData] = useState<{text: string, name: string, desc: string}>({
+      text: levelsByCategory[category][index].text,
+      name: levelsByCategory[category][index].name,
+      desc: levelsByCategory[category][index].desc
+    });
     const { t } = useTranslation();
+    
+    useEffect(() => {
+      if(collectionLevelData) {
+        setCollectionData(collectionLevelData);
+      }
+    }, [collectionLevelData]);
+
+    useEffect(() => {
+      if(!collectionLevelData) {
+        setCollectionData({
+          text: levelsByCategory[category][index].text,
+          name: levelsByCategory[category][index].name,
+          desc: levelsByCategory[category][index].desc
+        });
+      }
+    }, [index, category]);
 
     const getLeftButton = () => {
       if(index === 0) return;
@@ -39,11 +67,19 @@ const CollectionCategory: React.FC<CollectionCategoryProps> = ({onClose, categor
       }, 350);
     }
 
+    const copyPhrase = () => {
+      if(collectionData) {
+        copyFunction(collectionData);
+      } else {
+        copyFunction(levelsByCategory[category][index]);
+      }
+    }
+
     return (
     <div className={`modal-bg modal-collection-category ${isClosing ? 'collection-category_closing' : ''}`}>
       <div className="blackout" onClick={closeModal}></div>
       <div className={`collection-category-container ${gpBannerSize > 0 ? 'miniModal' : ''}`} {...handlers}>
-        <div className="collection-category-main">
+        <div className={`collection-category-main ${collectionLevelData ? 'collection-category-main_oneLevel' : ''}`}>
 
           <div className="collection-category-main-title">
             <div className="collection-category-main-title-center">
@@ -59,29 +95,31 @@ const CollectionCategory: React.FC<CollectionCategoryProps> = ({onClose, categor
               <div className="slide">
                   <div className={`
                     collection-category-main-quote
-                     ${levelsByCategory[category][index].text.length > 150 ?
+                     ${collectionData.text.length > 150 ?
                       'collection-category-main-quote_small' : ''}`}>
-                  {categoryIndex === 0 ?
-                   t('collection-category-text') :
-                   getTextForLevelEnd(levelsByCategory[category][index].text)}
+                        {categoryIndex === 0 ?
+                        t('collection-category-text') :
+                        getTextForLevelEnd(collectionData.text)}
                   </div>
                   {categoryIndex !== 0 &&
                   <div className="collection-category-main-bottom">
-                    <div className="collection-category-main-count">
-                      {index + 1}/{levelsByCategory[category].length}
+                    <div className="collection-category-main-count"
+                       style={{ opacity: collectionLevelData ? '0' : '1' }}
+                    >
+                      {index + 1}/{categoryIndex}
                     </div>
                     <div className="collection-category-main-author">
                       
                         <div>
-                          <div className="collection-category-main-author-name">{levelsByCategory[category][index].name}</div>
+                          <div className="collection-category-main-author-name">{collectionData.name}</div>
                           <div className="collection-category-main-author-desc">
-                            {namesDescs[levelsByCategory[category][index].name as keyof typeof namesDescs]
-                             || levelsByCategory[category][index].desc}
+                            {namesDescs[collectionData.name as keyof typeof namesDescs]
+                             || collectionData.desc}
                           </div>
                         </div>
                       
 
-                      <div className="game-main_copyButton" onClick={() => copyFunction(levelsByCategory[category][index])}></div>
+                      <div className="game-main_copyButton" onClick={copyPhrase}></div>
                     </div>
                   </div>
                   }
@@ -91,7 +129,7 @@ const CollectionCategory: React.FC<CollectionCategoryProps> = ({onClose, categor
 
 
         </div>     
-        <div className="collection-category-buttons">
+        {!collectionLevelData && <div className="collection-category-buttons">
           <div 
             className={`collection-category-buttons-button ${index === 0 ? 'collection-category-buttons-button_disabled' : ''}`}
             onClick={getLeftButton}
@@ -105,7 +143,7 @@ const CollectionCategory: React.FC<CollectionCategoryProps> = ({onClose, categor
             onClick={getRightButton}
            >
           </div>
-        </div>
+        </div>}
         
       </div>
     </div>
