@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import Keyboard from './Keyboard'
-import Phrase from './Phrase'
+import Phrase, { enteredNextLetter, resetEnteredNextLetter } from './Phrase'
 import './Game.css'
 import './css/greenDesign.css'
 import './css/autumnDesign.css'
@@ -16,6 +16,7 @@ import { showAdv, params, getCurrentDateFormatted, daysSince } from '../main'
 import { getMinutesFromSeconds } from '../tasks'
 import Confetti from 'confetti-react';
 import { useTranslation } from 'react-i18next'
+import { isScreenMode } from '../main'
 import { useBackButtonClick } from '../hooks/useBackButtonClick'
 import { getAllPrizesDays, getClassForLocationBackground, prizes } from './Calendar/Calendar'
 
@@ -74,11 +75,6 @@ function chooseDesignByLoction(gameLocation: string){
   }
 }
 
-let screensMode = false;
-(window as any).endLevelFunc = () => {
-  if(!screensMode) return;
-  window.dispatchEvent(new Event("end-level"));
-}
 
 let canShowAdvAfterMistake = true;
 let percentOfPlayer = '27.7';
@@ -465,16 +461,13 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
     }
   }, [phraseData])
 
-  useEffect(() => {
-    let f = () => {
-      realLevelTime = 70;
-      setIsLevelCompleted(true)
-    }
-    window.addEventListener("end-level", f);
-    return () => {
-      window.removeEventListener("end-level", f);
-    };
-  }, []);
+  const fastEndLevel = () => {
+    if(!isScreenMode) return;
+    realLevelTime = 70;
+    setIsLevelCompleted(true)
+    playSound('win');
+    updateLastLevelData({}, true, false)
+  }
 
   const getNextLevel = () => {
     if(__PLATFORM__ === 'gp' || __PLATFORM__ === 'gd'){
@@ -641,11 +634,12 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
       }
     )
     initialPhraseData.completedNumbers = initialCompletedNumbers
-    let showLettersConsole = '';
-    initialPhraseData.hiddenIndexes.forEach((index) => {
-      showLettersConsole += ' ' + initialPhraseData.text[index];
-    })
-    console.log(showLettersConsole);
+    // Показать в консоли скрытые буквы
+    // let showLettersConsole = '';
+    // initialPhraseData.hiddenIndexes.forEach((index) => {
+    //   showLettersConsole += ' ' + initialPhraseData.text[index];
+    // })
+    // console.log(showLettersConsole);
 
     //Если игрок проходил этот уровень ранее, то загружаем данные из последнего уровня
     let lastLevelData = null;
@@ -830,6 +824,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
                         if(gameLocation === 'dailyLevel'){
                           setSelecetedHint(1)
                         }
+                        fastEndLevel();
                       }}
                      >
                     {gameLocation === 'dailyLevel' ? t('dailySmallLevel') : t('smallLevel') + ' ' + (level+1)}
@@ -959,12 +954,14 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
           <div className={`game-keyboard-buttons ${userData.settings.arrowLeft ? 'game-keyboard-buttons_left' : ''}`}>
             <div className="game-keyboard-moveLeft" onClick={() => {
               phraseRef.current?.getNextEmptyIndex(true)
+              resetEnteredNextLetter();
               playSound('changeLetter');
               }}>
                 <div className="game-keyboard-move-icon"></div>
               </div>
             <div className="game-keyboard-moveRight" onClick={() => {
               phraseRef.current?.getNextEmptyIndex(false);
+              resetEnteredNextLetter();
               playSound('changeLetter');
               }}>
                 <div className="game-keyboard-move-icon"></div>

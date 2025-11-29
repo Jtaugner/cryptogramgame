@@ -55,7 +55,11 @@ export function getTextForLevelEnd(text: string){
   </>);
 }
 
-let enteredNextLetter: string | undefined = undefined;
+export let enteredNextLetter: string | undefined = undefined;
+
+export function resetEnteredNextLetter(){
+  enteredNextLetter = undefined;
+}
 
 
 const Phrase = forwardRef<PhraseHandle, PhraseProps>(
@@ -94,6 +98,7 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
   const handleLetterClick = (index: number) => {
     if(isFromRules) return;
     if (!data.hiddenIndexes.includes(index) || data.filledLetters[index]) return
+    enteredNextLetter = "";
     setSelectedIndex(index)
     playSound('changeLetter');
     if(index === selectedIndex){
@@ -489,7 +494,7 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
                           }
                         </div>  :
                         gameMode === 'glagolitic' ?
-                        <div className={`symbol-cell`}
+                        <div className={`symbol-cell ${numberCompleted.has(number) ? 'zeroOpacity' : ''}`}
                             style={{
                               maskImage: `url(${assetsBasePath + 'g' + (number-1) + '.svg'})`,
                               WebkitMaskImage: `url(${assetsBasePath + 'g' + (number-1) + '.svg'})`,

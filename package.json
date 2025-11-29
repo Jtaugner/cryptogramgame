@@ -5,10 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "PLATFORM=yandex vite",
+    "dev:screen": "PLATFORM=mobile MODE=screen vite",
     "build:yandex": "PLATFORM=yandex sh -c 'tsc && rm -rf dist && vite build && npm run archive'",
     "build:gp": "PLATFORM=gp sh -c 'tsc && rm -rf dist && vite build && npm run archive'",
     "build:gd": "PLATFORM=gd sh -c 'tsc && rm -rf dist && vite build && npm run archive'",
     "build:mobile": "PLATFORM=mobile sh -c 'tsc && rm -rf dist && vite build && npm run archive'",
+    "build:screen": "PLATFORM=mobile MODE=screen sh -c 'tsc && rm -rf dist && vite build && npm run archive'",
     "archive": "rm -rf archiveBuildCryptogram && mkdir -p archiveBuildCryptogram && cd dist && zip -r ../archiveBuildCryptogram/dist.zip .",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"

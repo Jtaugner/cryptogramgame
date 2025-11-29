@@ -19,7 +19,7 @@ import { getMinutesFromSeconds } from '../tasks'
 import ProgressCounter from './ProgressCounter'
 import Timer from './TImer'
 import ClickParticles from './ClickParticles'
-import { NOT_SHOW_ADV, showAdv, isPurchaseAvailable, params, getCurrentDateFormatted } from '../main'
+import { NOT_SHOW_ADV, showAdv, isPurchaseAvailable, params, getCurrentDateFormatted, isScreenMode } from '../main'
 import { useTranslation } from 'react-i18next'
 import Modes from './Modes/Modes'
 import { useBackButtonClick } from '../hooks/useBackButtonClick'
@@ -330,7 +330,19 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
           />
           <div className="menu-daily">
           <div className="menu-daily-title-block">
-               <span className="menu-daily-title">{t('tasks')}</span>
+               <span
+                className="menu-daily-title"
+                onClick={() => {
+                         if(isScreenMode){
+                              setUserData({
+                                   ...userData,
+                                   lastLevel: userData.lastLevel + 1
+                              });
+                         }
+                }}
+               >
+                    {t('tasks')}
+               </span>
                <span className="menu-daily-iq">IQ 
                     <span
                          className={`
@@ -341,6 +353,18 @@ const Menu: React.FC<MenuProps> = ({ onStart, userData, setUserData, getGameSeco
                               width: 15 * String(previousIQ).length + 'px'
                          }}
                          key={'previousIQ_' + previousIQ}
+                         onClick={() => {
+                              if(isScreenMode){
+                                   addPreviousIQ();
+                                   setUserData({
+                                        ...userData,
+                                        statistics: {
+                                             ...userData.statistics,
+                                             iq: userData.statistics.iq + 1
+                                        }
+                                   });
+                              }
+                         }}
                      >
                           {previousIQ}
                      </span>

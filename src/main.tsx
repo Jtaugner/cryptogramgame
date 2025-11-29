@@ -15,9 +15,11 @@ import { detectAppLanguage, getLang } from './language.tsx'
 // import {allLevels} from './allLevels.js';
 
 console.log('__PLATFORM__', __PLATFORM__);
+console.log('__MODE__', __MODE__);
 let wasPurchase = false;
 let root: Root | null = null;
 
+export let isScreenMode = __MODE__ === 'screen';
 export let mainLanguage = 'ru';
 export let isPurchaseAvailable = true;
 export let gpBannerSize = 0;
@@ -397,6 +399,8 @@ export function saveData(newUserData: any) {
         }
         newData = stringifyJSON(newData);
         setElementToLocalStorage(getGameProgressName(), newData);
+
+        if(isScreenMode) return;
 
         if(__PLATFORM__ === 'yandex'){
           if (playerGame) {

@@ -13,6 +13,7 @@ export default defineConfig({
       inject: {
         data: {
           PLATFORM: process.env.PLATFORM || 'default',
+          MODE: process.env.MODE || 'default',
         },
       },
     }),
@@ -25,6 +26,7 @@ export default defineConfig({
   esbuild: {
     define: {
       __PLATFORM__: JSON.stringify(process.env.PLATFORM || 'default'),
+      __MODE__: JSON.stringify(process.env.MODE || 'default'),
     },
   },
 
