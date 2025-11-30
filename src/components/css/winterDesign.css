@@ -1,0 +1,129 @@
+.winterLocation, .winterLocation.game-bg, .winterLocation .rules-main{
+    background: url('../../assets/locations/winter/bgNewYear.png') center center no-repeat;
+    background-size: cover;
+}
+.winterLocation .bg-overlay{
+     background: rgba(0, 0, 0, 0.3);
+}
+.winterLocation .calendar-wrapper .menu-settings-btn{
+     position: relative;
+}
+.winterLocation .calendar-wrapper .menu-settings-btn:before {
+     position: absolute;
+     top: 0;
+     left: 0;
+     height: 100%;
+     width: 100%;
+     content: "";
+     right: 0;
+     z-index: -1;
+     transform: scale(.9) translateZ(0);
+     filter: blur(15px);
+     background: linear-gradient(270deg, #fb8a67, #ff9e7c, #ffc2a5, #ffd8c2, #ff9a74, #ffb091, #ff845a, #ffa07b, #ffc4a8);
+     background-size: 200% 200%;
+     animation: animateGlow 3s linear infinite;
+ }
+ @keyframes animateGlow {
+     0% {
+       background-position: 0% 50%;
+     }
+     100% {
+       background-position: 200% 50%;
+     }
+   }
+
+.winterLocation .phrase-cell, .winterLocation     .phrase-cell_done .phrase-cell-inner{
+    border-color: #863e32;
+    border-color: #efb387;
+}
+.winterLocation .phrase-cell_done .phrase-cell-inner{
+    box-shadow: inset 0 -1px 0 0px #efb387;
+}
+.winterLocation .phrase-cell, .winterLocation .phrase-cell_done .phrase-cell-inner{
+    background-color: #863e32;
+}
+.winterLocation .phrase-cell-number{
+     color: #f6dbc1;
+}
+.winterLocation .phrase-cell_notFilled .phrase-cell-number{
+     color: #863e32;
+}
+.winterLocation .border-white{
+     border-color: #E6B58D;
+}
+.winterLocation .phrase-cell_notFilled .border-white{
+     border-color: #824F20;
+}
+
+
+.winterLocation .game-keyboard {
+     background-color: #5b2a22;
+}
+.winterLocation .keyboard-key{
+     color: #612c23;
+}
+.winterLocation .keyboard-key_inactive{
+     color: rgba(91, 42, 34, 0.8) !important;
+     background-color: #794138;
+}
+.winterLocation .keyboard-key_used{
+     color: #0eb516;
+}
+.winterLocation .keyboard-key:active:not(.keyboard-key_inactive) {
+     background: #794138;
+}
+.winterLocation .game-keyboard-buttons{
+     background-color: rgba(100, 48, 35, 0.89);
+     border-color: #5b2a22;
+        
+}
+.winterLocation .game-keyboard-moveLeft, .winterLocation .game-keyboard-moveRight{
+     border-color: #441d17;
+}
+.winterLocation .game-keyboard-moveLeft .game-keyboard-move-icon, .winterLocation .game-keyboard-moveRight .game-keyboard-move-icon{
+     background-color: #b5805a;
+}
+.winterLocation .game-keyboard-buttons:after{
+     background-color: #441d17;
+}
+.winterLocation .tip-text, .winterLocation .game-hint{
+     background-color: #863e32;
+}
+.winterLocation .menu-tips-btn .menu-tips-btn-icon{
+     background-color: #863e32;
+ }
+.winterLocation .menu-tips-btn__count{
+     background-color: #863e32;
+}
+.winterLocation .complete-number .phrase-cell-number{
+     background-color: #863e32;
+}
+.winterLocation .keyboard-blocked{
+     background-color: rgba(100, 48, 37, 0.98);
+}
+.winterLocation .nextLevelButton, .winterLocation .rules-button{
+     background-color: #863e32;
+}
+.winterLocation .rules-text{
+     color: #863e32;
+}
+.winterLocation .rules-text-important{
+     color: #441d17;
+}
+.winterLocation .rules-steps{
+display: none;
+}
+
+@media (orientation: portrait) {
+     .winterLocation, .winterLocation.game-bg, .winterLocation .rules-main{
+          /* background-image: url('../../assets/locations/autumn/bgVertical.png');
+          background-size: cover; */
+          background-position: 35%;
+     }
+}
+@media (min-width: 1500px) {
+     .winterLocation, .winterLocation.game-bg, .winterLocation .rules-main{
+          background: url('../../assets/locations/winter/bgNewYear-big.png') center center no-repeat;
+          background-size: cover;
+      }
+}

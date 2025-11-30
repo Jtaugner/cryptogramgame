@@ -58,6 +58,7 @@ function getYearAndMonth(location: string) {
 let currentLocationOutside = 'autumn';
 
 export function getClassForLocationBackground() {
+  return 'winterLocation';
   return 'autumnLocation';
 }
 

@@ -5,8 +5,10 @@ var {phrases} = require('./newCitats.js');
 var {dailyLevels} = require('./dailyLevelsTexts.js');
 var {locationLevels} = require('./locationCitats.js');
 let allLevels = require('../../src/levels/ru/allLevels.js');
-allLevels = allLevels.default;
+let allNamesBefore = require(`../../src/levels/ru/allNames.js`);
 
+allLevels = allLevels.default;
+allNamesBefore = allNamesBefore.default;
 const allLevelsTexts = [];
 
 allLevels.forEach(level => {
@@ -340,7 +342,7 @@ locationLevels.forEach(obj => {
      levelData.hiddenIndexes = level.hiddenIndexes;
      levelData.name = obj.author;
      levelData.desc = '';
-     levelData.type = 'cinema';
+     levelData.type = 'quotes';
      newLocationLevels.push(levelData);
 });
 
@@ -376,19 +378,18 @@ let allNames = {};
 
 allLevels.forEach(level => {
      if(!allNames[level.name]){
-          allNames[level.name] = 1;
-     }else{
-          allNames[level.name]++;
+          allNames[level.name] = "";
      }
 });
 newLocationLevels.forEach(level => {
      if(!allNames[level.name]){
-          allNames[level.name] = 1;
-     }else{
-          allNames[level.name]++;
+          allNames[level.name] = "";
      }
 });
 
+Object.keys(allNamesBefore).forEach(name => {
+     delete allNames[name];
+});
 
 const sorted = Object.fromEntries(
      Object.entries(allNames).sort(([, v1], [, v2]) => v2 - v1)
