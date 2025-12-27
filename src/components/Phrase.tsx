@@ -1,6 +1,7 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import './Phrase.css'
-import { LevelDataProps, scrollIntoViewY, UserData } from '../App'
+import { LevelDataProps, UserData } from '../App'
+import { scrollIntoViewY } from '../utils'
 import {dices, LevelData, getInfoAboutName, testLetterForNotAlphabet, upperCaseSpecial } from '../levels'
 import { getJumpingLetterIndexes, getSelectedLetterForAdviceStep } from './rulesPhrases';
 
@@ -28,7 +29,11 @@ interface PhraseProps {
   isFromRules?: boolean
   adviceStepFromRules?: boolean
   switchOnGlowScreen: () => void
-  levelData: LevelData
+  levelData: {
+    text: string,
+    name: string,
+    desc: string,
+  },
   copyFunction: (levelData: LevelData) => void
   setShowConfetti: (show: boolean) => void
   gameMode: string

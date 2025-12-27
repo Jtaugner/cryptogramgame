@@ -119,6 +119,9 @@
   overflow-y: auto;
   touch-action: pan-y;
 }
+.hasScroll{
+  align-content: flex-start;
+}
 .collection-category-main-quote_small{
   font-size: 1.7rem;
   line-height: 2.1rem;

@@ -104,6 +104,15 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
   const [phraseData, setPhraseData] = useState<LevelDataProps>()
   const [inactiveKeys, setInactiveKeys] = useState<Set<string>>(new Set())
   const [levelData, setLevelData] = useState<LevelData>(chooseLevelData(gameLocation, userData, gameLocationData));
+  const [endLevelData, setEndLevelData] = useState<{
+    text: string,
+    name: string,
+    desc?: string,
+  }>({
+    text: '',
+    name: '',
+    desc: '',
+  });
   const { t } = useTranslation();
 
   const phraseRef = useRef<{ handleKeyPress: (key: string) => void, updatePhrase: (data: LevelDataProps) => void, getNextEmptyIndex: (getPrevious: boolean) => void }>(null)
@@ -169,7 +178,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
       const newLetters = levelData ? levelData.hiddenIndexes.length : 0;
       const newWords = levelData ? countWordsWithHiddenLetters(levelData, gameLanguage) : 0;
       let levelWithoutMistake = false;
-      console.log(levelData);
+      // console.log(levelData);
       if(gameLocation === 'main'){
         levelWithoutMistake = userData.lastLevelData ? !userData.lastLevelData.atLeastOneError : false;        
       }else if(gameLocation === 'calendar'){
@@ -453,7 +462,13 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
         }, 500))
       }, 1500));
       realLevelTime = getLevelTime();
+      setEndLevelData({
+        text: levelData.text,
+        name: levelData.name,
+        desc: levelData.desc
+      })
       updateLastLevelData({}, true, false)
+
     }else if(phraseData){
       updateLastLevelData({
         completedNumbers: phraseData.completedNumbers,
@@ -478,6 +493,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
       onMenu();
       return;
     }
+    // setIsLevelCompleted(false);
     playSound('changeWindow');
     setLevel(level + 1)
     setLevelData(levels[level + 1]);
@@ -690,6 +706,11 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
      Object.keys(initialPhraseData.filledLetters).length === 0){
       setIsShowSettings(true);
       setOpenedFromGame(true);
+      if(level === 0 && gameLocation === 'main'){
+        params({'first_level': {
+          openRules: 1
+        }});
+      }
     }
 
     // Проверяем неактивные буквы
@@ -773,7 +794,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
                   <div className="game-header-gameName">
                     <div className={`game-header-type-icon-levelDone
                       game-header-type-icon-levelDone_${levelData.type}`}></div>
-                    <span className='game-header-gameName_text'>{t(levelData.type)}</span>
+                    {/* <span className='game-header-gameName_text'>{t(levelData.type)}</span> */}
                  </div>
                  <div className='game-header-time'>
                   <div className="game-header-time-icon"></div>
@@ -783,11 +804,11 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
                  :
                 <div className="game-header-wrap">
                   <div
-                   className={`menu-settings-btn ${isTipSelecting || (selecetedHint !== 0) ? 'disabledButton' : ''}`}
+                   className={`menu-settings-btn extended-click ${isTipSelecting || (selecetedHint !== 0) ? 'disabledButton' : ''}`}
                    onClick={() => setIsShowSettings(true)}>
                   </div>
                   <div className={`game-header_sameSize ${isTipSelecting || (selecetedHint !== 0 && selecetedHint !== 1) ? 'disabledButton' : ''}`}>
-                    <div className={`game-header-type-icon
+                    <div className={`game-header-type-icon extended-click
                       game-header-type-icon_${levelData.type}`}
                       onClick={() => {
                         if(selecetedHint === 1){
@@ -832,6 +853,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
                     </div>
                   <div className={`
                         menu-tips-btn
+                        extended-click
                         ${isTipSelecting ? 'menu-tips-btn_close' : ''}
                         ${selecetedHint !== 0 ? 'disabledButton' : ''}`
                       }
@@ -900,7 +922,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
           isLevelCompleted={isLevelCompleted}
           level={level}
           switchOnGlowScreen={switchOnGlowScreen}
-          levelData={levelData}
+          levelData={endLevelData}
           copyFunction={copyFunction}
           setShowConfetti={setShowConfetti}
           gameMode={gameMode}
@@ -987,7 +1009,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
               </span>
             </div>
             <div className="cancelBlocked" onClick={cancelBlockedByMoney}>
-              <div className="moneyCount">
+              <div className="moneyCount moneyCount__cancelBlocked">
                     <div className="modal-shop-row-price-icon">
                     </div>{cancelBlockPrice}
                </div>
@@ -1030,6 +1052,11 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
             userData={userData}
             onClose={() => {
               setIsShowSettings(false);
+              if(openedFromGame && level === 0 && gameLocation === 'main'){
+                params({'first_level': {
+                  closeRules: 1
+                }});
+              }
               setOpenedFromGame(false);
             }}
             setUserData={setUserData}

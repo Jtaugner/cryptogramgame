@@ -5,6 +5,7 @@ import Modal from '../Modal';
 import Rules from '../../Rules';
 import { useTranslation } from 'react-i18next';
 import Language from './Language';
+import { useAutoFontSizeWithNearElement } from '../../hooks/useAutoFontSizeWithNearElement';
 type SettingsProps = {
   userData: UserDataProps,
   onClose: () => void;
@@ -41,7 +42,10 @@ const Settings: React.FC<SettingsProps> = ({userData, onClose, setUserData, onHo
             onClose={onClose}
             >
               {
-                settingsRows.map(row => (
+                settingsRows.map(row => {
+                  const ref = useAutoFontSizeWithNearElement<HTMLDivElement>();
+                  const ref2 = useAutoFontSizeWithNearElement<HTMLDivElement>();
+                  return(
                   <div
                    className={`modal-settings-row`}
                     key={row}
@@ -50,13 +54,18 @@ const Settings: React.FC<SettingsProps> = ({userData, onClose, setUserData, onHo
                     <label className="switch">
                       <input type="checkbox" checked={userData.settings[row]} onChange={() => changeSettings({[row]: !userData.settings[row]})}/>
                       <span className="slider">
-                        <span className="label off">{t('off')}</span>
-                        <span className="label on">{t('on')}</span>
+                        {
+                          userData.settings[row] ? (
+                            <span className="label on" ref={ref2}>{t('on')}</span>
+                          ) : (
+                            <span className="label off" ref={ref}>{t('off')}</span>
+                          )
+                        }
                         <span className="circle"></span>
                       </span>
                     </label>
                   </div>
-                ))
+                )})
               }
               {/* Язык можно открыть только в меню */}
               {!onHome && (

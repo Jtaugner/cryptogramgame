@@ -6,6 +6,7 @@
 }
 .menu__mode-card-wrapper{
      position: relative;
+     max-width: 45%;
 }
 .menu__mode-card{
      --inset-shadow-color: white;
@@ -17,8 +18,10 @@
      cursor: pointer;
      position: relative;
      z-index: 2;
-     height: 94px;
+     min-height: 94px;
+     height: auto;
      width: 165px;
+     max-width: 100%;
 }
 .menu__mode-card_notAvailable{
      cursor: default;
@@ -74,6 +77,9 @@
      font-weight: 600;
      width: 80%;
      margin: 0 auto;
+     display: flex;
+    justify-content: center;
+    align-items: center;
      
 }
 
@@ -176,7 +182,7 @@
      .menu__mode-card{
           padding: 8px 0 8px 0;  
           background-size: 90%;
-          height: 113px;
+          min-height: 113px;
           width: 196px;
      }
      .menu__mode-card_closed{
@@ -192,7 +198,7 @@
      }
      .menu__mode-card__play{
           font-size: 1.3rem;
-          padding: 4px 35px;
+          padding: 4px 0;
      }
      .menu__mode-card__time{
           font-size: 0.9rem;
@@ -228,7 +234,7 @@
 
 @media (max-height: 700px){
      .menu__mode-card{
-          height: 82px;
+          min-height: 82px;
           width: 165px;
      }
      .menu__mode-card__iq{
@@ -238,7 +244,7 @@
      .menu__mode-card__play{
           font-size: 1rem;
           /* line-height: 1rem; */
-          padding: 1px 10px;
+          padding: 1px 0;
      }
      .menu__mode-card .menu-daily-value{
           width: 32px;

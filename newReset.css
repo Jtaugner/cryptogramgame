@@ -3,6 +3,8 @@
 *::before,
 *::after {
     box-sizing: border-box;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
 }
 
 /* Убираем внутренние отступы */
@@ -88,3 +90,8 @@ select {
     -webkit-user-select: none;
     user-select: none;
 }
+
+html, body{
+    font-size: 16px;
+}
+body { max-height: 1000000px; }

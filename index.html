@@ -2,11 +2,14 @@
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
+    <% if (PLATFORM === 'yt') { %>
+      <script src="https://www.youtube.com/game_api/v1"></script>
+    <% } %>
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
 
     <% if (PLATFORM === 'gd' || PLATFORM === 'mobile') { %>
-      <meta name="description" content="Cryptogram - a game on logic and attention">
+      <meta name="description" content="Cryptogram is a game of logic and attentiveness">
     <% } else { %>
       <meta name="description" content="Криптограмма - игра на логику и внимательность">
     <% } %>
@@ -134,7 +137,7 @@
     <canvas id="game" onmousedown="event.preventDefault ? event.preventDefault() : event.returnValue = false" ondragstart="return false;" ondrop="return false;"></canvas>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    <% if (PLATFORM === 'gp' || PLATFORM === 'mobile') { %>
+    <% if (PLATFORM === 'gp') { %>
       <script src="https://gamepush.com/sdk/gamepush.js?projectId=22609&publicToken=lnYwyPc6QQjxcHdYkNr0BEyOrxhytsye&callback=onGPInit"></script>
     <% } %>
   </body>

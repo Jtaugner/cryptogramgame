@@ -136,7 +136,7 @@ const Rules: React.FC<RulesProps> = ({onClose, gameMode = 'default', gameLanguag
                         <div className="rules-title">
                           {t(rulesText.title)}
                         </div>
-                        <div className="rules-main">
+                        <div className={`rules-main ${rulesText.id === 'phrase-step-keyboard' ? 'rules-main-keyboard' : ''}`}>
                           {rulesText.id === 'phrase-step-keyboard' ?
                             <div className={`rules-keyboard rules-keyboard_${gameLanguage}`}></div>
                           :

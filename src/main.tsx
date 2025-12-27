@@ -3,6 +3,7 @@ import { createRoot, Root } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 import './medias.css'
+import './medias-horizont.css'
 import './i18n'
 import { getTasks } from './tasks.tsx'
 import { playSound, stopSound, switchOffMainMusic, switchOnMainMusic } from './sounds.tsx'
@@ -24,18 +25,21 @@ export let mainLanguage = 'ru';
 export let isPurchaseAvailable = true;
 export let gpBannerSize = 0;
 
+let canUseYoutubeSDK = false;
+
 if(__PLATFORM__ === 'gd'){
   changeLanguage(getLang());
   isPurchaseAvailable = false;
 }else if(__PLATFORM__ === 'gp'){
   // mainLanguage = 'ru';
-}else if(__PLATFORM__ === 'mobile'){
+}else if(__PLATFORM__ === 'mobile' || __PLATFORM__ === 'yt'){
   mainLanguage = 'en';
   isPurchaseAvailable = false;
   changeLanguage(getLang());
 }
 
 let anotherLangDataForYandex = {};
+let YT_DATA = {};
 
 function getGameProgressName(){
   if(mainLanguage === 'ru'){
@@ -100,6 +104,7 @@ export const tryPlaySound = (soundName: string) => {
 }
 
 export function params(data: any) {
+  if(__PLATFORM__ === 'yt') return;
   if(__PLATFORM__ === 'mobile') {
     paramsForMobile(mainLanguage, data);
     return;
@@ -259,10 +264,13 @@ export function recreateApp(lang: string){
   prefferedLanguage = lang;
   setElementToLocalStorage('prefferedLanguage', lang);
   appCreated = false;
+  params({'recreateApp': lang});
   if(__PLATFORM__ === 'yandex'){
     getDataYandex();
-  }else if(__PLATFORM__ === 'gp' || __PLATFORM__ === 'mobile'){
+  }else if(__PLATFORM__ === 'gp'){
     getDataGP();
+  }else if(__PLATFORM__ === 'yt'){
+    getDataYT();
   }else{
     userData = getUserDataFromLocalStorage();
   }
@@ -288,7 +296,7 @@ export function getServerTime(){
     let newTime;
     if(__PLATFORM__ === 'yandex'){
       newTime = YSDK.serverTime()
-    }else if(__PLATFORM__ === 'gp' || __PLATFORM__ === 'mobile'){
+    }else if(__PLATFORM__ === 'gp'){
       newTime = YSDK.serverTime;
       const currentDate = new Date(YSDK.serverTime);
       newTime = currentDate.getTime();
@@ -384,11 +392,10 @@ export function saveData(newUserData: any) {
           statistics: newUserData.statistics,
           settings: newUserData.settings,
           money: newUserData.money,
-          taskObject: newUserData.taskObject,
+          taskObject: newUserData.taskObject, 
           broccoliKilled: newUserData.broccoliKilled,
           startedDate: newUserData.startedDate
         }
-        console.log('userStats', userStats);
         globalUserStats = userStats;
         userStats = stringifyJSON(userStats);
         setElementToLocalStorage('userStats', userStats);
@@ -413,7 +420,25 @@ export function saveData(newUserData: any) {
             anotherLangDataForYandex = state;
             playerGame.setData(state).then((ignored: any) => {}).catch(()=>{});
           }
-        }else if(__PLATFORM__ === 'gp' || __PLATFORM__ === 'mobile'){
+        }else if(__PLATFORM__ === 'yt' && canUseYoutubeSDK){
+          YT_DATA = {
+            ...YT_DATA,
+            userStats: userStats,
+            [getGameProgressName()]: newData,
+            "prefferedLanguage": prefferedLanguage
+          };
+          let jsoned = stringifyJSON(YT_DATA);
+          console.log('try save yt data');
+          // console.log('jsoned', jsoned);
+          YSDK?.game?.saveData(jsoned).then(() => {
+            console.log('save data success');
+          }, (e: any) => {
+            // Handle data save failure.
+            console.error(e);
+            // Send an error to YouTube when this happens.
+            YSDK.health.logError();
+          });
+        } else if(__PLATFORM__ === 'gp'){
             //Сохраняем в gp
           lastData = JSON.parse(lastData);
           try{
@@ -501,6 +526,16 @@ export function showRewarded(callback: () => void){
       }
     }else if(__PLATFORM__ === 'mobile'){
       mobileShowRewardedAd(callback);
+    }else if(__PLATFORM__ === 'yt' && canUseYoutubeSDK){
+      console.debug(`requestInterstitialAd() - rewarded`);
+      switchOffAllMusic();
+      YSDK?.ads?.requestInterstitialAd().then(() => {
+        callback();
+        switchOnAllMusic();
+      }, (e: any) => {
+        console.warn(e);
+        switchOnAllMusic();
+      });
     }
   }catch(e){}
 }
@@ -541,6 +576,20 @@ export function showAdv(){
       }
     }else if(__PLATFORM__ === 'mobile'){
       mobileShowFullscreenAd();
+    }else if(__PLATFORM__ === 'yt' && canUseYoutubeSDK){
+      console.debug(`requestInterstitialAd()`);
+      switchOffAllMusic();
+      YSDK?.ads?.requestInterstitialAd().then(() => {
+        // Request succeeded (no guarantee an ad was shown).
+        // Handle this case as needed.
+        // Proceed with the game.
+        switchOnAllMusic();
+      }, (e: any) => {
+        // Handle ad request failure.
+        console.warn(e);
+        // Proceed with the game.
+        switchOnAllMusic();
+      });
     }
   }catch(e){
 
@@ -609,6 +658,12 @@ export function tryToAddUserToLeaderboard(iq: number){
     }catch(e){}
   }else if(__PLATFORM__ === 'mobile'){
     // addUserToRating(iq);
+  }else if(__PLATFORM__ === 'yt' && canUseYoutubeSDK){
+    YSDK?.engagement?.sendScore({ value: iq }).then(() => {
+      console.log('send score success');
+    }).catch((err: any) => {
+      console.log('send score error', err);
+    });
   }
 }
 
@@ -744,6 +799,18 @@ function getDataYandex(){
   userData = getUserDataFromLocalStorage();
 }
 
+function getDataYT(){
+  let gp;
+  if(YT_DATA){
+    gp = YT_DATA[getGameProgressName()];
+  }
+  if(gp){
+    setUserData(gp);
+    return;
+  }
+  userData = getUserDataFromLocalStorage();
+}
+
 function getDataGP(){
   if(YSDK.player.has(getGameProgressName())){
     let newData = YSDK.player.get(getGameProgressName());
@@ -800,8 +867,11 @@ export function initPlayer(ysdk: any) {
 export const appIsReady = () => {
   if(__PLATFORM__ === 'yandex'){
     if(YSDK && YSDK.features && YSDK.features.LoadingAPI) YSDK.features.LoadingAPI.ready();
-  }else if(__PLATFORM__ === 'gp' || __PLATFORM__ === 'mobile'){
+  }else if(__PLATFORM__ === 'gp'){
     if(YSDK && YSDK.gameStart) YSDK.gameStart();
+  }else if(__PLATFORM__ === 'yt' && canUseYoutubeSDK){
+    console.log('yt game ready');
+    YSDK?.game?.gameReady();
   }
 }
 
@@ -815,10 +885,18 @@ export function switchOffAllMusic(){
   switchOffMainMusic();
 }
 export function switchOnAllMusic(){
+  if(!canPlaySound) return;
   switchOnMainMusic();
   musicStoppedByAdv = false;
 }
 
+/*
+
+
+YANDEX
+
+
+*/
 // @ts-ignore
 if (__PLATFORM__ === 'yandex' && window.YaGames) {
   // @ts-ignore
@@ -839,7 +917,16 @@ if (__PLATFORM__ === 'yandex' && window.YaGames) {
               // Ошибка при получении данных об игре.
           })
       });
-}else if(__PLATFORM__ === 'gp' || __PLATFORM__ === 'mobile') {
+}
+/*
+
+
+GAMEPUSH
+
+
+*/
+
+else if(__PLATFORM__ === 'gp') {
   console.log('gp playform init');
   // @ts-ignore
   window.onGPInit = async (gp) => {
@@ -847,10 +934,6 @@ if (__PLATFORM__ === 'yandex' && window.YaGames) {
     YSDK = gp;
     if(__PLATFORM__ === 'gp'){
       changeLanguage(gp.language);
-    }else if(__PLATFORM__ === 'mobile'){
-      if(!prefferedLanguage){
-        changeLanguage(getLang());
-      }
     }
     
     if(gp?.platform?.type === 'VK'){
@@ -858,7 +941,6 @@ if (__PLATFORM__ === 'yandex' && window.YaGames) {
     }else if(gp?.platform?.type === 'OK'){
       gameLink = 'https://ok.ru/game/cryptogram';
     }else{
-      //link for mobile game
       gameLink = ''; 
     }
     // Wait while the player syncs with the server
@@ -891,24 +973,17 @@ if (__PLATFORM__ === 'yandex' && window.YaGames) {
     gp.ads.on('close', (success) => {
       canPlaySound = true;
     });
-        // Выключили звук
+    // Выключили звук
     gp.sounds.on('mute', () => {
-      // Необходимо выключить все звуки в игре
-      musicStoppedByAdv = true;
-      switchOffMainMusic();
+      switchOffAllMusic();
     });
     // Включили звук
     gp.sounds.on('unmute', () => {
-      // Необходимо включить все звуки в игре
-      switchOnMainMusic();
-      musicStoppedByAdv = false;
+      switchOnAllMusic();
     });
 
 
     //Sticky
-    if(__PLATFORM__ === 'mobile'){
-      return;
-    }
     //Покупки
     payments = gp.payments;
     let products = gp.payments.products;
@@ -1003,6 +1078,107 @@ if (__PLATFORM__ === 'yandex' && window.YaGames) {
       console.log(e);
     }
   };
+}
+/*
+
+
+
+MOBILE
+
+
+
+*/
+
+else if(__PLATFORM__ === 'mobile') {
+  console.log('mobile playform init');
+  if(!prefferedLanguage){
+    changeLanguage(getLang());
+  }
+  gameLink = 'https://play.google.com/store/apps/details?id=com.witgames.cryptogramgame';
+  createApp();
+    
+}
+/*
+
+
+
+YOUTUBE
+
+
+
+*/
+else if(__PLATFORM__ === 'yt'){
+  console.log('yt platform init');
+  console.log(ytgame);
+  YSDK = ytgame;
+  gameLink = '';
+  const inPlayablesEnv = typeof ytgame !== "undefined" && ytgame.IN_PLAYABLES_ENV;
+  if(!inPlayablesEnv){
+    createApp();
+    canUseYoutubeSDK = false;
+  }else{
+    canUseYoutubeSDK = true;
+    ytgame.game.firstFrameReady();
+    async function initYT(){
+      try {
+        //Выбор языка
+        const language = await ytgame.system.getLanguage();
+        console.log('language', language);
+        changeLanguage(language);
+        //Загрузка данных из игры
+        let data = await ytgame.game.loadData();
+        console.log('data', data);
+        if(data && data !== ''){
+          data = JSON.parse(data);
+          // console.log('parsed data', data);
+          try{
+            data = Object.fromEntries(
+              Object.entries(data).filter(([key]) => !Number.isFinite(Number(key)))
+            );
+            if(data['prefferedLanguage']){
+              prefferedLanguage = data['prefferedLanguage'];
+              mainLanguage = prefferedLanguage as string;
+            }
+            if(data['userStats']){
+              setUserStats(data['userStats']);
+            }
+            let gp = data[getGameProgressName()];
+            if(gp){
+              setUserData(gp);
+            }
+            YT_DATA = {...data};
+          }catch(e){}
+  
+        }
+        // Handle the audio changing state from YouTube.
+        if (ytgame.system.isAudioEnabled()) {
+          canPlaySound = true;
+        } else {
+          canPlaySound = false;
+        }
+        ytgame.system.onAudioEnabledChange((isAudioEnabled: boolean) => {
+          console.debug(`onAudioEnabledChange() - isAudioEnabled: [${isAudioEnabled}]`);
+          if (isAudioEnabled) {
+            canPlaySound = true;
+            switchOnAllMusic();
+          } else if (!isAudioEnabled) {
+            canPlaySound = false;
+            switchOffAllMusic();
+          }
+        });
+        ytgame.system.onPause(() => {
+          switchOffAllMusic();
+        });
+        ytgame.system.onResume(() => {
+          switchOnAllMusic();
+        });
+      } catch (error) {
+        console.log('get Yt game data error', error);
+      }
+      createApp();
+    }
+    initYT();
+  }
 } else {
   createApp();
 }

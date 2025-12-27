@@ -5,6 +5,7 @@ import { useSwipeable } from 'react-swipeable';
 import { getTextForLevelEnd } from '../Phrase';
 import { useTranslation } from 'react-i18next';
 import { gpBannerSize } from '../../main';
+import { useHasScroll } from '../hooks/useHasScroll';
 type CollectionCategoryProps = {
   onClose: () => void
   category: string
@@ -27,6 +28,8 @@ const CollectionCategory: React.FC<CollectionCategoryProps> = ({onClose, categor
       desc: levelsByCategory[category][index].desc
     });
     const { t } = useTranslation();
+    const ref = useRef<HTMLDivElement>(null);
+    const hasScroll = useHasScroll(ref);
     
     useEffect(() => {
       if(collectionLevelData) {
@@ -93,8 +96,9 @@ const CollectionCategory: React.FC<CollectionCategoryProps> = ({onClose, categor
 
             <div className='rules-track'>
               <div className="slide">
-                  <div className={`
+                  <div  ref={ref} className={`
                     collection-category-main-quote
+                    ${hasScroll ? 'hasScroll' : ''}
                      ${collectionData.text.length > 150 ?
                       'collection-category-main-quote_small' : ''}`}>
                         {categoryIndex === 0 ?

@@ -94,6 +94,7 @@
   width: 35px;
   height: 35px;
   cursor: pointer;
+  position: relative;
 }
 .game-header-type-icon_quotes{
   background: url('../assets/collection/q.svg') center center no-repeat;
@@ -126,6 +127,7 @@
   padding: 15px;
   width: 300px;
   border-radius: 5px;
+  max-width: 95%;
 }
 .game-hint-title{
   font-size: 1.4rem;
@@ -154,6 +156,8 @@
 }
 .text-center {
   cursor: pointer;
+  line-height: 1.1;
+  transform: translateY(5px);
 }
 .mistakeCircle{
   background-color: #dddce1;
@@ -196,6 +200,7 @@
   background-color: rgb(221, 220, 225);
   /* background: url('../assets/tip.svg') center center no-repeat, rgb(221, 220, 225); */
   /* background-size: 40%; */
+  flex-shrink: 0;
 
   cursor: pointer;
 }
@@ -233,7 +238,8 @@
   justify-content: center;
   align-items: center;
 
-  width: 20px;
+  min-width: 20px;
+  padding: 1px;
   height: 20px;
   border-radius: 50%;
 
@@ -462,7 +468,7 @@
   transform: translateY(-2px);
   cursor: pointer;
 }
-.game-main_copyButton:after{
+.game-main_copyButton:after, .extended-click:after{
   content: '';
   position: absolute;
   top: -10px;
@@ -564,6 +570,9 @@
   color: #e7edf2;
   font-size: 1.1rem;
   margin-left: 60px;
+  /* position: absolute; */
+  /* left: 50%; */
+  /* transform: translateX(-50%); */
 }
 .game-header-gameName_text{
   font-size: 1.4rem;

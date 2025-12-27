@@ -110,9 +110,6 @@
 .winterLocation .rules-text-important{
      color: #441d17;
 }
-.winterLocation .rules-steps{
-display: none;
-}
 
 @media (orientation: portrait) {
      .winterLocation, .winterLocation.game-bg, .winterLocation .rules-main{

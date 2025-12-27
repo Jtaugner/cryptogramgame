@@ -26,7 +26,6 @@
      .menu-continue-btn{
           max-width: 350px;
           font-size: 1.7rem;
-          line-height: 1.7rem;
      }
      .menu-continue-btn__level{
           font-size: 1.1rem;
@@ -139,8 +138,8 @@
           font-size: 1.2rem;
      }
      .game-header-type-icon-levelDone {
-          width: 35px;
-          height: 35px;
+          /* width: 35px; */
+          /* height: 35px; */
       }
 }
 
@@ -165,7 +164,7 @@
       .menu-daily-row{
           height: 25px;
       }
-      .menu-daily-label {
+      .menu-daily-row {
           font-size: 0.85rem;
       }
       .menu-daily-broccoli{
@@ -174,16 +173,12 @@
       .menu-daily-row-block{
           margin: 10px 0;
       }
-      .menu-daily-value-text{
-          font-size: 0.85rem;
-      }
       .menu-daily-value-done {
           width: 18px;
           height: 16px;
       }
       .menu-continue-btn{
           font-size: 1.2rem;
-          line-height: 1.2rem;
           max-width: 270px;
       }
       .menu-continue-btn__level{
@@ -234,7 +229,7 @@
       .menu-daily-row{
           height: 24px;
       }
-      .menu-daily-label, .menu-daily-value-text{
+      .menu-daily-row{
           font-size: 0.9rem;
       }
       .menu-daily-broccoli{
@@ -255,7 +250,7 @@
      .menu-daily-row{
        height: 20px;
      }
-     .menu-daily-value-text, .menu-daily-label{
+     .menu-daily-row{
           font-size: 0.75rem;
      }
      .menu-daily-broccoli{
@@ -271,9 +266,14 @@
      }
      .menu-daily-bottom{
           font-size: 0.65rem;
+          border-radius: 0 0 5px 5px;
      }
      .menu__mode-card  {
-          height: 56px;
+          min-height: 56px;
+          border-radius: 7px;
+     }
+     .closedMode__text{
+          top: 5px;
      }
      .menu__mode-card__iq{
           display: none;
@@ -284,8 +284,6 @@
      }
      .menu__mode-card__play{
           font-size: 1rem;
-          /* line-height: 1rem; */
-          /* padding: 1px 10px; */
      }
      .menu__mode-card_notAvailable .menu__mode-card__play {
           display: none;
@@ -294,9 +292,9 @@
           width: 14px;
      }
      .modal{
-          max-height: 70vh;
+          max-height: 80vh;
      }
      .modal-wrapper, .modal-rating .modal-wrapper{
-          max-height: 55vh;
+          max-height: 70vh;
      }
 }

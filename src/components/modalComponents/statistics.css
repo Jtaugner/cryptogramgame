@@ -23,6 +23,7 @@
 }
 .statistics-value {
   margin-left: auto;
+  padding-left: 5px;
 }
 .statistics-icon_iq{
   background: url('../../assets/stats/iq.png') no-repeat center center;
@@ -41,7 +42,7 @@
   background-size: 90%;
 }
 .statistics-icon_noMistakes{
-  background: url('../../assets/stats/noMistakes.png') no-repeat center center;
+  background: url('../../assets/stats/nomistakes.png') no-repeat center center;
   background-size: 70%;
 }   
 .statistics-icon_mistakes{

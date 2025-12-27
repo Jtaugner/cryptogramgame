@@ -16,6 +16,9 @@
   font-size: 1.1rem;
   color: var(--modalTextColor);
   text-align: center;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-wrap: break-word;
 }
 .modal-shop-row-icon{
   position: relative;
@@ -29,8 +32,8 @@
   position: absolute; 
   bottom: 0px;
   right: -4px;
-  width: 23px;
-  height: 23px;
+  min-width: 23px;
+  min-height: 23px;
   background: #28d730;
   border-radius: 50%;
   color: #fdfdfd;
@@ -40,6 +43,8 @@
   align-items: center;
   justify-content: center;
   font-weight: bold;
+  line-height: 1;
+  padding: 1px;
 }
 .modal-shop-row-price{
   width: 90px;
@@ -56,6 +61,7 @@
   box-shadow: 0 1px 0px 0 rgba(10, 10, 10, 0.25), inset 0px -2px 0px 0px rgba(10, 10, 10, 0.15);
   flex: none;
   cursor: pointer;
+  flex-shrink: 0;
 }
 .modal-shop-row-price_disabled{
   color: #fd5d70;

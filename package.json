@@ -5,9 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "PLATFORM=yandex vite",
+    "dev:yt": "PLATFORM=yt vite",
     "dev:screen": "PLATFORM=mobile MODE=screen vite",
     "build:yandex": "PLATFORM=yandex sh -c 'tsc && rm -rf dist && vite build && npm run archive'",
     "build:gp": "PLATFORM=gp sh -c 'tsc && rm -rf dist && vite build && npm run archive'",
+    "build:yt": "PLATFORM=yt sh -c 'tsc && rm -rf dist && vite build && npm run archive'",
     "build:gd": "PLATFORM=gd sh -c 'tsc && rm -rf dist && vite build && npm run archive'",
     "build:mobile": "PLATFORM=mobile sh -c 'tsc && rm -rf dist && vite build && npm run archive'",
     "build:screen": "PLATFORM=mobile MODE=screen sh -c 'tsc && rm -rf dist && vite build && npm run archive'",

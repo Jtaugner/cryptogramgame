@@ -237,11 +237,13 @@
   height: 27px;
   display: flex;
   align-items: center;
+  font-size: 1.05rem;
   margin: 2px 10px;
   padding-left: 5px;
   background-color: #6669bd;
   box-shadow: 0 1px 1px 0 rgba(10, 10, 10, 0.05);
   border-radius: 5px;
+  overflow: hidden;
    
 }
 .menu-daily-value{
@@ -315,13 +317,14 @@
      font-size: 0.8rem;
      padding: 3px 10px;
      box-shadow: 0 2px 0px 0px rgba(0, 0, 0, 0.3);
+     max-height: 24px;
+     overflow: hidden;
 }
 .menu-daily-bottom .menu-daily-iq{
      color: #777785;
 }
 .menu-daily-label {
-color: var(--textColor);
-  font-size: 1rem;
+  color: var(--textColor);
 }
 .menu-daily-broccoli {
   width: 30%;
@@ -366,7 +369,7 @@ color: var(--textColor);
   color: var(--textColor);
   font-weight: bold;
   font-size: 1.5rem;
-  line-height: 1.5rem;
+  line-height: 1 !important;
   text-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
   border-radius: 7px;
 
@@ -457,6 +460,10 @@ color: var(--textColor);
   transform: translate(-50%, 100%);
   font-size: 1rem;
   color: var(--textColor);
+  max-width: 136%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 } 
 .icon-shop {
   background: url('../assets/shop.svg') center center no-repeat, #6c72f0;
@@ -611,4 +618,11 @@ color: var(--textColor);
     transform: scale(1.2);
     filter: brightness(1.1);
   }
+}
+.menu-continue-btn-label{
+  z-index: 1;
+}
+
+.notShowRating{
+  display: none;
 }

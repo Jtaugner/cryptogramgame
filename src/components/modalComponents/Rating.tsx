@@ -1,6 +1,7 @@
   import React, { useEffect, useState } from 'react';
   import './rating.css';
-  import {scrollIntoViewY, UserDataProps } from '../../App';
+  import { UserDataProps } from '../../App';
+  import { scrollIntoViewY } from '../../utils';
   import Modal from './Modal';
   import { getLeaderboard, setUserToLeaderboard } from '../../main';
   import { useTranslation } from 'react-i18next';

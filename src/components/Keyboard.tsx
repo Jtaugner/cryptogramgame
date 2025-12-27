@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import './Keyboard.css'
 import { cantUpperChar, keyboardRows } from '../levels'
+import { useUniformKeyboardKeyFont } from './useUniformKeyboardKeyFont'
 
 interface KeyboardProps {
   onKeyPress: (key: string) => void
@@ -17,6 +18,7 @@ interface KeyboardProps {
 const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress, inactiveKeys = new Set(), phraseData, gameLanguage }) => {
   const [rows, setRows] = useState<string[][]>(keyboardRows[gameLanguage as keyof typeof keyboardRows]);
   const [usedLetters, setUsedLetters] = useState<Set<string>>(new Set());
+  const keyboardRef = useUniformKeyboardKeyFont<HTMLDivElement>();
 
   useEffect(() => {
     if(!phraseData) return;
@@ -44,12 +46,12 @@ const Keyboard: React.FC<KeyboardProps> = ({ onKeyPress, inactiveKeys = new Set(
       }
     })
     usedLetters = new Set([...usedLetters, ...filledLetters]);
-    console.log(usedLetters);
+    // console.log(usedLetters);
     setUsedLetters(usedLetters);
     }, [phraseData])
 
   return (
-    <div className="keyboard-container">
+    <div className="keyboard-container" ref={keyboardRef}>
       {rows.map((row, i) => (
         <div key={'keyboard-' + i} className="keyboard-row">
           {row.map(key => (

@@ -8,7 +8,7 @@
 .rules{
   width: 90%;
   max-width: 500px;
-  height: 650px;
+  /* height: 650px; */
   max-height: 98%;
   background-color: #fff;
   border-radius: 10px;
@@ -74,6 +74,8 @@
   margin: 30px 0 20px 0;
   text-align: center;
   color: #050508  ;
+  max-width: 90vw;
+  max-width: 90dvw;
 }
 .rules-text{
   font-size: 1.2rem;
@@ -81,6 +83,8 @@
   text-align: center;
   margin: 30px 0 20px 0;
   width: 300px;
+  max-width: 80vw; 
+  max-width: 80dvw; 
 }
 .rules-text-important{
   font-weight: bold;
@@ -199,7 +203,7 @@
 
 .rules {
   scrollbar-width: thin;              /* для Firefox */
-  scrollbar-color: black black; /* трек и ползунок */
+  scrollbar-color: var(--mainColor) var(--mainColor); /* трек и ползунок */
 }
 
 /* WebKit (Chrome, Edge, Safari) */
@@ -208,7 +212,7 @@
 }
 
 .rules::-webkit-scrollbar-track {
-  background: black;
+  background: var(--mainColor);
 }
 
 .rules::-webkit-scrollbar-thumb {

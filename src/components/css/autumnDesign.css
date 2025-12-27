@@ -81,9 +81,6 @@
 .autumnLocation .rules-text-important{
      color: #441d17;
 }
-.autumnLocation .rules-steps{
-display: none;
-}
 
 @media (orientation: portrait) {
      .autumnLocation, .autumnLocation.game-bg, .autumnLocation .rules-main{

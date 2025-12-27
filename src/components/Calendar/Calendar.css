@@ -74,6 +74,7 @@
      background: url('./calendar/arrow-calendar.svg') center center no-repeat;
      background-size: 100%;
      cursor: pointer;
+     position: relative;
 }
 .calendar__arrow-right{
      transform: rotate(180deg);
@@ -508,4 +509,21 @@
           font-size: 1.1rem;
           line-height: 1.1rem;
      }
+}
+@media (max-height: 630px) {
+     .calendar-wrapper{
+          justify-content: flex-end;
+          padding-bottom: 10px;
+     }
+     .calendar__days{
+          margin-bottom: 5px;
+     }
+     .calendar-month{
+          margin-bottom: 55px;
+     }
+}
+
+.calendar__play_done{
+     opacity: 0;
+     pointer-events: none;
 }

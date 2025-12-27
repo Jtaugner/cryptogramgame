@@ -144,7 +144,7 @@ export function switchOffMainMusic(){
  
 window.addEventListener("visibilitychange", () => {
 	try{
-        if(__PLATFORM__ === 'gp'){
+        if(__PLATFORM__ === 'gp' || __PLATFORM__ === 'yt'){
             return;
         }
 		if (document.visibilityState === "visible" && !musicStoppedByAdv) {

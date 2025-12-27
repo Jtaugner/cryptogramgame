@@ -19,7 +19,7 @@
 .phrase-word {
   display: inline-flex;
   flex-flow: row wrap;
-  justify-content: center;
+  justify-content: flex-end;
   gap: 1.5px;
   margin: 0 10px 22px 10px;
 }
@@ -61,8 +61,8 @@
 
 
 .phrase-cell-inner {
-  width: fit-content;
-  min-width: 1.8225rem;
+  /* width: fit-content; */
+  width: 1.8225rem;
   height: 2.43rem;
   display: flex;
   align-items: center;
@@ -435,9 +435,11 @@
      text-shadow: 0px 0px 1px black;
      color: white;
      font-size: 2.1rem;
-     line-height: 2.3rem;
+     line-height: 1.2;
      text-align: center;
      margin-bottom: 40px;
+     max-height: 40vh;
+     overflow-y: auto;
 }
 .phrase-row__text_big{
      font-size: 1.7rem;
@@ -527,4 +529,24 @@
 }
 .phrase-cell_notFilled .symbol-cell{
      background-color: #44a350;
+}
+
+@media (max-width: 500px){
+     .phrase-cell-inner {
+          width: 1.6225rem;
+          height: 2.23rem;
+          font-size: 1.7rem;
+     }
+     .phrase-cell-number{
+          font-size: 1.25rem;
+          line-height: 1.6rem;
+     }
+     .dice-cell{
+          width: 24px;
+          height: 25px;
+     }
+     .dice-cell-circle{
+          width: 5px;
+          height: 5px;
+     }
 }

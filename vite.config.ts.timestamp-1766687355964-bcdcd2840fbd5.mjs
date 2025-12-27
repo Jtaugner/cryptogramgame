@@ -1,0 +1,37 @@
+// vite.config.ts
+import { defineConfig } from "file:///Users/jtaugner/Desktop/Jaugr/cryptogram/node_modules/vite/dist/node/index.js";
+import react from "file:///Users/jtaugner/Desktop/Jaugr/cryptogram/node_modules/@vitejs/plugin-react/dist/index.js";
+import { createHtmlPlugin } from "file:///Users/jtaugner/Desktop/Jaugr/cryptogram/node_modules/vite-plugin-html/dist/index.mjs";
+console.log("START");
+console.log("process.env.PLATFORM", process.env.PLATFORM);
+var vite_config_default = defineConfig({
+  base: "./",
+  plugins: [
+    createHtmlPlugin({
+      inject: {
+        data: {
+          PLATFORM: process.env.PLATFORM || "default",
+          MODE: process.env.MODE || "default"
+        }
+      }
+    }),
+    react({
+      fastRefresh: false
+    })
+  ],
+  // Ключевой момент — сюда
+  esbuild: {
+    define: {
+      __PLATFORM__: JSON.stringify(process.env.PLATFORM || "default"),
+      __MODE__: JSON.stringify(process.env.MODE || "default")
+    }
+  }
+  // А вот этот блок можно убрать совсем
+  // define: {
+  //   __PLATFORM__: JSON.stringify(process.env.PLATFORM || 'default')
+  // },
+});
+export {
+  vite_config_default as default
+};
+//# sourceMappingURL=data:application/json;base64,ewogICJ2ZXJzaW9uIjogMywKICAic291cmNlcyI6IFsidml0ZS5jb25maWcudHMiXSwKICAic291cmNlc0NvbnRlbnQiOiBbImNvbnN0IF9fdml0ZV9pbmplY3RlZF9vcmlnaW5hbF9kaXJuYW1lID0gXCIvVXNlcnMvanRhdWduZXIvRGVza3RvcC9KYXVnci9jcnlwdG9ncmFtXCI7Y29uc3QgX192aXRlX2luamVjdGVkX29yaWdpbmFsX2ZpbGVuYW1lID0gXCIvVXNlcnMvanRhdWduZXIvRGVza3RvcC9KYXVnci9jcnlwdG9ncmFtL3ZpdGUuY29uZmlnLnRzXCI7Y29uc3QgX192aXRlX2luamVjdGVkX29yaWdpbmFsX2ltcG9ydF9tZXRhX3VybCA9IFwiZmlsZTovLy9Vc2Vycy9qdGF1Z25lci9EZXNrdG9wL0phdWdyL2NyeXB0b2dyYW0vdml0ZS5jb25maWcudHNcIjsvLyB2aXRlLmNvbmZpZy50c1xuaW1wb3J0IHsgZGVmaW5lQ29uZmlnIH0gZnJvbSAndml0ZSdcbmltcG9ydCByZWFjdCBmcm9tICdAdml0ZWpzL3BsdWdpbi1yZWFjdCdcbmltcG9ydCB7IGNyZWF0ZUh0bWxQbHVnaW4gfSBmcm9tICd2aXRlLXBsdWdpbi1odG1sJ1xuXG5jb25zb2xlLmxvZygnU1RBUlQnKVxuY29uc29sZS5sb2coJ3Byb2Nlc3MuZW52LlBMQVRGT1JNJywgcHJvY2Vzcy5lbnYuUExBVEZPUk0pXG5cbmV4cG9ydCBkZWZhdWx0IGRlZmluZUNvbmZpZyh7XG4gIGJhc2U6ICcuLycsXG4gIHBsdWdpbnM6IFtcbiAgICBjcmVhdGVIdG1sUGx1Z2luKHtcbiAgICAgIGluamVjdDoge1xuICAgICAgICBkYXRhOiB7XG4gICAgICAgICAgUExBVEZPUk06IHByb2Nlc3MuZW52LlBMQVRGT1JNIHx8ICdkZWZhdWx0JyxcbiAgICAgICAgICBNT0RFOiBwcm9jZXNzLmVudi5NT0RFIHx8ICdkZWZhdWx0JyxcbiAgICAgICAgfSxcbiAgICAgIH0sXG4gICAgfSksXG4gICAgcmVhY3Qoe1xuICAgICAgZmFzdFJlZnJlc2g6IGZhbHNlLFxuICAgIH0pLFxuICBdLFxuXG4gIC8vIFx1MDQxQVx1MDQzQlx1MDQ0RVx1MDQ0N1x1MDQzNVx1MDQzMlx1MDQzRVx1MDQzOSBcdTA0M0NcdTA0M0VcdTA0M0NcdTA0MzVcdTA0M0RcdTA0NDIgXHUyMDE0IFx1MDQ0MVx1MDQ0RVx1MDQzNFx1MDQzMFxuICBlc2J1aWxkOiB7XG4gICAgZGVmaW5lOiB7XG4gICAgICBfX1BMQVRGT1JNX186IEpTT04uc3RyaW5naWZ5KHByb2Nlc3MuZW52LlBMQVRGT1JNIHx8ICdkZWZhdWx0JyksXG4gICAgICBfX01PREVfXzogSlNPTi5zdHJpbmdpZnkocHJvY2Vzcy5lbnYuTU9ERSB8fCAnZGVmYXVsdCcpLFxuICAgIH0sXG4gIH0sXG5cbiAgLy8gXHUwNDEwIFx1MDQzMlx1MDQzRVx1MDQ0MiBcdTA0NERcdTA0NDJcdTA0M0VcdTA0NDIgXHUwNDMxXHUwNDNCXHUwNDNFXHUwNDNBIFx1MDQzQ1x1MDQzRVx1MDQzNlx1MDQzRFx1MDQzRSBcdTA0NDNcdTA0MzFcdTA0NDBcdTA0MzBcdTA0NDJcdTA0NEMgXHUwNDQxXHUwNDNFXHUwNDMyXHUwNDQxXHUwNDM1XHUwNDNDXG4gIC8vIGRlZmluZToge1xuICAvLyAgIF9fUExBVEZPUk1fXzogSlNPTi5zdHJpbmdpZnkocHJvY2Vzcy5lbnYuUExBVEZPUk0gfHwgJ2RlZmF1bHQnKVxuICAvLyB9LFxufSlcbiAgIl0sCiAgIm1hcHBpbmdzIjogIjtBQUNBLFNBQVMsb0JBQW9CO0FBQzdCLE9BQU8sV0FBVztBQUNsQixTQUFTLHdCQUF3QjtBQUVqQyxRQUFRLElBQUksT0FBTztBQUNuQixRQUFRLElBQUksd0JBQXdCLFFBQVEsSUFBSSxRQUFRO0FBRXhELElBQU8sc0JBQVEsYUFBYTtBQUFBLEVBQzFCLE1BQU07QUFBQSxFQUNOLFNBQVM7QUFBQSxJQUNQLGlCQUFpQjtBQUFBLE1BQ2YsUUFBUTtBQUFBLFFBQ04sTUFBTTtBQUFBLFVBQ0osVUFBVSxRQUFRLElBQUksWUFBWTtBQUFBLFVBQ2xDLE1BQU0sUUFBUSxJQUFJLFFBQVE7QUFBQSxRQUM1QjtBQUFBLE1BQ0Y7QUFBQSxJQUNGLENBQUM7QUFBQSxJQUNELE1BQU07QUFBQSxNQUNKLGFBQWE7QUFBQSxJQUNmLENBQUM7QUFBQSxFQUNIO0FBQUE7QUFBQSxFQUdBLFNBQVM7QUFBQSxJQUNQLFFBQVE7QUFBQSxNQUNOLGNBQWMsS0FBSyxVQUFVLFFBQVEsSUFBSSxZQUFZLFNBQVM7QUFBQSxNQUM5RCxVQUFVLEtBQUssVUFBVSxRQUFRLElBQUksUUFBUSxTQUFTO0FBQUEsSUFDeEQ7QUFBQSxFQUNGO0FBQUE7QUFBQTtBQUFBO0FBQUE7QUFNRixDQUFDOyIsCiAgIm5hbWVzIjogW10KfQo=

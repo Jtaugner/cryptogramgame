@@ -28,6 +28,9 @@ const langGroups = {
    
 
 export function detectAppLanguage(lang: string) {
+     if(lang.indexOf('-') !== -1){
+      lang = lang.split('-')[0].toLowerCase();
+     }
      for (const appLang in langGroups) {
        if (langGroups[appLang as keyof typeof langGroups].includes(lang)) {
          return appLang;

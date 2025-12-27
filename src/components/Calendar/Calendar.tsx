@@ -111,6 +111,7 @@ const Calendar: React.FC<CalendarProps> = ({ isCalendarOpen, onClose, calendarLo
   const [isProgressAnimation, setIsProgressAnimation] = useState(false);
   const [showCollection, setShowCollection] = useState(false);
   const [collectionLevel, setCollectionLevel] = useState<number>(0);
+  const [locationDone, setLocationDone] = useState(false);
   const timeoutIds = useRef<number[]>([]);
 
   useEffect(() => {
@@ -146,10 +147,18 @@ const Calendar: React.FC<CalendarProps> = ({ isCalendarOpen, onClose, calendarLo
     }else{
       setSelectedDay(findFirstAvailableDay());
     }
+    let isLocationDone = true;
+    for(let day = 1; day <= allDaysInMonth; day++) {
+      if(!locationProgress.completedLevels.includes(day-1)) {
+        isLocationDone = false;
+        break;
+      }
+    }
+    setLocationDone(isLocationDone);
   }, [monthMatrix]);
 
   const findFirstAvailableDay = () => {
-    for(let day = 1; day <= 31; day++) {
+    for(let day = 1; day <= allDaysInMonth; day++) {
       if(canUseDay(day)) {
         console.log('first available day', day);
         return day;
@@ -173,15 +182,15 @@ const Calendar: React.FC<CalendarProps> = ({ isCalendarOpen, onClose, calendarLo
 
   const changeCalendarMonth = (direction: number) => {
     let newLocation = findNextLocation(direction);
-    console.log(newLocation);
-    if(isLocationExists(newLocation)) {
+  
+    if(isLocationExists(newLocation) && newLocation <= currentMonthYear) {
       setCalendarMonth(newLocation);
       setCalendarLocation(newLocation);
     }
   }
   const canShowArrow = (direction: number) => {
     let newLocation = findNextLocation(direction);
-    return isLocationExists(newLocation)
+    return isLocationExists(newLocation) && newLocation <= currentMonthYear;
   }
   const shouldLookAdv = (day: number) => {
     if(!canUseDay(day)) return false;
@@ -207,10 +216,27 @@ const Calendar: React.FC<CalendarProps> = ({ isCalendarOpen, onClose, calendarLo
 
   const openLevel = () => {
     openCalendarLevel(calendarMonth, selectedDay-1);
+    //Добавляем день в текущие уровни
+    let currentLevels = userData.locations?.[calendarMonth]?.currentLevels || [];
+    console.log('currentLevels', currentLevels);
+    if(!currentLevels.includes(selectedDay-1)) {
+      currentLevels.push(selectedDay-1);
+      setUserData({
+        ...userData,
+        locations: {
+          ...userData.locations,
+          [calendarMonth]: {
+            ...userData.locations[calendarMonth],
+            currentLevels: currentLevels
+          }
+        }
+      })
+    }
+
   }
 
   const openLevelWrapper = () => {
-    if(!canUseDay(selectedDay)) return;
+    if(!canUseDay(selectedDay) || locationDone) return;
     if(shouldLookAdv(selectedDay)) {
       showRewarded(openLevel);
       // openLevel();
@@ -242,12 +268,12 @@ const Calendar: React.FC<CalendarProps> = ({ isCalendarOpen, onClose, calendarLo
     `}>
           <div className="bg-overlay"></div>
           <div className="menu__top">
-               <div className="menu-settings-btn" onClick={onClose}></div>
+               <div className="menu-settings-btn extended-click" onClick={onClose}></div>
           </div>
           <div className="calendar">
                <div className="calendar-month">
                   <div className={`
-                     calendar__arrow-left
+                     calendar__arrow-left extended-click
                      ${canShowArrow(-1) ? '' : 'calendar__arrow_notVisible'}`
                      }
                       onClick={() => changeCalendarMonth(-1)}>
@@ -262,7 +288,7 @@ const Calendar: React.FC<CalendarProps> = ({ isCalendarOpen, onClose, calendarLo
                     </div>
                   </div>
                   <div className={`
-                     calendar__arrow-right
+                     calendar__arrow-right extended-click
                      ${canShowArrow(+1) ? '' : 'calendar__arrow_notVisible'}`
                      }
                       onClick={() => changeCalendarMonth(+1)}>
@@ -400,7 +426,7 @@ const Calendar: React.FC<CalendarProps> = ({ isCalendarOpen, onClose, calendarLo
                </div>
 
                <div
-                className="calendar__play"
+                className={`calendar__play ${locationDone ? 'calendar__play_done' : ''}`}
                 onClick={openLevelWrapper}
                >
                 {shouldLookAdv(selectedDay) && (
