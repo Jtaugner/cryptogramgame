@@ -89,6 +89,7 @@ const MenuDaily: React.FC<MenuDailyProps> = ({
                if(broccoKilled || countOfPunch >= countsOfPunch[3]){
                     return;
                }
+               playSound('broccoClick');
                broccoliCanvasRef.current?.handleClick();
                if(lottieRef.current){
                     lottieRef.current.stop();
@@ -107,19 +108,24 @@ const MenuDaily: React.FC<MenuDailyProps> = ({
                     }
                     if(countOfPunch === countsOfPunch[0]){
                          setAnimationData(animationPunch4);
+                         playSound('angryBrocco');
                     }
                     if(countOfPunch === countsOfPunch[1]){
                          setAnimationData(animationPunch5);
+                         playSound('angryBrocco');
                     }
                     if(countOfPunch === countsOfPunch[2]){
                          setAnimationData(animationPunch6);
+                         playSound('angryBrocco');
                     }
                     if(countOfPunch === countsOfPunch[3]){
                          setAnimationData(animationPunch7);
                          broccoKilled = true;
+                         playSound('broccoDied');
                          if(userData.broccoliKilled !== getCurrentDateFormatted()){
                               params({'broccoliKilled': 1});
                               getCoinFromBrocco();
+                              playSound('broccoGivesCoin');
                          }
                     }
                }, 200);

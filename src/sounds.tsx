@@ -113,6 +113,10 @@ const NewAudioContext = (function () {
   'addMoney': new NewAudioContext('./sounds/addMoney.wav'),
   'click': new NewAudioContext('./sounds/click.wav'),
   'getPrize': new NewAudioContext('./sounds/getPrize.mp3'),
+  'broccoClick': new NewAudioContext('./sounds/brocco/broccoClick.mp3'),
+  'angryBrocco': new NewAudioContext('./sounds/brocco/angryBrocco.mp3'),
+  'broccoDied': new NewAudioContext('./sounds/brocco/broccoDied.mp3'),
+  'broccoGivesCoin': new NewAudioContext('./sounds/brocco/broccoGivesCoin.mp3'),
   
  }
 
