@@ -4,6 +4,7 @@ import { LevelDataProps, UserData } from '../App'
 import { scrollIntoViewY } from '../utils'
 import {dices, LevelData, getInfoAboutName, testLetterForNotAlphabet, upperCaseSpecial } from '../levels'
 import { getJumpingLetterIndexes, getSelectedLetterForAdviceStep } from './rulesPhrases';
+import { isCopyAvailable } from '../main';
 
 const gameModes = {
   glagolitic: ['Ⱝ', 'Ⰰ', 'Ⰱ', 'Ⰲ', 'Ⰳ', 'Ⰴ', 'Ⰵ', 'Ⰶ', 'Ⰷ', 'Ⰸ', 'Ⰹ', 'Ⰼ', 'Ⰽ', 'Ⰾ', 'Ⰿ', 'Ⱀ', 'Ⱂ', 'Ⱃ', 'Ⱄ', 'Ⱅ', 'Ⱆ', 'Ⱇ', 'Ⱉ', 'Ⱊ', 'Ⱋ', 'Ⱌ', 'Ⱍ', 'Ⱎ', 'Ⱏ', 'Ⱑ', 'Ⱒ', 'Ⱓ', 'Ⱕ', 'Ⱖ', 'Ⱚ', 'Ⱛ', 'Ⱜ', 'Ⱞ', '𐚨', '𐛌', '𐛍', '𐚬', '𐚪', '𐀍', '𐀐', '𐀐', '𐀪']
@@ -339,7 +340,7 @@ const Phrase = forwardRef<PhraseHandle, PhraseProps>(
                   {getInfoAboutName(levelData.name)}
                 </div>
               </div>
-              <div className="game-main_copyButton" onClick={() => copyFunction(levelData)}></div>
+              {isCopyAvailable && <div className="game-main_copyButton" onClick={() => copyFunction(levelData)}></div>}
           </div>
       </>:
       data.text.split(/(\s+)/).map((word, wordIdx, arr) => {

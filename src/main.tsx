@@ -24,6 +24,8 @@ export let isScreenMode = __MODE__ === 'screen';
 export let mainLanguage = 'ru';
 export let isPurchaseAvailable = true;
 export let gpBannerSize = 0;
+export let isCopyAvailable = true;
+export let isRewardedAvailable = true;
 
 let canUseYoutubeSDK = false;
 
@@ -36,6 +38,11 @@ if(__PLATFORM__ === 'gd'){
   mainLanguage = 'en';
   isPurchaseAvailable = false;
   changeLanguage(getLang());
+}
+
+if(__PLATFORM__ === 'yt'){
+  isCopyAvailable = false;
+  isRewardedAvailable = false;
 }
 
 let anotherLangDataForYandex = {};
@@ -99,8 +106,9 @@ locationsNames.forEach(name => {
 let canPlaySound = true;
 
 export const tryPlaySound = (soundName: string) => {
-  if(!canPlaySound) return;
+  if(!canPlaySound) return false;
   playSound(soundName);
+  return true;
 }
 
 export function params(data: any) {
@@ -1161,6 +1169,7 @@ else if(__PLATFORM__ === 'yt'){
           if (isAudioEnabled) {
             canPlaySound = true;
             switchOnAllMusic();
+            window.dispatchEvent(new Event('musicSwitchYT'));
           } else if (!isAudioEnabled) {
             canPlaySound = false;
             switchOffAllMusic();

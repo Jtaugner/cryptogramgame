@@ -100,3 +100,6 @@
   color: white;
   font-variant-numeric: tabular-nums;
 }
+.modal-shop-row_disabled{
+  display: none;
+}

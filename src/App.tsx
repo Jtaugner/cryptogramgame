@@ -160,6 +160,7 @@ const App: React.FC<AppProps> = ({ allUserData, mainLanguage }) => {
     useState<TaskObjectProps>(userData.taskObject ? copyObject(userData.taskObject) : getTasks(userData.statistics.iq))
   const [previousIQ, setPreviousIQ] = useState<number>(userData.statistics.iq)
   const soundsRef = useRef(userData.settings.sounds);
+  const musicRef = useRef(userData.settings.music);
 
   const getGameSeconds = () => {
     return getSeconds(true);
@@ -226,15 +227,15 @@ const App: React.FC<AppProps> = ({ allUserData, mainLanguage }) => {
   const playSound = (soundName: string, cantPlaySound?: boolean) => {
     if (soundName === 'music') {
       if (userData.settings.music) {
-        tryPlaySound(soundName);
+        return tryPlaySound(soundName);
       }
     }
     if (cantPlaySound !== undefined) {
       if (!cantPlaySound) {
-        tryPlaySound(soundName);
+        return tryPlaySound(soundName);
       }
     } else if (userData.settings.sounds) {
-      tryPlaySound(soundName);
+      return tryPlaySound(soundName);
     }
 
 
@@ -244,9 +245,12 @@ const App: React.FC<AppProps> = ({ allUserData, mainLanguage }) => {
       return;
     }
     if (userData.settings.music) {
-      playSound('music');
+      if(playSound('music')){
+        musicStarted = true;
+      }
     } else {
       stopSound('music');
+      musicStarted = false;
     }
   }, [userData.settings.music])
 
@@ -338,12 +342,26 @@ const App: React.FC<AppProps> = ({ allUserData, mainLanguage }) => {
     }
     return taskObject;
   }
+
+  const switchMusic = () => {
+    console.log('switchMusic', musicRef.current, musicStarted);
+    if (musicRef.current && !musicStarted) {
+      if(playSound('music')){
+        musicStarted = true;
+      }
+    }
+  }
+  
   useEffect(() => {
     saveData(userData);
   }, [userData])
   useEffect(() => {
     soundsRef.current = userData.settings.sounds;
   }, [userData.settings.sounds])
+
+  useEffect(() => {
+    musicRef.current = userData.settings.music;
+  }, [userData.settings.music])
 
   //Добавляем в рейтинг
   useEffect(() => {
@@ -383,15 +401,16 @@ const App: React.FC<AppProps> = ({ allUserData, mainLanguage }) => {
     if (userData?.lastLevel === 0) {
       params({ 'firstStart': 1 });
     }
+
     if (!handlersAdded) {
       console.log('ADDHANDLERS');
       handlersAdded = true;
       const clickHandler = (e) => {
-        firstClickWasMade = true;
-        if (userData.settings.music && !musicStarted) {
-          playSound('music');
-          musicStarted = true;
+        if(!firstClickWasMade){
+          switchMusic();
+          firstClickWasMade = true;
         }
+
         try {
           for (let i = 0; i < clickSoundElements.length; i++) {
             if (e?.target?.className?.indexOf(clickSoundElements[i]) !== -1) {
@@ -404,7 +423,9 @@ const App: React.FC<AppProps> = ({ allUserData, mainLanguage }) => {
         }
 
       }
+
       window.addEventListener('click', clickHandler);
+      window.addEventListener('musicSwitchYT', switchMusic);
     }
     try {
       changeLanguage(mainLanguage);

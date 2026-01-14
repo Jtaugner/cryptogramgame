@@ -4,7 +4,7 @@ import {levelsByCategory, collectionNames, LevelData, namesDescs} from '../../le
 import { useSwipeable } from 'react-swipeable';
 import { getTextForLevelEnd } from '../Phrase';
 import { useTranslation } from 'react-i18next';
-import { gpBannerSize } from '../../main';
+import { gpBannerSize, isCopyAvailable } from '../../main';
 import { useHasScroll } from '../hooks/useHasScroll';
 type CollectionCategoryProps = {
   onClose: () => void
@@ -123,7 +123,7 @@ const CollectionCategory: React.FC<CollectionCategoryProps> = ({onClose, categor
                         </div>
                       
 
-                      <div className="game-main_copyButton" onClick={copyPhrase}></div>
+                      {isCopyAvailable && <div className="game-main_copyButton" onClick={copyPhrase}></div>}
                     </div>
                   </div>
                   }

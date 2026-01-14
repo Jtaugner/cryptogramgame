@@ -7,6 +7,8 @@ import { makePlacesForCounter } from '../ProgressCounter';
 import { getServerTime, showRewarded } from '../../main';
 import { formatTime } from '../../levels';
 import { useTranslation } from 'react-i18next';
+import { isRewardedAvailable } from '../../main';
+
 type ShopProps = {
   userData: UserDataProps,
   onClose: () => void;
@@ -26,7 +28,7 @@ type ShopItem = {
 };
 const shopItems = [
   {
-    id: 'hint_1',
+    id: 'hint_0',
     count: 1,
     price: 0,
   },
@@ -131,7 +133,10 @@ const Shop: React.FC<ShopProps> = ({userData, onClose, setUserData,
               {/* <div className="modal-section-title">Подсказки</div> */}
               {shopItems.map((item, index) => (
                 <div
-                  className={`modal-shop-row`}
+                  className={`
+                    modal-shop-row
+                    ${item.id === 'hint_0' && !isRewardedAvailable ? 'modal-shop-row_disabled' : ''}
+                  `}
                   key={'shop-item-' + index}
                   >
                   <div className="modal-shop-row-icon">
