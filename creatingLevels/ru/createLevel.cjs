@@ -222,7 +222,7 @@ function testTextForBadWords(text){
      return false;
 }
 
-while(allLevels.length !== 3400){
+while(allLevels.length !== 3600){
      let index = Math.floor(Math.random() * allQuotes.length);
      let phrase = allQuotes[index];
      let text = phrase.text;
