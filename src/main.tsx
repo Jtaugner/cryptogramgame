@@ -767,19 +767,21 @@ function chooseLatestData(gp: any, localStorageUserData: any){
   try{
     if(localStorageUserData.lastLevel > gp.lastLevel || localStorageUserData.statistics.iq > gp.statistics.iq){
         gp = localStorageUserData;
-    }else if(localStorageUserData.lastLevel === gp.lastLevel){
+    }else if(localStorageUserData.lastLevel === gp.lastLevel && localStorageUserData.statistics.iq === gp.statistics.iq){
       console.log('lastLevel same', localStorageUserData.lastLevel, gp.lastLevel);
-      //Если оба уровня заполнены, то сравниваем заполненные буквы
-      if(localStorageUserData.lastLevelData && gp.lastLevelData){
-        let filledLetters = Object.keys(localStorageUserData.lastLevelData.filledLetters);
-        let filledLetters2 = Object.keys(gp.lastLevelData.filledLetters);
-        if(filledLetters.length > filledLetters2.length){
-          gp = localStorageUserData;
-        }
-      } //Если локальные данные заполнены, а серверные нет, то используем локальные
-      else if(localStorageUserData.lastLevelData && !gp.lastLevelData){
-        gp = localStorageUserData;
-      }
+      //Если уровень и IQ одинаковый, то используем локальные данные
+      gp = localStorageUserData;
+      // //Если оба уровня заполнены, то сравниваем заполненные буквы
+      // if(localStorageUserData.lastLevelData && gp.lastLevelData){
+      //   let filledLetters = Object.keys(localStorageUserData.lastLevelData.filledLetters);
+      //   let filledLetters2 = Object.keys(gp.lastLevelData.filledLetters);
+      //   if(filledLetters.length > filledLetters2.length){
+      //     gp = localStorageUserData;
+      //   }
+      // } //Если локальные данные заполнены, а серверные нет, то используем локальные
+      // else if(localStorageUserData.lastLevelData && !gp.lastLevelData){
+      //   gp = localStorageUserData;
+      // }
     }
   }catch(e){}
 

@@ -17,7 +17,7 @@ import { useTranslation } from 'react-i18next'
 import Calendar from './components/Calendar/Calendar'
 import { useAnimationTransition } from './hooks/useAnimationTransition'
 import { getClassForLocationBackground } from './components/Calendar/Calendar'
-import './prohibitZoom'
+import './prohibitZoomAndScroll'
 // @ts-ignore
 let iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 if (iOS) {

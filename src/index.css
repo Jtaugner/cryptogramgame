@@ -81,6 +81,11 @@ html, body{
   -moz-osx-font-smoothing: grayscale;
   font-weight: 400;
   font-style: normal;
+
+  position: fixed;
+
+}
+html, body, #root{
   -ms-user-select: none;
   -moz-user-select: none;
   -webkit-user-select: none;
