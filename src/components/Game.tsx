@@ -20,6 +20,7 @@ import { useTranslation } from 'react-i18next'
 import { isScreenMode } from '../main'
 import { useBackButtonClick } from '../hooks/useBackButtonClick'
 import { getAllPrizesDays, getClassForLocationBackground, prizes } from './Calendar/Calendar'
+import { prohibitSwipeToRefresh } from '../prohibitZoomAndScroll'
 
 interface GameProps {
   onMenu: () => void
@@ -754,6 +755,8 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
   }, [level])
 
   useEffect(() => {
+
+    prohibitSwipeToRefresh('.game-main');
     //Unmount
     return () => {
       timeoutIds.current.forEach(clearTimeout);
@@ -849,7 +852,11 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
                         fastEndLevel();
                       }}
                      >
-                    {gameLocation === 'dailyLevel' ? t('dailySmallLevel') : t('smallLevel') + ' ' + (level+1)}
+                    {gameLocation === 'dailyLevel' ?
+                     t('dailySmallLevel') :
+                     gameLocation === 'calendar' ?
+                     t('smallLevel') + ' ' + (gameLocationData.level + 1) :
+                     t('smallLevel') + ' ' + (level+1)}
                     </div>
                   <div className={`
                         menu-tips-btn

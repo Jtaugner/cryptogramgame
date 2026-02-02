@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './modal.css';
 import { gpBannerSize } from '../../main';
+import { prohibitSwipeToRefresh } from '../../prohibitZoomAndScroll';
 
 type ModalProps = {
   children: React.ReactNode;
@@ -29,32 +30,7 @@ const Modal: React.FC<ModalProps> = ({children, onClose, title,
   useEffect(() => {
     if(isScrollerAdded.current) return;
     isScrollerAdded.current = true;
-    const scroller = document.querySelector('.modal-wrapper');
-
-    let startY = 0;
-    if(scroller){
-          
-          scroller.addEventListener('touchstart', e => {
-            startY = e.touches[0].clientY;
-          }, { passive: true });
-          
-          scroller.addEventListener('touchmove', e => {
-            const y = e.touches[0].clientY;
-            const dy = y - startY;
-          
-            const atTop = scroller.scrollTop <= 0;
-            const atBottom =
-              scroller.scrollTop + scroller.clientHeight >= scroller.scrollHeight - 1;
-          
-            const pullingDown = dy > 0;
-            const pullingUp = dy < 0;
-          
-            // Блокируем жест, если пытаются "выйти" за пределы скроллера
-            if ((pullingDown && atTop) || (pullingUp && atBottom)) {
-              e.preventDefault();
-            }
-          }, { passive: false });
-    }
+    prohibitSwipeToRefresh('.modal-wrapper');
   }, []);
   return <div className={`modal-bg ${modalClassName} ${isClosing ? 'modal_closing' : ''}`}>
   <div className="blackout" onClick={closeModal}></div>

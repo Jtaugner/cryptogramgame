@@ -265,6 +265,7 @@
   overflow-y: auto;
   overflow-x: hidden;
   touch-action: pan-y;
+  overscroll-behavior: none;
 }
 
 .game-keyboard {
