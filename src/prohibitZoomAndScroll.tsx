@@ -4,9 +4,10 @@ function isIOS() {
 }
    
 export function prohibitSwipeToRefresh(id: string) {
-     if (!isIOS()) return; // <-- работаем только на iOS
+    //  if (!isIOS()) return; // <-- работаем только на iOS
    
      const scroller = document.querySelector<HTMLElement>(id);
+     console.log(scroller);
      if (!scroller) return;
    
      let startY = 0;

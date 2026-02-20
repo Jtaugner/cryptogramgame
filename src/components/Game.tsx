@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback, useLayoutEffect } from 'react'
 import Keyboard from './Keyboard'
 import Phrase, { enteredNextLetter, resetEnteredNextLetter } from './Phrase'
 import './Game.css'
@@ -119,6 +119,7 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
   const phraseRef = useRef<{ handleKeyPress: (key: string) => void, updatePhrase: (data: LevelDataProps) => void, getNextEmptyIndex: (getPrevious: boolean) => void }>(null)
   const timeoutIds = useRef<number[]>([]);
   const levelGenerated = useRef(-1)
+  const isScrollerAdded = useRef<boolean>(false);
 
   //Время
   const { getSeconds, reset } = usePageActiveTimer()
@@ -755,13 +756,18 @@ const Game: React.FC<GameProps> = ({ onMenu, userData, setUserData,
   }, [level])
 
   useEffect(() => {
-
-    prohibitSwipeToRefresh('.game-main');
     //Unmount
     return () => {
       timeoutIds.current.forEach(clearTimeout);
     };
   }, [])
+
+  useEffect(() => {
+    if(!phraseData) return;
+    if(isScrollerAdded.current) return;
+    isScrollerAdded.current = true;
+    prohibitSwipeToRefresh('.game-main');
+  }, [phraseData]);
 
 
   if (!phraseData) return null

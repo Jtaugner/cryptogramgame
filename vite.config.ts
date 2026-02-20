@@ -22,17 +22,11 @@ export default defineConfig({
     }),
   ],
 
-  // Ключевой момент — сюда
   esbuild: {
     define: {
       __PLATFORM__: JSON.stringify(process.env.PLATFORM || 'default'),
       __MODE__: JSON.stringify(process.env.MODE || 'default'),
     },
   },
-
-  // А вот этот блок можно убрать совсем
-  // define: {
-  //   __PLATFORM__: JSON.stringify(process.env.PLATFORM || 'default')
-  // },
 })
   

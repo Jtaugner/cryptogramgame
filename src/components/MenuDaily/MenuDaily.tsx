@@ -214,6 +214,7 @@ const MenuDaily: React.FC<MenuDailyProps> = ({
                     {
                          userData.taskObject &&
                          Object.keys(userData.taskObject.tasks).map((task, index) => {
+                              console.log('task', task);
                               const ref = useAutoFontSizeByHeight<HTMLDivElement>();
                               return (
                               <div

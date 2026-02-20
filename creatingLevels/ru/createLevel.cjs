@@ -222,7 +222,9 @@ function testTextForBadWords(text){
      return false;
 }
 
-while(allLevels.length !== 3600){
+let trying = 0;
+while(allLevels.length !== 3700){
+     trying++;
      let index = Math.floor(Math.random() * allQuotes.length);
      let phrase = allQuotes[index];
      let text = phrase.text;
@@ -232,10 +234,12 @@ while(allLevels.length !== 3600){
      }
 
      //Если тип не новый, то пропускаем
-     if(!notUsedTypes.includes(phrase.type) && Math.random() < 0.97){
+     console.log('trying: ', trying, allLevels.length);
+     if(!notUsedTypes.includes(phrase.type) && Math.random() < 0.87){
           continue;
      }
      if(phrase.name === 'Теория большого взрыва') continue;
+     if(phrase.name === 'Сверхъестественное') continue;
 
      text = text.trim();
 

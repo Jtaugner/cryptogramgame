@@ -23,10 +23,12 @@
   overflow: hidden;
   overflow-y: auto;
   /* margin: 0 auto; */
-  touch-action: pan-y;
   position: relative;
   animation: modalFadeInCenter 0.35s ease-in-out forwards;
   font-weight: 500;
+
+  touch-action: pan-y;
+  overscroll-behavior: none; /*для запрета pull to refresh / overscroll */
 }
 .rules.miniModal{
   animation: miniModalFadeInCenter 0.35s ease-in-out forwards;

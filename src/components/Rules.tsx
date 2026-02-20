@@ -6,6 +6,7 @@ import { useSwipeable } from 'react-swipeable';
 import { useTranslation } from 'react-i18next';
 import {levelPhraseRules} from './rulesPhrases'
 import { gpBannerSize } from '../main';
+import { prohibitSwipeToRefresh } from '../prohibitZoomAndScroll';
 
 type RulesProps = {
   onClose: () => void
@@ -74,6 +75,7 @@ const Rules: React.FC<RulesProps> = ({onClose, gameMode = 'default', gameLanguag
   const [ruleStep, setRuleStep] = useState(0);
   const { t } = useTranslation();
   const [rulesTexts, setRulesTexts] = useState(null);
+  const isScrollerAdded = useRef<boolean>(false);
 
   useEffect(() => {
     let newRulesText;
@@ -119,6 +121,12 @@ const Rules: React.FC<RulesProps> = ({onClose, gameMode = 'default', gameLanguag
     trackTouch: true,
     preventDefaultTouchmoveEvent: true,
   });
+
+  useEffect(() => {
+    if(isScrollerAdded.current) return;
+    isScrollerAdded.current = true;
+    prohibitSwipeToRefresh('.rules');
+  }, []);
 
     return (
     <div className={`modal-bg modal-rules`}>
