@@ -264,10 +264,15 @@
      background-size: cover;
      --inset-shadow-color: #f99766;
 }
-.calendarMode .menu__mode-card{
+.calendarMode.calendarMode_winter .menu__mode-card{
      background: url(../../assets/locations/winter/mode.png) center center no-repeat;
      background-size: cover;
      --inset-shadow-color: #8ac4f4;
+}
+.calendarMode.calendarMode_spring .menu__mode-card{
+     background: url(../../assets/locations/spring/mode.png) center center no-repeat;
+     background-size: cover;
+     --inset-shadow-color: #e1a0e7;
 }
 .calendarMode .menu__mode-card{
      /* display: flex;

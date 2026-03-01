@@ -1,0 +1,96 @@
+.springLocation, .springLocation.game-bg, .springLocation .rules-main{
+    background: url('../../assets/locations/spring/bg.png') center center no-repeat;
+    background-size: cover;
+}
+
+.springLocation .phrase-cell, .springLocation     .phrase-cell_done .phrase-cell-inner{
+    border-color: #ca76d1;
+}
+.springLocation .phrase-cell_done .phrase-cell-inner{
+    box-shadow: inset 0 -1px 0 0px #ca76d1;
+}
+.springLocation .phrase-cell, .springLocation .phrase-cell_done .phrase-cell-inner{
+    background-color: #92379a;
+}
+.springLocation .phrase-cell-number{
+     color: #fbc7ff;
+}
+.springLocation .phrase-cell_notFilled .phrase-cell-number{
+     color: #6c2073;
+}
+.springLocation .border-white{
+     border-color: #ca76d1;
+}
+.springLocation .phrase-cell_notFilled .border-white{
+     border-color: #6c2073;
+}
+
+
+.springLocation .game-keyboard {
+     background-color: #4b385a;
+}
+.springLocation .keyboard-key{
+     color: #430d48;
+}
+.springLocation .keyboard-key_inactive{
+     color: rgba(67, 13, 72, 0.8) !important;
+     background-color: #7d2e8b;
+}
+.springLocation .keyboard-key_used{
+     color: #0eb516;
+}
+.springLocation .keyboard-key:active:not(.keyboard-key_inactive) {
+     background: #d559ac;
+}
+.springLocation .game-keyboard-buttons{
+     background-color: rgba(75, 56, 90, 0.89);
+     border-color: #51306b;
+        
+}
+.springLocation .game-keyboard-moveLeft, .springLocation .game-keyboard-moveRight{
+     border-color: #51306b;
+}
+.springLocation .game-keyboard-moveLeft .game-keyboard-move-icon, .springLocation .game-keyboard-moveRight .game-keyboard-move-icon{
+     background-color: #912e9a;
+}
+.springLocation .game-keyboard-buttons:after{
+     background-color: #51306b;
+}
+.springLocation .tip-text, .springLocation .game-hint{
+     background-color: #51306b;
+}
+.springLocation .menu-tips-btn .menu-tips-btn-icon{
+     background-color: #51306b;
+ }
+.springLocation .menu-tips-btn__count{
+     background-color: #51306b;
+}
+.springLocation .complete-number .phrase-cell-number{
+     background-color: #51306b;
+}
+.springLocation .keyboard-blocked{
+     background-color: rgba(53, 8, 57, 0.98);
+}
+.springLocation .nextLevelButton, .springLocation .rules-button{
+     background-color: #51306b;
+}
+.springLocation .rules-text{
+     color: #51306b;
+}
+.springLocation .rules-text-important{
+     color: #3a1b52;
+}
+
+@media (orientation: portrait) {
+     .springLocation, .springLocation.game-bg, .springLocation .rules-main{
+          /* background-image: url('../../assets/locations/autumn/bgVertical.png');
+          background-size: cover; */
+          /* background-position: 30%; */
+     }
+}
+@media (min-width: 1500px) {
+     .springLocation, .springLocation.game-bg, .springLocation .rules-main{
+          background: url('../../assets/locations/spring/bg-big.png') center center no-repeat;
+          background-size: cover;
+      }
+}

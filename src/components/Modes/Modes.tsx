@@ -19,6 +19,14 @@ function testIsDailyClosed(userData: UserDataProps){
      return userData.locations['dailyLevel'].doneForToday
       && userData.locations['dailyLevel'].currentDate === getCurrentDateFormatted();
 }
+function getCurrentSeason(): 'winter' | 'spring' | 'summer' | 'autumn' {
+     const month = getCurrentMonth();
+   
+     if (month === 11 || month === 0 || month === 1) return 'winter';
+     if (month >= 2 && month <= 4) return 'spring';
+     if (month >= 5 && month <= 7) return 'summer';
+     return 'autumn';
+   }
 
 const Modes: React.FC<ModesProps> = ({openDailyLevel, userData, setUserData, dailyAnimation, openCalendar}) => {
      const [timeLeft, setTimeLeft] = useState(getTimeLeftInDay());
@@ -136,7 +144,7 @@ const Modes: React.FC<ModesProps> = ({openDailyLevel, userData, setUserData, dai
           {
                mainLanguage === 'ru' &&
                <Mode
-                    modeClass={'calendarMode'}
+                    modeClass={'calendarMode calendarMode_' + getCurrentSeason()}
                     isAvailable={userData.lastLevel >= levelToOpenCalendar}
                     onClick={openCalendarWrapper}
                     blockedText={t('dailyBlocked', {level: levelToOpenCalendar+1})}
