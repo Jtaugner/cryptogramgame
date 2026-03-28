@@ -223,23 +223,24 @@ function testTextForBadWords(text){
 }
 
 let trying = 0;
-while(allLevels.length !== 3700){
+while(allLevels.length !== 4000){
      trying++;
      let index = Math.floor(Math.random() * allQuotes.length);
      let phrase = allQuotes[index];
      let text = phrase.text;
      text = replaceLongDashes(text.replace(/ё/gi, 'е'));
-     if(/[a-z]/ig.test(text) || text.length < 150 || text.length > 300 || testTextForBadWords(text)){
+     if(/[a-z]/ig.test(text) || text.length < 100 || text.length > 300 || testTextForBadWords(text)){
           continue;
      }
 
      //Если тип не новый, то пропускаем
      console.log('trying: ', trying, allLevels.length);
      if(!notUsedTypes.includes(phrase.type) && Math.random() < 0.87){
-          continue;
+          // continue;
      }
      if(phrase.name === 'Теория большого взрыва') continue;
      if(phrase.name === 'Сверхъестественное') continue;
+     if(phrase.name === 'Доктор Хаус') continue;
 
      text = text.trim();
 
