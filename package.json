@@ -15,10 +15,12 @@
     "build:screen": "PLATFORM=mobile MODE=screen sh -c 'tsc && rm -rf dist && vite build && npm run archive'",
     "archive": "rm -rf archiveBuildCryptogram && mkdir -p archiveBuildCryptogram && cd dist && zip -r ../archiveBuildCryptogram/dist.zip .",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "admin": "cd admin && npm run dev"
   },
   "dependencies": {
     "confetti-react": "^2.6.0",
+    "esbuild": "^0.28.0",
     "framer-motion": "^12.16.0",
     "i18next": "^25.3.2",
     "lottie-web": "^5.12.2",

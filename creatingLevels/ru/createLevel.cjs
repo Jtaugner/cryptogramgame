@@ -1,3 +1,4 @@
+// DEPRECATED: use `node ../createLevel.cjs --lang ru` from creatingLevels/. Kept for reference only.
 const { promises: fsp } = require('fs');
 var path = require('path');
 // var {phrases} = require('./citats');
